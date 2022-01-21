@@ -7,7 +7,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\Peio\Peio.h">
+    <ClInclude Include="..\src\Peio\PeioHeader.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Array.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Exception.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
