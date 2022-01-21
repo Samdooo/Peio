@@ -8,11 +8,11 @@ namespace Peio {
 
 	struct Exception {
 
+		Exception(const char* msg, const char* file, int line) : msg(msg), file(file), line(line) {}
+
 		const char* msg;
 		const char* file;
 		const int line;
-
-		Exception(const char* msg, const char* file, int line) : msg(msg), file(file), line(line) {}
 
 	};
 

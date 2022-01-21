@@ -88,8 +88,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\Array.h" />
+    <ClInclude Include="..\src\Peio\Clock.h" />
     <ClInclude Include="..\src\Peio\Exception.h" />
     <ClInclude Include="..\src\Peio\PeioHeader.h" />
+    <ClInclude Include="..\src\Peio\EventHandler.h" />
+    <ClInclude Include="..\src\Peio\Tree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

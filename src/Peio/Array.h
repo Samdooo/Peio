@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Exception.h"
+#include "PeioHeader.h"
 
 #include <array>
 #include <initializer_list>
@@ -10,7 +10,7 @@ namespace Peio {
 
 	template <typename T, size_t length>
 	struct CommonArray : public std::array<T, length> {
-		static_assert(length, "Length of Peio::CommonArray must be greater than 0.");
+		static_assert(length, "Length must be greater than 0.");
 
 		using _array = std::array<T, length>;
 		using _array::_Elems;
