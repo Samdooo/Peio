@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Exception.h"
+#include "PeioHeader.h"
 
 namespace Peio {
 
@@ -39,7 +39,7 @@ namespace Peio {
 
 	template <typename T_event, typename... T_handlers>
 	struct EventPipeline : public virtual EventHandler<T_event>, public virtual T_handlers... {
-		static_assert((std::is_base_of<EventHandler<T_event>, T_handlers>::value && ...), "All T_handlers must virtually inherit SSE::EventHandler<T_event>.");
+		static_assert((std::is_base_of<EventHandler<T_event>, T_handlers>::value && ...), "All T_handlers must virtually inherit EventHandler<T_event>.");
 
 		void Handle(T_event& event) override {
 			(T_handlers::Handle(event), ...);
