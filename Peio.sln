@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Essentials", "Essentials\Es
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Networking", "Networking\Networking.vcxproj", "{D769C4AC-7AC5-452A-ACA8-96A73281C949}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Graphics", "Graphics\Graphics.vcxproj", "{6B7904EB-2ED1-4F3F-A434-3630E7531A87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -33,6 +35,10 @@ Global
 		{D769C4AC-7AC5-452A-ACA8-96A73281C949}.Debug|x64.Build.0 = Debug|x64
 		{D769C4AC-7AC5-452A-ACA8-96A73281C949}.Release|x64.ActiveCfg = Release|x64
 		{D769C4AC-7AC5-452A-ACA8-96A73281C949}.Release|x64.Build.0 = Release|x64
+		{6B7904EB-2ED1-4F3F-A434-3630E7531A87}.Debug|x64.ActiveCfg = Debug|x64
+		{6B7904EB-2ED1-4F3F-A434-3630E7531A87}.Debug|x64.Build.0 = Debug|x64
+		{6B7904EB-2ED1-4F3F-A434-3630E7531A87}.Release|x64.ActiveCfg = Release|x64
+		{6B7904EB-2ED1-4F3F-A434-3630E7531A87}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
