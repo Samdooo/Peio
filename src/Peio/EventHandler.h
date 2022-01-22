@@ -14,7 +14,8 @@ namespace Peio {
 		void Handle(T_event& e) {
 			EventHandler<T_event>* handler = dynamic_cast<EventHandler<T_event>*>(this);
 			if (!handler) {
-				throw PEIO_EXCEPTION("Invalid event type or non-virtual EventHandler inheritance in an EventPipeline.");
+				return;
+				//throw PEIO_EXCEPTION("Invalid event type or non-virtual EventHandler inheritance in an EventPipeline.");
 			}
 			handler->Handle(e);
 		}
@@ -24,7 +25,7 @@ namespace Peio {
 	};
 
 	template <typename T_event>
-	struct EventHandler<T_event> : public EventHandler<> {
+	struct EventHandler<T_event> : public virtual EventHandler<> {
 
 		virtual void Handle(T_event&) = 0;
 
