@@ -88,10 +88,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\Networking\Exception.h" />
+    <ClInclude Include="..\src\Peio\Networking\Hint.h" />
     <ClInclude Include="..\src\Peio\Networking\Init.h" />
     <ClInclude Include="..\src\Peio\Networking\NetworkingHeader.h" />
+    <ClInclude Include="..\src\Peio\Networking\Socket.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Peio\Networking\Hint.cpp" />
     <ClCompile Include="..\src\Peio\Networking\Init.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
