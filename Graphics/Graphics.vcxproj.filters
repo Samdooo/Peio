@@ -5,6 +5,27 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Source Files\Graphics">
+      <UniqueIdentifier>{e2642be3-bc10-4d77-bca1-e5feaf861f36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{f1acecb9-a652-4ffb-a9f0-3df76d08ce36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils\Commands">
+      <UniqueIdentifier>{a9225e5e-eda7-4efc-bcdb-c6e6c74a1607}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils\Heaps">
+      <UniqueIdentifier>{c72596fc-6d6a-45e9-946d-068cddeceea5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils\Heaps\Views">
+      <UniqueIdentifier>{7a6a316c-e250-4cda-a8ee-787283e9e8ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils\Pipeline State">
+      <UniqueIdentifier>{572d40f0-e699-4ab0-800e-7d5374201be4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils\Pipeline State\Root Signature">
+      <UniqueIdentifier>{982a50ee-f068-459b-8a26-b59bdaac8b68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\Graphics\GraphicsHeader.h">
