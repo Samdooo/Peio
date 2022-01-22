@@ -2,37 +2,20 @@
 #include <Peio/Exception.h>
 
 #include <Peio/EventHandler.h>
+#include <Peio/Windows/Window.h>
+#include <Peio/Windows/KeyboardListener.h>
 
 #include <unordered_map>
 
-struct Handlers {
+struct Handler : public Peio::EventHandler<Peio::Win::KeydownEvent, Peio::Win::KeyupEvent> {
 
-	std::unordered_multimap<size_t, Peio::EventHandler<>*> handlers;
-
-	template <typename... T_events>
-	void AddHandler(Peio::EventHandler<T_events...>* handler) {
-		(handlers.insert(std::pair(typeid(T_events).hash_code(), static_cast<Peio::EventHandler<T_events>*>(handler))), ...);
+	void Handle(Peio::Win::KeydownEvent& event) {
+		if (!event.prev)
+			std::cout << event.key << " pressed" << std::endl;
 	}
 
-	template <typename T_event>
-	void Handle(T_event& event) {
-		auto its = handlers.equal_range(typeid(T_event).hash_code());
-		for (auto it = its.first; it != its.second; it++) {
-			std::cout << "Test" << std::endl;
-			it->second->Handle(event);
-		}
-	}
-
-};
-
-struct TestHandler : public Peio::EventHandler<int, char> {
-
-	void Handle(int& i) override {
-		std::cout << "Int: " << i << std::endl;
-	}
-
-	void Handle(char& i) override {
-		std::cout << "Char: " << i << std::endl;
+	void Handle(Peio::Win::KeyupEvent& event) {
+		std::cout << event.key << " released" << std::endl;
 	}
 
 };
@@ -41,17 +24,22 @@ int main() {
 
 	try {
 
-		Handlers handlers;
-		TestHandler handler;
-		TestHandler handler2;
-		handlers.AddHandler<int, char>(&handler);
-		handlers.AddHandler<int, char>(&handler2);
-		
-		int i = 420;
-		handlers.Handle(i);
+		Peio::Win::Window window;
+		window.CreateClass("Peio Sandbox", 0);
+		window.RegisterClass();
+		window.CreateWindow("Peio Sandbox", WS_OVERLAPPEDWINDOW, 0, { CW_USEDEFAULT, CW_USEDEFAULT }, { 1280, 720 });
 
-		char c = 69;
-		handlers.Handle(c);
+		window.Show();
+
+		Peio::Win::KeyboardListener listener;
+		Peio::Win::Input::AddListener(&listener);
+
+		Handler handler;
+		Peio::Win::Input::AddEventHandler<Peio::Win::KeydownEvent, Peio::Win::KeyupEvent>(&handler);
+
+		while (true) {
+			window.HandleMessages();
+		}
 
 	}
 	catch (Peio::Exception exception) {
