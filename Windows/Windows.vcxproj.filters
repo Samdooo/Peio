@@ -19,10 +19,16 @@
     <ClInclude Include="..\src\Peio\Windows\Window.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Windows\Input.h">
+      <Filter>Source Files\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Windows\Window.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Windows\Input.cpp">
+      <Filter>Source Files\Input</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

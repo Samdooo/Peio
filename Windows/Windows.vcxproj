@@ -11,10 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Peio\Windows\Input.h" />
     <ClInclude Include="..\src\Peio\Windows\Window.h" />
     <ClInclude Include="..\src\Peio\Windows\WindowsHeader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Peio\Windows\Input.cpp" />
     <ClCompile Include="..\src\Peio\Windows\Window.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
