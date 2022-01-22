@@ -88,6 +88,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\Graphics\d3dx12.h" />
+    <ClInclude Include="..\src\Peio\Graphics\Exception.h" />
     <ClInclude Include="..\src\Peio\Graphics\GraphicsHeader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

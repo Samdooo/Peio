@@ -13,5 +13,8 @@
     <ClInclude Include="..\src\Peio\Graphics\d3dx12.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\Exception.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
