@@ -2,7 +2,7 @@
 
 #include "GraphicsHeader.h"
 
-#define PEIO_GFX_EXCEPTION(x, y) Peio::Net::Exception(x, __FILE__, __LINE__, y)
+#define PEIO_GFX_EXCEPTION(x, y) Peio::Gfx::Exception(x, __FILE__, __LINE__, y)
 
 namespace Peio::Gfx {
 
