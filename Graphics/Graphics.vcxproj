@@ -90,12 +90,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\Graphics\d3dx12.h" />
+    <ClInclude Include="..\src\Peio\Graphics\DescriptorHeap.h" />
     <ClInclude Include="..\src\Peio\Graphics\Exception.h" />
     <ClInclude Include="..\src\Peio\Graphics\Global.h" />
     <ClInclude Include="..\src\Peio\Graphics\GraphicsHeader.h" />
+    <ClInclude Include="..\src\Peio\Graphics\Heap.h" />
+    <ClInclude Include="..\src\Peio\Graphics\RenderTargetHeap.h" />
+    <ClInclude Include="..\src\Peio\Graphics\Resource.h" />
+    <ClInclude Include="..\src\Peio\Graphics\ShaderResourceView.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Peio\Graphics\DescriptorHeap.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\Global.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\Heap.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\RenderTargetHeap.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\Resource.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\ShaderResourceView.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

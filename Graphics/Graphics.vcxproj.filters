@@ -40,10 +40,40 @@
     <ClInclude Include="..\src\Peio\Graphics\Global.h">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\Heap.h">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\DescriptorHeap.h">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\RenderTargetHeap.h">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\Resource.h">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\ShaderResourceView.h">
+      <Filter>Source Files\Utils\Heaps\Views</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Graphics\Global.cpp">
       <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\Heap.cpp">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\DescriptorHeap.cpp">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\RenderTargetHeap.cpp">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\Resource.cpp">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\ShaderResourceView.cpp">
+      <Filter>Source Files\Utils\Heaps\Views</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
