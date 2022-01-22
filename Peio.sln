@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Peio Template", "Peio Templ
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Essentials", "Essentials\Essentials.vcxproj", "{50498E11-D99C-4F9C-9E34-8C9BB140E7B3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Networking", "Networking\Networking.vcxproj", "{D769C4AC-7AC5-452A-ACA8-96A73281C949}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -27,6 +29,10 @@ Global
 		{50498E11-D99C-4F9C-9E34-8C9BB140E7B3}.Debug|x64.Build.0 = Debug|x64
 		{50498E11-D99C-4F9C-9E34-8C9BB140E7B3}.Release|x64.ActiveCfg = Release|x64
 		{50498E11-D99C-4F9C-9E34-8C9BB140E7B3}.Release|x64.Build.0 = Release|x64
+		{D769C4AC-7AC5-452A-ACA8-96A73281C949}.Debug|x64.ActiveCfg = Debug|x64
+		{D769C4AC-7AC5-452A-ACA8-96A73281C949}.Debug|x64.Build.0 = Debug|x64
+		{D769C4AC-7AC5-452A-ACA8-96A73281C949}.Release|x64.ActiveCfg = Release|x64
+		{D769C4AC-7AC5-452A-ACA8-96A73281C949}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
