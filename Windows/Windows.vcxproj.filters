@@ -25,6 +25,18 @@
     <ClInclude Include="..\src\Peio\Windows\Exception.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Windows\KeyboardListener.h">
+      <Filter>Source Files\Input\Listeners</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Windows\MouseListener.h">
+      <Filter>Source Files\Input\Listeners</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Windows\RawMouseListener.h">
+      <Filter>Source Files\Input\Listeners</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Windows\TextListener.h">
+      <Filter>Source Files\Input\Listeners</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Windows\Window.cpp">
@@ -32,6 +44,18 @@
     </ClCompile>
     <ClCompile Include="..\src\Peio\Windows\Input.cpp">
       <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Windows\KeyboardListener.cpp">
+      <Filter>Source Files\Input\Listeners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Windows\MouseListener.cpp">
+      <Filter>Source Files\Input\Listeners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Windows\RawMouseListener.cpp">
+      <Filter>Source Files\Input\Listeners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Windows\TextListener.cpp">
+      <Filter>Source Files\Input\Listeners</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

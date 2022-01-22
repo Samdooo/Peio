@@ -4,6 +4,7 @@
 #include "..\EventHandler.h"
 
 #include <unordered_map>
+#include <typeinfo>
 
 namespace Peio::Win {
 
@@ -42,5 +43,7 @@ namespace Peio::Win {
 		static std::unordered_multimap<size_t, EventHandler<>*> eventHandlers;
 
 	};
+
+	using Listener = PEIO_WIN_EXPORT EventHandler<Input::Message>;
 
 }
