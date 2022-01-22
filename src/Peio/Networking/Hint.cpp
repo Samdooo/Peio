@@ -1,7 +1,7 @@
 #define PEIO_NET_EXPORTING
 #include "Hint.h"
 
-namespace Peio::NET {
+namespace Peio::Net {
 
 	void Hint::Init(ushort port, const char* ip)
 	{

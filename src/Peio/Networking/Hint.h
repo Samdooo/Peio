@@ -4,7 +4,7 @@
 
 #include <string>
 
-namespace Peio::NET {
+namespace Peio::Net {
 
 	struct PEIO_NET_EXPORT Hint {
 

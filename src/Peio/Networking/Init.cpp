@@ -1,7 +1,7 @@
 #define PEIO_NET_EXPORTING
 #include "Init.h"
 
-namespace Peio::NET {
+namespace Peio::Net {
 
 	void Init()
 	{

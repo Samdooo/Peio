@@ -3,9 +3,9 @@
 #include "NetworkingHeader.h"
 #include "..\Exception.h"
 
-#define PEIO_NET_EXCEPTION(x) Peio::NET::Exception(x, __FILE__, __LINE__)
+#define PEIO_NET_EXCEPTION(x) Peio::Net::Exception(x, __FILE__, __LINE__)
 
-namespace Peio::NET {
+namespace Peio::Net {
 
 	struct Exception {
 

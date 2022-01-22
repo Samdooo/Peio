@@ -5,6 +5,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Source Files\Sockets">
+      <UniqueIdentifier>{5372d9b9-741e-45a1-984b-d34122f773ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\Networking\NetworkingHeader.h">
@@ -22,6 +25,30 @@
     <ClInclude Include="..\src\Peio\Networking\Hint.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Networking\IOSocket.h">
+      <Filter>Source Files\Sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Networking\EventSocket.h">
+      <Filter>Source Files\Sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Networking\AcceptSocket.h">
+      <Filter>Source Files\Sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Networking\BindSocket.h">
+      <Filter>Source Files\Sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Networking\CloseSocket.h">
+      <Filter>Source Files\Sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Networking\ConnectSocket.h">
+      <Filter>Source Files\Sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Networking\ListenSocket.h">
+      <Filter>Source Files\Sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Networking\Sockets.h">
+      <Filter>Source Files\Sockets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Networking\Init.cpp">
@@ -29,6 +56,9 @@
     </ClCompile>
     <ClCompile Include="..\src\Peio\Networking\Hint.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Networking\Sockets.cpp">
+      <Filter>Source Files\Sockets</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -2,7 +2,7 @@
 
 #include "Exception.h"
 
-namespace Peio::NET {
+namespace Peio::Net {
 
 	PEIO_NET_EXPORT void Init();
 

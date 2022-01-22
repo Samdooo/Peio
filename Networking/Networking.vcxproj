@@ -61,6 +61,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -77,6 +78,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -87,15 +89,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Peio\Networking\AcceptSocket.h" />
+    <ClInclude Include="..\src\Peio\Networking\BindSocket.h" />
+    <ClInclude Include="..\src\Peio\Networking\CloseSocket.h" />
+    <ClInclude Include="..\src\Peio\Networking\ConnectSocket.h" />
+    <ClInclude Include="..\src\Peio\Networking\EventSocket.h" />
     <ClInclude Include="..\src\Peio\Networking\Exception.h" />
     <ClInclude Include="..\src\Peio\Networking\Hint.h" />
     <ClInclude Include="..\src\Peio\Networking\Init.h" />
+    <ClInclude Include="..\src\Peio\Networking\IOSocket.h" />
+    <ClInclude Include="..\src\Peio\Networking\ListenSocket.h" />
     <ClInclude Include="..\src\Peio\Networking\NetworkingHeader.h" />
     <ClInclude Include="..\src\Peio\Networking\Socket.h" />
+    <ClInclude Include="..\src\Peio\Networking\Sockets.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Networking\Hint.cpp" />
     <ClCompile Include="..\src\Peio\Networking\Init.cpp" />
+    <ClCompile Include="..\src\Peio\Networking\Sockets.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

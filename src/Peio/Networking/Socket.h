@@ -3,7 +3,7 @@
 #include "Exception.h"
 #include "..\EventHandler.h"
 
-namespace Peio::NET {
+namespace Peio::Net {
 
 	template <template <typename> typename... T_socks>
 	struct Socket {
