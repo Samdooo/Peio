@@ -1,8 +1,11 @@
 #pragma once
 
-#include "WindowsHeader.h"
+#include "Exception.h"
 #include "..\Array.h"
+#include "Input.h"
 
+#include <atlbase.h>
+#include <atlconv.h>
 #include <string>
 
 #undef CreateWindow
@@ -33,12 +36,17 @@ namespace Peio::Win {
 
 		_NODISCARD RECT GetRect();
 		void Remap(Int2 position, Int2 size);
-		void Repaint(); /* Sends a WM_PAINT message */
 		void SetOpacity(BYTE opacity); /* Only works if the window is layered */
 
-		operator HWND();
+		_NODISCARD HWND GetHWND() const noexcept;
+		_NODISCARD WNDCLASSEX GetWindowClass() const noexcept;
 
 		~Window();
+
+	protected:
+
+		HWND hwnd = nullptr;
+		WNDCLASSEX wndClass = {};
 
 	};
 

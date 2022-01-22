@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Peio\Windows\Exception.h" />
     <ClInclude Include="..\src\Peio\Windows\Input.h" />
     <ClInclude Include="..\src\Peio\Windows\Window.h" />
     <ClInclude Include="..\src\Peio\Windows\WindowsHeader.h" />
