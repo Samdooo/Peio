@@ -1,7 +1,6 @@
 #pragma once
 
 #include "NetworkingHeader.h"
-#include "..\Exception.h"
 
 #define PEIO_NET_EXCEPTION(x) Peio::Net::Exception(x, __FILE__, __LINE__)
 

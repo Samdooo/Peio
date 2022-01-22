@@ -1,62 +1,58 @@
 #include <iostream>
+#include <Peio/Exception.h>
 
-#include <Peio/Networking/Init.h>
-#include <Peio/Networking/Sockets.h>
+#include <Peio/EventHandler.h>
 
 #include <unordered_map>
 
-struct NetHandler : public Peio::EventHandler<Peio::Net::AcceptEvent, Peio::Net::ReceiveEvent> {
+struct Handlers {
 
-	std::unordered_map<SOCKET, Peio::Net::ServerSocket*> clients = {};
+	std::unordered_multimap<size_t, Peio::EventHandler<>*> handlers;
 
-	void Handle(Peio::Net::AcceptEvent& event) override {
-		std::cout << event.sock->GetSocket() << " connected" << std::endl;
-		Peio::Net::ServerSocket* client = new Peio::Net::ServerSocket;
-		client->Accept(event.sock->GetSocket());
-		client->RegisterEvents();
-		clients.insert(std::pair(client->GetSocket(), client));
+	template <typename... T_events>
+	void AddHandler(Peio::EventHandler<T_events...>* handler) {
+		(handlers.insert(std::pair(typeid(T_events).hash_code(), static_cast<Peio::EventHandler<T_events>*>(handler))), ...);
 	}
 
-	char* buf = new char[4096];
+	template <typename T_event>
+	void Handle(T_event& event) {
+		auto its = handlers.equal_range(typeid(T_event).hash_code());
+		for (auto it = its.first; it != its.second; it++) {
+			std::cout << "Test" << std::endl;
+			it->second->Handle(event);
+		}
+	}
 
-	void Handle(Peio::Net::ReceiveEvent& event) override {
-		int length = event.sock->Receive(buf, 4096);
-		std::cout << "Received from " << event.sock << ": " << std::string(buf, length) << std::endl;
+};
+
+struct TestHandler : public Peio::EventHandler<int, char> {
+
+	void Handle(int& i) override {
+		std::cout << "Int: " << i << std::endl;
+	}
+
+	void Handle(char& i) override {
+		std::cout << "Char: " << i << std::endl;
 	}
 
 };
 
 int main() {
-	
+
 	try {
 
-		Peio::Net::Init();
+		Handlers handlers;
+		TestHandler handler;
+		TestHandler handler2;
+		handlers.AddHandler<int, char>(&handler);
+		handlers.AddHandler<int, char>(&handler2);
+		
+		int i = 420;
+		handlers.Handle(i);
 
-		Peio::Net::ListenerSocket listener;
-		listener.Init();
+		char c = 69;
+		handlers.Handle(c);
 
-		Peio::Net::Hint hint;
-		hint.Init(14000);
-		listener.Bind(hint);
-		listener.Listen();
-		listener.RegisterEvents();
-
-		NetHandler handler;
-
-		while (true) {
-			Sleep(1000);
-			listener.Update(&handler);
-			for (auto& client : handler.clients)
-				client.second->Update(&handler);
-			std::cout << "Updated" << std::endl;
-		}
-
-		WSACleanup();
-
-	}
-	catch (Peio::Net::Exception exception) {
-		std::cout << "Net exception: " << exception.msg << " in " << exception.file
-			<< " at line " << exception.line << ". WSAError: " << exception.wsaError << std::endl;
 	}
 	catch (Peio::Exception exception) {
 		std::cout << "Exception: " << exception.msg << " " << exception.file

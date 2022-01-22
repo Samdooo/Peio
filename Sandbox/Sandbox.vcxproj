@@ -92,6 +92,9 @@
     <ProjectReference Include="..\Networking\Networking.vcxproj">
       <Project>{d769c4ac-7ac5-452a-aca8-96a73281c949}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Windows\Windows.vcxproj">
+      <Project>{19a3160d-a6d1-4654-bb9d-224526fa4d5d}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
