@@ -47,12 +47,13 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(ProjectName)\</IntDir>
-    <TargetName>$(ProjectName)-debug</TargetName>
+    <TargetName>Peio-$(ProjectName)-debug</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(ProjectName)\</IntDir>
+    <TargetName>Peio-$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
