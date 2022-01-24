@@ -5,6 +5,8 @@
 #include <Peio/Windows/Window.h>
 #include <Peio/Windows/KeyboardListener.h>
 #include <Peio/Graphics/WinGraphics.h>
+#include <Peio/Voxels/VoxelRenderer.h>
+#include <Peio/Voxels/VoxelScene.h>
 
 #include <unordered_map>
 
@@ -18,6 +20,14 @@ struct Handler : public Peio::EventHandler<Peio::Win::KeydownEvent, Peio::Win::K
 	void Handle(Peio::Win::KeyupEvent& event) {
 		std::cout << event.key << " released" << std::endl;
 	}
+
+};
+
+struct Material {
+
+	Peio::Float4 colorEmission;
+	Peio::Float3 lightEmission;
+	float lightSpread;
 
 };
 
@@ -43,10 +53,25 @@ int main() {
 		Peio::Gfx::WinGraphics graphics;
 		graphics.Init(window.GetHWND(), { 1280, 720 }, 3, false);
 
+		Peio::Vxl::SubresourceBuffer<Peio::Vxl::VoxelScene> sceneBuffer;
+		sceneBuffer.Allocate(1);
+		sceneBuffer.GetSubresourceBuffer()[0] = { 0, 0, 0.5f, 16, 16, 0.01f, 1 };
+
+		//Peio::Vxl::SubresourceBuffer<Material> materialBuffer;
+
+
+		//Peio::Gfx::ShaderResourceView srv;
+		//srv.InitBuffer(
+		//	{  }
+		//);
+
+		Peio::Vxl::VoxelRenderer renderer;
+		//renderer.Init(graphics.GetCommandList(), )
+
 		while (true) {
 			window.HandleMessages();
 
-			graphics.Clear({ 0.0f, 1.0f, 1.0f, 1.0f });
+			graphics.Clear({ 1.0f, 0.0f, 0.0f, 1.0f });
 
 
 
