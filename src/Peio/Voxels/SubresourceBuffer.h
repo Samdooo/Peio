@@ -33,7 +33,7 @@ namespace Peio::Vxl {
 
 		void Release() {
 			resourceData = {};
-			SSE_SAFE_DELETEALL(buffer);
+			PEIO_SAFE_DELETEALL(buffer);
 		}
 
 		~SubresourceBuffer() {

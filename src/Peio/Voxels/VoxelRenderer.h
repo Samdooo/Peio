@@ -9,7 +9,7 @@ namespace Peio::Vxl {
 
 	struct PEIO_VXL_EXPORT VoxelRenderer {
 
-		void Init(ID3D12GraphicsCommandList* cmdList, UINT numBuffers, Gfx::ShaderResourceView* srv, Float3 cameraPosition, Float2 cameraRotation, float fov, float aspectRatio);
+		void Init(ID3D12GraphicsCommandList* cmdList, Gfx::ShaderResourceView* srv, Float3 cameraPosition, Float2 cameraRotation, float fov, float aspectRatio);
 
 		void SetCameraPosition(Float3 position);
 		void SetCameraRotation(Float2 rotation);

@@ -1,7 +1,7 @@
 #ifndef PS_SKY
 #define PS_SKY
 
-#include "SSVoxelPS_input.hlsl"
+#include "VoxelPS_input.hlsl"
 
 float3 SkyTrace(float3 ray){
     const float3 sunRay = float3(1.0f, 1.0f, 1.0f);

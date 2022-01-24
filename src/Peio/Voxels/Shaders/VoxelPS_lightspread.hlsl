@@ -1,7 +1,7 @@
 #ifndef PS_LIGHTSPREAD
 #define PS_LIGHTSPREAD
 
-#include "SSVoxelPS_input.hlsl"
+#include "VoxelPS_input.hlsl"
 
 //struct LightSpread {
 //    

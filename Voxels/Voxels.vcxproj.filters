@@ -10,25 +10,25 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\src\Peio\Voxels\Shaders\SSVoxelPS.hlsl">
+    <FxCompile Include="..\src\Peio\Voxels\Shaders\VoxelPS.hlsl">
       <Filter>Source Files\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="..\src\Peio\Voxels\Shaders\SSVoxelPS_input.hlsl">
+    <FxCompile Include="..\src\Peio\Voxels\Shaders\VoxelPS_input.hlsl">
       <Filter>Source Files\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="..\src\Peio\Voxels\Shaders\SSVoxelPS_lightspread.hlsl">
+    <FxCompile Include="..\src\Peio\Voxels\Shaders\VoxelPS_lightspread.hlsl">
       <Filter>Source Files\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="..\src\Peio\Voxels\Shaders\SSVoxelPS_lighttrace.hlsl">
+    <FxCompile Include="..\src\Peio\Voxels\Shaders\VoxelPS_lighttrace.hlsl">
       <Filter>Source Files\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="..\src\Peio\Voxels\Shaders\SSVoxelPS_sky.hlsl">
+    <FxCompile Include="..\src\Peio\Voxels\Shaders\VoxelPS_sky.hlsl">
       <Filter>Source Files\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="..\src\Peio\Voxels\Shaders\SSVoxelPS_voxeltrace.hlsl">
+    <FxCompile Include="..\src\Peio\Voxels\Shaders\VoxelPS_voxeltrace.hlsl">
       <Filter>Source Files\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="..\src\Peio\Voxels\Shaders\SSVoxelVS.hlsl">
+    <FxCompile Include="..\src\Peio\Voxels\Shaders\VoxelVS.hlsl">
       <Filter>Source Files\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

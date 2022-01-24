@@ -3,7 +3,7 @@
 
 namespace Peio::Vxl {
 
-	void VoxelRenderer::Init(ID3D12GraphicsCommandList* cmdList, UINT numBuffers, Gfx::ShaderResourceView* srv, Float3 cameraPosition, Float2 cameraRotation, float fov, float aspectRatio)
+	void VoxelRenderer::Init(ID3D12GraphicsCommandList* cmdList, Gfx::ShaderResourceView* srv, Float3 cameraPosition, Float2 cameraRotation, float fov, float aspectRatio)
 	{
 		vertexBuffer.Allocate(6);
 		for (UINT i = 0; i < 6; i++) {
@@ -33,7 +33,7 @@ namespace Peio::Vxl {
 				Gfx::InputElement::Create("FOV", DXGI_FORMAT_R32_FLOAT),
 				Gfx::InputElement::Create("ASPECT_RATIO", DXGI_FORMAT_R32_FLOAT),
 				}),
-				rootSignature.Get(), Gfx::Shader::Load("SSVoxelVS.cso"), GFX::Shader::Load("SSVoxelPS.cso")
+				rootSignature.Get(), Gfx::Shader::Load("../bin/VoxelShaders/VoxelVS.cso"), Gfx::Shader::Load("../bin/VoxelShaders/VoxelPS.cso")
 				));
 	}
 

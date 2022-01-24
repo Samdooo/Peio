@@ -1,9 +1,9 @@
 #ifndef PS_LIGHTTRACE
 #define PS_LIGHTTRACE
 
-#include "SSVoxelPS_voxeltrace.hlsl"
-#include "SSVoxelPS_sky.hlsl"
-#include "SSVoxelPS_lightspread.hlsl"
+#include "VoxelPS_voxeltrace.hlsl"
+#include "VoxelPS_sky.hlsl"
+#include "VoxelPS_lightspread.hlsl"
 
 float3 LightTrace(float3 origin, float3 startRay){
     const uint maxLayers = 30;

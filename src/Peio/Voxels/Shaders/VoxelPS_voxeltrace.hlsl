@@ -1,7 +1,7 @@
 #ifndef PS_VOXELTRACE
 #define PS_VOXELTRACE
 
-#include "SSVoxelPS_input.hlsl"
+#include "VoxelPS_input.hlsl"
 
 struct VoxelRay {
     //float3 origin;

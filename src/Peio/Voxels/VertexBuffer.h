@@ -14,14 +14,14 @@ namespace Peio::Vxl {
 
 		void Allocate(size_t n_elements) {
 			SubresourceBuffer<T_vertex>::Allocate(n_elements);
-			GFX::Resource::Init(CD3DX12_RESOURCE_DESC::Buffer(n_elements * sizeof(T_vertex)), D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
-			bufferView.BufferLocation = GFX::Resource::GetGPUAddress();
+			Gfx::Resource::Init(CD3DX12_RESOURCE_DESC::Buffer(n_elements * sizeof(T_vertex)), D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+			bufferView.BufferLocation = Gfx::Resource::GetGPUAddress();
 			bufferView.StrideInBytes = sizeof(T_vertex);
 			bufferView.SizeInBytes = (UINT)(n_elements * sizeof(T_vertex));
 		}
 
 		void Upload(ID3D12GraphicsCommandList* cmdList) {
-			GFX::Resource::Upload(SubresourceBuffer<T_vertex>::resourceData, cmdList);
+			Gfx::Resource::Upload(SubresourceBuffer<T_vertex>::resourceData, cmdList);
 		}
 
 	protected:

@@ -1,4 +1,4 @@
-#include "SSVoxelPS_lighttrace.hlsl"
+#include "VoxelPS_lighttrace.hlsl"
 
 float4 main(VSOutput input) : SV_TARGET
 {
