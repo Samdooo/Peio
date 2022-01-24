@@ -89,6 +89,9 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Graphics\Graphics.vcxproj">
+      <Project>{6b7904eb-2ed1-4f3f-a434-3630e7531a87}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Networking\Networking.vcxproj">
       <Project>{d769c4ac-7ac5-452a-aca8-96a73281c949}</Project>
     </ProjectReference>

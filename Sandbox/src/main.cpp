@@ -4,6 +4,7 @@
 #include <Peio/EventHandler.h>
 #include <Peio/Windows/Window.h>
 #include <Peio/Windows/KeyboardListener.h>
+#include <Peio/Graphics/WinGraphics.h>
 
 #include <unordered_map>
 
@@ -24,6 +25,8 @@ int main() {
 
 	try {
 
+		Peio::Gfx::Init();
+
 		Peio::Win::Window window;
 		window.CreateClass("Peio Sandbox", 0);
 		window.RegisterClass();
@@ -37,8 +40,17 @@ int main() {
 		Handler handler;
 		Peio::Win::Input::AddEventHandler<Peio::Win::KeydownEvent, Peio::Win::KeyupEvent>(&handler);
 
+		Peio::Gfx::WinGraphics graphics;
+		graphics.Init(window.GetHWND(), { 1280, 720 }, 3, false);
+
 		while (true) {
 			window.HandleMessages();
+
+			graphics.Clear({ 0.0f, 1.0f, 1.0f, 1.0f });
+
+
+
+			graphics.Render();
 		}
 
 	}
