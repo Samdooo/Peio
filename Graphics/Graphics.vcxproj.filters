@@ -5,26 +5,26 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Source Files\Graphics">
-      <UniqueIdentifier>{e2642be3-bc10-4d77-bca1-e5feaf861f36}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Utils">
-      <UniqueIdentifier>{f1acecb9-a652-4ffb-a9f0-3df76d08ce36}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Utils\Commands">
-      <UniqueIdentifier>{a9225e5e-eda7-4efc-bcdb-c6e6c74a1607}</UniqueIdentifier>
+      <UniqueIdentifier>{f3a3fd6b-e380-40ea-b218-93d64aea6b2c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Utils\Heaps">
-      <UniqueIdentifier>{c72596fc-6d6a-45e9-946d-068cddeceea5}</UniqueIdentifier>
+      <UniqueIdentifier>{eac71650-e3a3-48d3-a3a9-2953ab51e851}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Utils\Heaps\Views">
-      <UniqueIdentifier>{7a6a316c-e250-4cda-a8ee-787283e9e8ca}</UniqueIdentifier>
+    <Filter Include="Source Files\Utils\Commands">
+      <UniqueIdentifier>{2eec1986-6317-41e7-a90f-ec322fa31043}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics">
+      <UniqueIdentifier>{48321d63-524b-4f93-8ad1-f0503ac7382e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Utils\Pipeline State">
-      <UniqueIdentifier>{572d40f0-e699-4ab0-800e-7d5374201be4}</UniqueIdentifier>
+      <UniqueIdentifier>{93ea5bf8-3d60-4411-b6c4-e9476fd1c821}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Utils\Pipeline State\Root Signature">
-      <UniqueIdentifier>{982a50ee-f068-459b-8a26-b59bdaac8b68}</UniqueIdentifier>
+      <UniqueIdentifier>{e76ba789-cff6-4fda-9a4d-070ab5720ac7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils\Heaps\Views">
+      <UniqueIdentifier>{248a9ea2-3bea-4722-8d4c-3af81f0f3824}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -34,13 +34,13 @@
     <ClInclude Include="..\src\Peio\Graphics\d3dx12.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Peio\Graphics\Exception.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Peio\Graphics\Global.h">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Peio\Graphics\Heap.h">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\Resource.h">
       <Filter>Source Files\Utils\Heaps</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Peio\Graphics\DescriptorHeap.h">
@@ -49,11 +49,62 @@
     <ClInclude Include="..\src\Peio\Graphics\RenderTargetHeap.h">
       <Filter>Source Files\Utils\Heaps</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Peio\Graphics\Resource.h">
-      <Filter>Source Files\Utils\Heaps</Filter>
+    <ClInclude Include="..\src\Peio\Graphics\CommandList.h">
+      <Filter>Source Files\Utils\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\CommandAllocator.h">
+      <Filter>Source Files\Utils\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\CommandQueue.h">
+      <Filter>Source Files\Utils\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\Graphics.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\WinGraphics.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\SwapChain.h">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\RootSignature.h">
+      <Filter>Source Files\Utils\Pipeline State\Root Signature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\RootParameter.h">
+      <Filter>Source Files\Utils\Pipeline State\Root Signature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\DescriptorTable.h">
+      <Filter>Source Files\Utils\Pipeline State\Root Signature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\D3DBPP.h">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\InputLayout.h">
+      <Filter>Source Files\Utils\Pipeline State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\PipelineState.h">
+      <Filter>Source Files\Utils\Pipeline State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\Shader.h">
+      <Filter>Source Files\Utils\Pipeline State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\PipelineStateHeader.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\ConstantBufferView.h">
+      <Filter>Source Files\Utils\Heaps\Views</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Peio\Graphics\ShaderResourceView.h">
       <Filter>Source Files\Utils\Heaps\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\UnorderedAccessView.h">
+      <Filter>Source Files\Utils\Heaps\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\SubresourceArray.h">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\Exception.h">
+      <Filter>Source Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -63,16 +114,58 @@
     <ClCompile Include="..\src\Peio\Graphics\Heap.cpp">
       <Filter>Source Files\Utils\Heaps</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\Resource.cpp">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\Peio\Graphics\DescriptorHeap.cpp">
       <Filter>Source Files\Utils\Heaps</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Peio\Graphics\RenderTargetHeap.cpp">
       <Filter>Source Files\Utils\Heaps</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Peio\Graphics\Resource.cpp">
-      <Filter>Source Files\Utils\Heaps</Filter>
+    <ClCompile Include="..\src\Peio\Graphics\CommandList.cpp">
+      <Filter>Source Files\Utils\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\CommandAllocator.cpp">
+      <Filter>Source Files\Utils\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\CommandQueue.cpp">
+      <Filter>Source Files\Utils\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\Graphics.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\WinGraphics.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\SwapChain.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\RootSignature.cpp">
+      <Filter>Source Files\Utils\Pipeline State\Root Signature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\RootParameter.cpp">
+      <Filter>Source Files\Utils\Pipeline State\Root Signature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\DescriptorTable.cpp">
+      <Filter>Source Files\Utils\Pipeline State\Root Signature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\InputLayout.cpp">
+      <Filter>Source Files\Utils\Pipeline State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\PipelineState.cpp">
+      <Filter>Source Files\Utils\Pipeline State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\Shader.cpp">
+      <Filter>Source Files\Utils\Pipeline State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\ConstantBufferView.cpp">
+      <Filter>Source Files\Utils\Heaps\Views</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Peio\Graphics\ShaderResourceView.cpp">
+      <Filter>Source Files\Utils\Heaps\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\UnorderedAccessView.cpp">
       <Filter>Source Files\Utils\Heaps\Views</Filter>
     </ClCompile>
   </ItemGroup>

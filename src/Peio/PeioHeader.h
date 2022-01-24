@@ -6,6 +6,9 @@
 #pragma warning(disable : 4250) /* Disables warnings for when functions are being inherited via dominance. */
 #pragma warning(disable : 4251) /* Disables warnings for when using STL stuff in dll's, requires the same debugger level throughout projects. */
 
+#define PEIO_SAFE_DELETE(x) if (x) delete (x)
+#define PEIO_SAFE_DELETEALL(x) if (x) delete[] (x)
+
 namespace Peio {
 
 	using uchar = unsigned char;
