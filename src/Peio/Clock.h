@@ -15,10 +15,10 @@ namespace Peio {
 
 			Duration(const _duration& d) : _duration(d) {}
 
-			_NODISCARD T Seconds() const { return std::chrono::duration_cast<std::chrono::duration<T_rep>>(*this).count(); }
+			_NODISCARD T_rep Seconds() const { return std::chrono::duration_cast<std::chrono::duration<T_rep>>(*this).count(); }
 		};
 
-		_NODISCARD Duration Elapsed() const noexcept {
+		_NODISCARD Duration Elapsed() noexcept {
 			return Duration(sysclock::now() - start);
 		}
 

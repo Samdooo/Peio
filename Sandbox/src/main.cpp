@@ -7,20 +7,26 @@
 #include <Peio/Graphics/WinGraphics.h>
 #include <Peio/Voxels/VoxelRenderer.h>
 #include <Peio/Voxels/VoxelScene.h>
+#include <Peio/Windows/RawMouseListener.h>
+#include <Peio/Clock.h>
 
 #include <unordered_map>
 
 #define PI 3.14159265358979f
 
-struct Handler : public Peio::EventHandler<Peio::Win::KeydownEvent, Peio::Win::KeyupEvent> {
+bool Keydown(int key) {
+	return GetKeyState(key) & 0x8000;
+}
 
-	void Handle(Peio::Win::KeydownEvent& event) {
-		if (!event.prev)
-			std::cout << event.key << " pressed" << std::endl;
-	}
+struct Handler : public Peio::EventHandler<Peio::Win::RawMouseMoveEvent> {
 
-	void Handle(Peio::Win::KeyupEvent& event) {
-		std::cout << event.key << " released" << std::endl;
+	Peio::Float2* rotation = nullptr;
+
+	void Handle(Peio::Win::RawMouseMoveEvent& event) override {
+		if (!Keydown(VK_CONTROL)) {
+			*rotation -= (Peio::Float2)event.movement / 1000.0f;
+			SetCursorPos(200, 200);
+		}
 	}
 
 };
@@ -45,12 +51,14 @@ int main() {
 		window.CreateWindow("Peio Sandbox", WS_OVERLAPPEDWINDOW, 0, { CW_USEDEFAULT, CW_USEDEFAULT }, { 1280, 720 });
 
 		window.Show();
+		ShowCursor(FALSE);
 
-		Peio::Win::KeyboardListener listener;
+		Peio::Win::RawMouseListener listener;
+		listener.Register(window.GetHWND());
 		Peio::Win::Input::AddListener(&listener);
 
 		Handler handler;
-		Peio::Win::Input::AddEventHandler<Peio::Win::KeydownEvent, Peio::Win::KeyupEvent>(&handler);
+		Peio::Win::Input::AddEventHandler(&handler);
 
 		Peio::Gfx::WinGraphics graphics;
 		graphics.Init(window.GetHWND(), { 1280, 720 }, 3, false);
@@ -73,14 +81,35 @@ int main() {
 		Peio::Vxl::VoxelRenderer renderer;
 		renderer.Init(graphics.GetCommandList(), &srv, {}, {}, PI / 2, 720.0f / 1280.0f);
 
+		Peio::Float2 cameraRotation = {};
+		handler.rotation = &cameraRotation;
+
+		Peio::Clock<double> clock;
+		double frameLength = 1.0f / 30.0;
+
+		Peio::Clock<double> fpsClock;
+		int frameCount = 0;
+
 		while (true) {
 			window.HandleMessages();
+
+			renderer.SetCameraRotation(cameraRotation);
+			renderer.UpdateCamera(graphics.GetCommandList());
 
 			graphics.Clear({ 1.0f, 0.0f, 0.0f, 1.0f });
 
 			renderer.Draw(graphics.GetCommandList(), viewPort, scissorRect);
 
 			graphics.Render();
+
+			while (clock.Elapsed().Seconds() < frameLength);
+			clock.Restart();
+
+			frameCount++;
+			if (fpsClock.Elapsed().Seconds() >= 1.0) {
+				std::cout << "FPS: " << ((double)frameCount / fpsClock.Restart().Seconds()) << std::endl;
+				frameCount = 0;
+			}
 		}
 
 	}
