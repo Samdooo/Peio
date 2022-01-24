@@ -66,7 +66,7 @@ namespace Peio::Vxl {
 		vertexBuffer.Upload(cmdList);
 	}
 
-	void VoxelRenderer::Draw(ID3D12GraphicsCommandList* cmdList, UINT frameIndex, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect)
+	void VoxelRenderer::Draw(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect)
 	{
 		cmdList->SetGraphicsRootSignature(rootSignature.Get());
 		cmdList->SetPipelineState(pipelineState.Get());
