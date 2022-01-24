@@ -32,4 +32,26 @@
       <Filter>Source Files\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\Peio\Voxels\VoxelRenderer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Voxels\VoxelsHeader.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Voxels\VertexBuffer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Voxels\SubresourceBuffer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Voxels\VoxelScene.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\Peio\Voxels\VoxelRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
 </Project>
