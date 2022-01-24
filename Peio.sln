@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Graphics", "Graphics\Graphi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Windows", "Windows\Windows.vcxproj", "{19A3160D-A6D1-4654-BB9D-224526FA4D5D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Voxels", "Voxels\Voxels.vcxproj", "{CEE25723-2E4B-468D-943A-A96DA258A44B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -45,6 +47,10 @@ Global
 		{19A3160D-A6D1-4654-BB9D-224526FA4D5D}.Debug|x64.Build.0 = Debug|x64
 		{19A3160D-A6D1-4654-BB9D-224526FA4D5D}.Release|x64.ActiveCfg = Release|x64
 		{19A3160D-A6D1-4654-BB9D-224526FA4D5D}.Release|x64.Build.0 = Release|x64
+		{CEE25723-2E4B-468D-943A-A96DA258A44B}.Debug|x64.ActiveCfg = Debug|x64
+		{CEE25723-2E4B-468D-943A-A96DA258A44B}.Debug|x64.Build.0 = Debug|x64
+		{CEE25723-2E4B-468D-943A-A96DA258A44B}.Release|x64.ActiveCfg = Release|x64
+		{CEE25723-2E4B-468D-943A-A96DA258A44B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
