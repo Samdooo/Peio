@@ -6,7 +6,7 @@
 #include "VoxelPS_lightspread.hlsl"
 
 float3 LightTrace(float3 origin, float3 startRay, float4 pixelPosition){
-    const uint maxLayers = 30;
+    const uint maxLayers = 15;
     const uint maxNumRays = scene[0].maxNumRays;
     const uint maxHitRays = scene[0].maxHitRays;
     
