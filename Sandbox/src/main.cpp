@@ -55,7 +55,7 @@ int main() {
 
 		Peio::Gfx::Init();
 
-		Peio::Int2 windowSize = { 640, 360 };
+		Peio::Int2 windowSize = { 1280, 720 };
 
 		Peio::Win::Window window;
 		window.CreateClass("Peio Sandbox", 0);
@@ -80,7 +80,7 @@ int main() {
 
 		Peio::Vxl::SubresourceBuffer<Peio::Vxl::VoxelScene> sceneBuffer;
 		sceneBuffer.Allocate(1);
-		sceneBuffer.GetSubresourceBuffer()[0] = { 100, 0, 0.5f, 64, 32, 0.01f, 1.0f };
+		sceneBuffer.GetSubresourceBuffer()[0] = { 3, 0, 0.5f, 64, 16, 0.01f, 1.0f };
 
 		Peio::Vxl::SubresourceBuffer<Material> materialBuffer;
 		materialBuffer.Allocate(1);
@@ -89,16 +89,19 @@ int main() {
 		Peio::Vxl::SubresourceBuffer<Peio::Float3> voxelPositionBuffer;
 		voxelPositionBuffer.Allocate(100);
 		
-		{
-			float rad = 5.0f;
-			for (int i = 0; i < 100; i++) {
-				float radius = (float)i / 100.0f * rad;
-				float y = rad - (float)i / 100.0f * rad;
-				float x = cos(GOLDEN_ANGLE * i) * radius;
-				float z = sin(GOLDEN_ANGLE * i) * radius;
-				voxelPositionBuffer.GetSubresourceBuffer()[i] = { x, y, z };
-			}
-		}
+		//{
+		//	float rad = 5.0f;
+		//	for (int i = 0; i < 100; i++) {
+		//		float radius = (float)i / 100.0f * rad;
+		//		float y = rad - (float)i / 100.0f * rad;
+		//		float x = cos(GOLDEN_ANGLE * i) * radius;
+		//		float z = sin(GOLDEN_ANGLE * i) * radius;
+		//		voxelPositionBuffer.GetSubresourceBuffer()[i] = { x, y, z };
+		//	}
+		//}
+		voxelPositionBuffer.GetSubresourceBuffer()[0] = { 0.0f, 0.0f, 1.0f };
+		voxelPositionBuffer.GetSubresourceBuffer()[1] = { 1.5f, 0.0f, 1.0f };
+		voxelPositionBuffer.GetSubresourceBuffer()[2] = { 0.0f, 2.0f, 1.0f };
 
 		Peio::Vxl::SubresourceBuffer<UINT> voxelMaterialBuffer;
 		voxelMaterialBuffer.Allocate(100);

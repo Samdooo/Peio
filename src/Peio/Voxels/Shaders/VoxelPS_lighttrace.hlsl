@@ -5,7 +5,7 @@
 #include "VoxelPS_sky.hlsl"
 #include "VoxelPS_lightspread.hlsl"
 
-float3 LightTrace(float3 origin, float3 startRay){
+float3 LightTrace(float3 origin, float3 startRay, float4 pixelPosition){
     const uint maxLayers = 30;
     const uint maxNumRays = scene[0].maxNumRays;
     const uint maxHitRays = scene[0].maxHitRays;
@@ -27,7 +27,7 @@ float3 LightTrace(float3 origin, float3 startRay){
     ray[0].material.lightEmission = 0;
     ray[0].material.lightSpread = 0;
     
-    spread[0].Reset(startRay, 0.0f, -1, maxNumRays, maxHitRays);
+    spread[0].Reset(startRay, 0.0f, -1, maxNumRays, maxHitRays, pixelPosition);
     spread[0].ray = startRay;
     
     //if (!spread[0].Increment())
@@ -50,7 +50,7 @@ float3 LightTrace(float3 origin, float3 startRay){
             if (ray[c].side != -1) {
                 light[c - 1] += ray[c].material.lightEmission;
                 if (c < maxLayers - 1 && spread[c - 1].childrenRays > 0){
-                    spread[c].Reset(ray[c].normal, ray[c].material.lightSpread, ray[c].side, spread[c - 1].childrenRays, maxHitRays);
+                    spread[c].Reset(ray[c].normal, ray[c].material.lightSpread, ray[c].side, spread[c - 1].childrenRays, maxHitRays, pixelPosition);
                     light[c] = 0;
                     c++;
                     continue;

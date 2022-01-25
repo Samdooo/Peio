@@ -12,6 +12,7 @@ struct LightSpread {
     float3 normal;
     float3 ray;
     int side;
+    float angleOffset;
     //float3 tmp;
     //float radius;
     
@@ -31,8 +32,8 @@ struct LightSpread {
         if (normal[side] < 0.0f)
             tmp.y = -tmp.y;
         
-        tmp.x = cos(GOLDEN_ANGLE * rayIndex) * radius;
-        tmp.z = sin(GOLDEN_ANGLE * rayIndex) * radius;
+        tmp.x = cos(angleOffset + GOLDEN_ANGLE * rayIndex) * radius;
+        tmp.z = sin(angleOffset + GOLDEN_ANGLE * rayIndex) * radius;
         
         switch (side){
         case 0:
@@ -52,11 +53,12 @@ struct LightSpread {
         return false;
     }
     
-    void Reset(float3 normal, float spread, int side, uint maxRays, uint maxHitRays) {
+    void Reset(float3 normal, float spread, int side, uint maxRays, uint maxHitRays, float4 pixelPosition) {
         this.normal = normalize(normal);
         this.spread = spread;
         this.side = side;
         
+        angleOffset = GOLDEN_ANGLE * pixelPosition.x + GOLDEN_ANGLE * pixelPosition.y * 20.0f;
         numRays = min(maxRays, spread * (float)(maxHitRays - 1) + 1);
         childrenRays = (maxRays - numRays) / numRays;
         rayIndex = 0;

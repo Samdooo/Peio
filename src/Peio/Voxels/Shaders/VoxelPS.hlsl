@@ -2,5 +2,5 @@
 
 float4 main(VSOutput input) : SV_TARGET
 {
-    return float4(LightTrace(input.cameraPosition, input.sightRay), 1.0f);
+    return float4(LightTrace(input.cameraPosition, input.sightRay, input.pixelPosition), 1.0f);
 }
