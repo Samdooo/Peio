@@ -22,7 +22,7 @@ struct Scene {
     uint maxNumRays;
     uint maxHitRays;
     float minLightDeviation;
-    uint useScene;
+    float maxLightDeviation;
 };
 StructuredBuffer<Scene> scene : register(t0);
 
@@ -34,10 +34,11 @@ struct Material {
 StructuredBuffer<Material> materials : register(t1);
 
 StructuredBuffer<float3> voxelPositions : register(t2);
-StructuredBuffer<half> voxelMaterials : register(t3);
+StructuredBuffer<uint> voxelMaterials : register(t3);
 
-Material GetVoxelMaterial(uint voxelIndex){
-    return materials[asuint(voxelMaterials[voxelIndex])];
+Material GetMaterial(uint voxelIndex){
+    //return materials[asuint(voxelMaterials[voxelIndex])];
+    return materials[voxelMaterials[voxelIndex]];
 }
 
 #endif

@@ -13,93 +13,58 @@ struct VoxelRay {
     Material material;
 };
 
-VoxelRay VoxelTrace(const float3 origin, const float3 inRay, uint skip){
-    uint numVoxels = 0;
-    float voxelRadius = 0.0f;
-    if (scene[0].useScene == 1){
-        numVoxels = scene[0].numVoxels;
-        voxelRadius = scene[0].voxelRadius;
+uint MaxIndex(float3 v) {
+    if (v.x > v.y) {
+        if (v.z > v.x)
+            return 2;
+        else
+            return 0;
     }
+    else {
+        if (v.z > v.y)
+            return 2;
+        else
+            return 1;
+    }
+}
+
+VoxelRay VoxelTrace(const float3 origin, const float3 ray, uint skip){
+    const uint numVoxels = scene[0].numVoxels;
+    //const float voxelRadius = scene[0].voxelRadius;
     
-    const float3 ray = normalize(inRay);
-    float3 invRay = 1.0f / ray;
+    const float3 invRay = 1.0f / ray;
+    const float3 invRad = abs(invRay * scene[0].voxelRadius);
     
     VoxelRay result;
-    //result.origin = origin;
-    //result.ray = ray;
-    result.collisionVoxel = 0;
     result.side = -1;
-    result.collision = 0;
-    result.normal = 0;
-    
-    result.material.colorEmission = float4(0.0f, 0.0f, 0.0f, 1.0f);
-    
+    result.normal = ray;
+
     float3 voxelOffset;
-    float scale;
-    float3 traced;
-    float3 tracedDiff;
-    bool hits;
-    float minScale = FLOAT_MAX;
+    float3 lowCorner;
+    uint maxIndex;
+    float high;
+    float minScale = 1.#INF;
     
-    uint checked = 0;
-    [loop] for (uint voxel = 0; voxel < numVoxels; voxel++){
+    [loop] for (uint voxel = 0; voxel < numVoxels; voxel++) {
         if (voxel == skip)
             continue;
-        voxelOffset = voxelPositions[voxel] - origin;//float3(1.0f, 2.0f, 3.0f);
+        voxelOffset = (voxelPositions[voxel] - origin) * invRay;
         
-        if (length(voxelOffset) - SQRT_3_4 >= minScale)
+        lowCorner = voxelOffset - invRad;
+        maxIndex = MaxIndex(lowCorner);
+        if (lowCorner[maxIndex] <= 0.0f || lowCorner[maxIndex] >= minScale)
             continue;
         
-        checked++;
-        //if (length(voxelOffset) == 1000.0f){
-        //    result.material.colorEmission = float4(0.0f, 1.0f, 0.0f, 1.0f);
-        //}
-        //continue;
+        if (min(min(voxelOffset.x + invRad.x, voxelOffset.y + invRad.y), voxelOffset.z + invRad.z) < lowCorner[maxIndex])
+            continue;
         
-        //if (voxelOffset.x == 1000){
-        //    result.material.colorEmission = float4(0.0f, 1.0f, 0.0f, 1.0f);
-        //}
-        //continue;
-        
-        [unroll(3)] for (uint side = 0; side < 3; side++){
-            scale = (voxelOffset[side] + ((voxelOffset[side] < 0.0f) ? voxelRadius : -voxelRadius)) * invRay[side];
-            
-            if (scale <= 0.0f || scale >= minScale)
-                continue;
-                
-            traced = ray * scale;
-            tracedDiff = abs(traced - voxelOffset);
-            
-            //if (side == 0)
-            //    if (tracedDiff.y > scene[0].voxelRadius || tracedDiff.z > scene[0].voxelRadius)
-            //        continue;
-            //else if (side == 1)
-            //    if (tracedDiff.x > scene[0].voxelRadius || tracedDiff.z > scene[0].voxelRadius)
-            //        continue;
-            //else if (side == 2)
-            //    if (tracedDiff.x > scene[0].voxelRadius || tracedDiff.y > scene[0].voxelRadius)
-            //        continue;
-            hits = true;
-            [unroll(3)] for (uint axis = 0; axis < 3; axis++) {
-                //if (axis != side && abs(traced[axis] - voxelOffset[axis]) > scene[0].voxelRadius) {
-                //    hits = false;
-                //    break;
-                //}
-                if (axis != side && tracedDiff[axis] > voxelRadius) {
-                    hits = false;
-                    break;
-                }
-            }
-            if (hits) {
-                minScale = scale;
-                result.collisionVoxel = voxel;
-                //result.material.colorEmission = float4(0.0f, 1.0f, 0.0f, 1.0f);
-                result.material = GetVoxelMaterial(voxel);
-                result.collision = origin + traced;
-                result.side = side;
-                result.normal = ray;
-            }
-        }
+        minScale = lowCorner[maxIndex];
+        result.collisionVoxel = voxel;
+        result.side = maxIndex;
+    }
+    if (result.side != -1) {
+        result.collision = origin + ray * minScale;
+        result.material = GetMaterial(result.collisionVoxel);
     }
     switch (result.side) {
     case 0:
@@ -112,7 +77,6 @@ VoxelRay VoxelTrace(const float3 origin, const float3 inRay, uint skip){
         result.normal.z = -result.normal.z;
         break;
     }
-    result.material.colorEmission.g = (float)checked / 255.0f;
     //result.normal[result.side] = -result.normal[result.side]; // doesn't work for some reason
     return result;
 }

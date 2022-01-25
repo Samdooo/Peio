@@ -43,18 +43,14 @@ float3 LightTrace(float3 origin, float3 startRay){
     [loop] while (c > 0) {
         if (up){
             numUps++;
-            //ray[c] = VoxelTrace(ray[c - 1].collision, spread[c - 1].ray, ray[c - 1].collisionVoxel);
             ray[c] = VoxelTrace(ray[c - 1].collision, spread[c - 1].ray, ray[c - 1].collisionVoxel);
             
             numRays++;
             
             if (ray[c].side != -1) {
-                //light[c - 1] = 0.0f;
                 light[c - 1] += ray[c].material.lightEmission;
                 if (c < maxLayers - 1 && spread[c - 1].childrenRays > 0){
                     spread[c].Reset(ray[c].normal, ray[c].material.lightSpread, ray[c].side, spread[c - 1].childrenRays, maxHitRays);
-                    //spread[c].Reset(ray[c].normal, ray[c].material.lightSpread, ray[c].side, 1, maxHitRays);
-                    //spread[c].Reset(ray[c].normal, 0.0f, ray[c].side, 1, maxHitRays);
                     light[c] = 0;
                     c++;
                     continue;
@@ -63,7 +59,6 @@ float3 LightTrace(float3 origin, float3 startRay){
             if (ray[c].side == -1) {
                 light[c - 1] += SkyTrace(spread[c - 1].ray);
             }
-            //light[c - 1] += SkyTrace(ray[c].ray) * (ray[c].side == -1);
             if (spread[c - 1].Increment()){
                 up = false;
                 c--;

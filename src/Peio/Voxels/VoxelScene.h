@@ -12,7 +12,7 @@ namespace Peio::Vxl {
 		UINT maxNumRays;
 		UINT maxHitRays;
 		float minLightDeviation;
-		UINT useScene = 1;
+		float maxLightDeviation;
 		//UINT numCollisions;
 		//float lightRadius;
 
