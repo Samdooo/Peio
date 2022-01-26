@@ -55,6 +55,8 @@ int main() {
 
 		Peio::Gfx::Init();
 
+
+
 		Peio::Int2 windowSize = { 640, 360 };
 
 		Peio::Win::Window window;
@@ -78,40 +80,43 @@ int main() {
 		D3D12_VIEWPORT viewPort = { 0.0f, 0.0f, (float)windowSize.x(), (float)windowSize.y(), 0.0f, 1.0f};
 		RECT scissorRect = { 0, 0, windowSize.x(), windowSize.y() };
 
+		UINT numVoxels = 128;
+
 		Peio::Vxl::SubresourceBuffer<Peio::Vxl::VoxelScene> sceneBuffer;
 		sceneBuffer.Allocate(1);
-		sceneBuffer.GetSubresourceBuffer()[0] = { 50, 0, 0.5f, 16, 16, 0.01f, 0.8f };
+		sceneBuffer.GetSubresourceBuffer()[0] = { numVoxels, 0, 0.5f, 16, 16, 0.01f, 0.4f };
 
 		Peio::Vxl::SubresourceBuffer<Material> materialBuffer;
 		materialBuffer.Allocate(1);
 		materialBuffer.GetSubresourceBuffer()[0] = { { 0.0f, 0.5f, 0.7f, 1.0f }, { 0.0f, 0.0f, 0.0f }, 1.0f };
 
 		Peio::Vxl::SubresourceBuffer<Peio::Float3> voxelPositionBuffer;
-		voxelPositionBuffer.Allocate(100);
+		voxelPositionBuffer.Allocate(numVoxels);
 		
+
 		{
 			float rad = 5.0f;
-			for (int i = 0; i < 100; i++) {
-				float radius = (float)i / 100.0f * rad;
-				float y = rad - (float)i / 100.0f * rad;
+			for (UINT i = 0; i < numVoxels; i++) {
+				float radius = (float)i / (float)(numVoxels - 1) * rad;
+				float y = rad - (float)i / (float)(numVoxels - 1) * rad;
 				float x = cos(GOLDEN_ANGLE * i) * radius;
 				float z = sin(GOLDEN_ANGLE * i) * radius;
 				voxelPositionBuffer.GetSubresourceBuffer()[i] = { x, y, z };
 			}
 		}
-		//voxelPositionBuffer.GetSubresourceBuffer()[0] = { 0.0f, 0.0f, 1.0f };
-		//voxelPositionBuffer.GetSubresourceBuffer()[1] = { 1.5f, 0.0f, 1.0f };
-		//voxelPositionBuffer.GetSubresourceBuffer()[2] = { 0.0f, 2.0f, 1.0f };
+		voxelPositionBuffer.GetSubresourceBuffer()[0] = { 0.0f, 0.0f, 1.0f };
+		voxelPositionBuffer.GetSubresourceBuffer()[1] = { 1.5f, 0.0f, 1.0f };
+		voxelPositionBuffer.GetSubresourceBuffer()[2] = { 0.0f, 2.0f, 1.0f };
 
 		Peio::Vxl::SubresourceBuffer<UINT> voxelMaterialBuffer;
-		voxelMaterialBuffer.Allocate(100);
-		for (int i = 0; i < 100; i++)
+		voxelMaterialBuffer.Allocate(numVoxels);
+		for (UINT i = 0; i < numVoxels; i++)
 		voxelMaterialBuffer.GetSubresourceBuffer()[i] = { 0 };
 
 		Peio::Gfx::ShaderResourceView srv;
 		srv.InitBuffer(
-			{ sizeof(Peio::Vxl::VoxelScene), sizeof(Material), sizeof(Peio::Float3) * 100, sizeof(UINT) * 100 },
-			{ 1, 1, 100, 100 },
+			{ sizeof(Peio::Vxl::VoxelScene), sizeof(Material), sizeof(Peio::Float3) * numVoxels, sizeof(UINT) * numVoxels },
+			{ 1, 1, numVoxels, numVoxels },
 			{ D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 			  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, 
 			  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, 
@@ -137,7 +142,7 @@ int main() {
 		Peio::Clock<double> deltaClock;
 
 		float acceleration = 1.0f;
-		float retardation = 1.0f;
+		float retardation = 0.5f;
 
 		while (true) {
 			window.HandleMessages();
@@ -165,6 +170,27 @@ int main() {
 			if (Keydown(VK_SHIFT)) {
 				camera.velocity.y() -= (float)deltaTime * acceleration;
 			}
+
+			if (Keydown(VK_RIGHT)) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].x() += 0.1f;
+			}
+			if (Keydown(VK_LEFT)) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].x() -= 0.1f;
+			}
+			if (Keydown(VK_UP)) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].z() += 0.1f;
+			}
+			if (Keydown(VK_DOWN)) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].z() -= 0.1f;
+			}
+			if (Keydown('O')) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].y() += 0.1f;
+			}
+			if (Keydown('L')) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].y() -= 0.1f;
+			}
+			srv.GetResources()[2].Upload(voxelPositionBuffer.GetResourceData(), graphics.GetCommandList());
+
 			camera.position += camera.velocity;
 
 			camera.velocity -= camera.velocity * retardation;
@@ -190,6 +216,10 @@ int main() {
 			}
 		}
 
+	}
+	catch (Peio::Gfx::Exception exception) {
+		std::cout << "GfxException: " << exception.msg << " " << exception.file
+			<< " at line " << exception.line << " ret: " << exception.ret << "." << std::endl;
 	}
 	catch (Peio::Exception exception) {
 		std::cout << "Exception: " << exception.msg << " " << exception.file
