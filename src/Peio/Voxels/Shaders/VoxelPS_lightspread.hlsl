@@ -12,11 +12,8 @@ struct LightSpread {
     float3 normal;
     float3 ray;
     int side;
-    float angleOffset;
-    //float3 tmp;
-    //float radius;
     
-    bool Increment() {
+    bool Increment(float angleOffset) {
         if (rayIndex == numRays)
             return true;
         if (spread == 0.0f){
@@ -60,16 +57,14 @@ struct LightSpread {
         return false;
     }
     
-    void Reset(float3 normal, float spread, int side, uint maxRays, uint maxHitRays, float angleOffset) {
+    void Reset(float3 normal, float spread, int side, uint maxRays, uint maxHitRays) {
         this.normal = normalize(normal);
         this.spread = spread;
         this.side = side;
         
-        this.angleOffset = angleOffset;
         numRays = min(maxRays, spread * (float)(maxHitRays - 1) + 1);
         childrenRays = (maxRays - numRays) / numRays;
         rayIndex = 0;
-        Increment();
     }
 };
 

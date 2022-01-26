@@ -55,8 +55,6 @@ int main() {
 
 		Peio::Gfx::Init();
 
-
-
 		Peio::Int2 windowSize = { 640, 360 };
 
 		Peio::Win::Window window;
@@ -134,7 +132,7 @@ int main() {
 		handler.rotation = &camera.rotation;
 
 		Peio::Clock<double> clock;
-		double frameLength = 1.0f / 30.0;
+		double frameLength = 1.0f / 300.0;
 
 		Peio::Clock<double> fpsClock;
 		int frameCount = 0;
