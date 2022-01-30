@@ -22,6 +22,7 @@ namespace Peio::Gfx {
 		_NODISCARD ID3D12CommandQueue* GetCommandQueue() const noexcept;
 		_NODISCARD ID3D12GraphicsCommandList* GetCommandList() const noexcept;
 		_NODISCARD UINT GetFrameIndex() const noexcept;
+		_NODISCARD const RenderTargetHeap& GetRenderTargets() const noexcept;
 
 	};
 

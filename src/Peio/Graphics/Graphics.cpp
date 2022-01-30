@@ -15,3 +15,8 @@ UINT Peio::Gfx::Graphics::GetFrameIndex() const noexcept
 {
 	return renderTargets.GetFrameIndex();
 }
+
+const Peio::Gfx::RenderTargetHeap& Peio::Gfx::Graphics::GetRenderTargets() const noexcept
+{
+	return renderTargets;
+}
