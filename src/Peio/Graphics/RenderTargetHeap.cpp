@@ -4,7 +4,7 @@
 void Peio::Gfx::RenderTargetHeap::Init(UINT numBuffers)
 {
 	Release();
-
+	
 	heap.Init(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, numBuffers);
 	renderTargets.resize(numBuffers);
 	this->numBuffers = numBuffers;

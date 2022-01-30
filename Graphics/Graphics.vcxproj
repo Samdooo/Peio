@@ -107,6 +107,7 @@
     <ClInclude Include="..\src\Peio\Graphics\PipelineState.h" />
     <ClInclude Include="..\src\Peio\Graphics\PipelineStateHeader.h" />
     <ClInclude Include="..\src\Peio\Graphics\RenderTargetHeap.h" />
+    <ClInclude Include="..\src\Peio\Graphics\RenderTexture.h" />
     <ClInclude Include="..\src\Peio\Graphics\Resource.h" />
     <ClInclude Include="..\src\Peio\Graphics\SubresourceArray.h" />
     <ClInclude Include="..\src\Peio\Graphics\RootParameter.h" />
@@ -114,6 +115,7 @@
     <ClInclude Include="..\src\Peio\Graphics\Shader.h" />
     <ClInclude Include="..\src\Peio\Graphics\ShaderResourceView.h" />
     <ClInclude Include="..\src\Peio\Graphics\SwapChain.h" />
+    <ClInclude Include="..\src\Peio\Graphics\TextureGraphics.h" />
     <ClInclude Include="..\src\Peio\Graphics\UnorderedAccessView.h" />
     <ClInclude Include="..\src\Peio\Graphics\WinGraphics.h" />
   </ItemGroup>
@@ -130,12 +132,14 @@
     <ClCompile Include="..\src\Peio\Graphics\InputLayout.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\PipelineState.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\RenderTargetHeap.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\RenderTexture.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\Resource.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\RootParameter.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\RootSignature.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\Shader.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\ShaderResourceView.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\SwapChain.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\TextureGraphics.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\UnorderedAccessView.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\WinGraphics.cpp" />
   </ItemGroup>

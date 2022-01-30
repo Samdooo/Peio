@@ -26,6 +26,9 @@
     <Filter Include="Source Files\Utils\Heaps\Views">
       <UniqueIdentifier>{248a9ea2-3bea-4722-8d4c-3af81f0f3824}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utils\Heaps\Texturing">
+      <UniqueIdentifier>{e4a40693-b2ed-4682-badf-687c4f5e5a47}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\Graphics\GraphicsHeader.h">
@@ -106,6 +109,12 @@
     <ClInclude Include="..\src\Peio\Graphics\Exception.h">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\TextureGraphics.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\RenderTexture.h">
+      <Filter>Source Files\Utils\Heaps\Texturing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Graphics\Global.cpp">
@@ -167,6 +176,12 @@
     </ClCompile>
     <ClCompile Include="..\src\Peio\Graphics\UnorderedAccessView.cpp">
       <Filter>Source Files\Utils\Heaps\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\TextureGraphics.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\RenderTexture.cpp">
+      <Filter>Source Files\Utils\Heaps\Texturing</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
