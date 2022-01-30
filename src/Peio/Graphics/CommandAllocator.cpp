@@ -31,7 +31,7 @@ void Peio::Gfx::CommandAllocator::Signal(ID3D12CommandQueue* cmdQueue)
 	}
 }
 
-void Peio::Gfx::CommandAllocator::Wait()
+void Peio::Gfx::CommandAllocator::Wait() const
 {
 	if (fence->GetCompletedValue() < fenceTarget) {
 		HRESULT ret = fence->SetEventOnCompletion(fenceTarget, fenceEvent);
@@ -42,7 +42,7 @@ void Peio::Gfx::CommandAllocator::Wait()
 	}
 }
 
-void Peio::Gfx::CommandAllocator::Reset()
+void Peio::Gfx::CommandAllocator::Reset() const
 {
 	HRESULT ret = cmdAllocator->Reset();
 	if (ret != 0) {

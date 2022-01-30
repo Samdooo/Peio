@@ -32,12 +32,12 @@ void Peio::Gfx::RenderTargetHeap::SetFrameIndex(UINT frameIndex)
 	rtvHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(heap.GetCPUHandle(), frameIndex, heap.GetHandleIncrementSize());
 }
 
-void Peio::Gfx::RenderTargetHeap::SetRenderTarget(ID3D12GraphicsCommandList* cmdList)
+void Peio::Gfx::RenderTargetHeap::SetRenderTarget(ID3D12GraphicsCommandList* cmdList) const
 {
 	cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
 }
 
-void Peio::Gfx::RenderTargetHeap::ClearRenderTarget(ID3D12GraphicsCommandList* cmdList, const Float4& color)
+void Peio::Gfx::RenderTargetHeap::ClearRenderTarget(ID3D12GraphicsCommandList* cmdList, const Float4& color) const
 {
 	cmdList->ClearRenderTargetView(rtvHandle, &color[0], 0, nullptr);
 }

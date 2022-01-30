@@ -21,8 +21,8 @@ namespace Peio::Gfx {
 		void CreateRenderTargets();
 		void SetFrameIndex(UINT frameIndex);
 
-		void SetRenderTarget(ID3D12GraphicsCommandList* cmdList);
-		void ClearRenderTarget(ID3D12GraphicsCommandList* cmdList, const Float4& color);
+		void SetRenderTarget(ID3D12GraphicsCommandList* cmdList) const;
+		void ClearRenderTarget(ID3D12GraphicsCommandList* cmdList, const Float4& color) const;
 
 		_NODISCARD Heap* GetRenderTargets() noexcept;
 		_NODISCARD Heap& GetCurrentRenderTarget() noexcept;

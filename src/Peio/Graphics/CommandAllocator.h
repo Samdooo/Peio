@@ -19,8 +19,8 @@ namespace Peio::Gfx {
 		void Init();
 
 		void Signal(ID3D12CommandQueue* cmdQueue);
-		void Wait();
-		void Reset();
+		void Wait() const;
+		void Reset() const;
 
 		void Release();
 
