@@ -31,6 +31,12 @@
     <FxCompile Include="..\src\Peio\Voxels\Shaders\VoxelVS.hlsl">
       <Filter>Source Files\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="..\src\Peio\Voxels\DenoiseVS.hlsl">
+      <Filter>Source Files\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\src\Peio\Voxels\DenoisePS.hlsl">
+      <Filter>Source Files\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\Voxels\VoxelRenderer.h">
@@ -48,9 +54,15 @@
     <ClInclude Include="..\src\Peio\Voxels\VoxelScene.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Voxels\DenoiseRenderer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Voxels\VoxelRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Voxels\DenoiseRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

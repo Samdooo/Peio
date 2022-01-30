@@ -99,6 +99,14 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <FxCompile Include="..\src\Peio\Voxels\DenoisePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="..\src\Peio\Voxels\DenoiseVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="..\src\Peio\Voxels\Shaders\VoxelPS.hlsl">
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
@@ -133,6 +141,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Peio\Voxels\DenoiseRenderer.h" />
     <ClInclude Include="..\src\Peio\Voxels\SubresourceBuffer.h" />
     <ClInclude Include="..\src\Peio\Voxels\VertexBuffer.h" />
     <ClInclude Include="..\src\Peio\Voxels\VoxelRenderer.h" />
@@ -140,6 +149,7 @@
     <ClInclude Include="..\src\Peio\Voxels\VoxelsHeader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Peio\Voxels\DenoiseRenderer.cpp" />
     <ClCompile Include="..\src\Peio\Voxels\VoxelRenderer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
