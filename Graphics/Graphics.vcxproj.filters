@@ -115,6 +115,9 @@
     <ClInclude Include="..\src\Peio\Graphics\RenderTexture.h">
       <Filter>Source Files\Utils\Heaps\Texturing</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\MultiPassGraphics.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Graphics\Global.cpp">
@@ -182,6 +185,9 @@
     </ClCompile>
     <ClCompile Include="..\src\Peio\Graphics\RenderTexture.cpp">
       <Filter>Source Files\Utils\Heaps\Texturing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\MultiPassGraphics.cpp">
+      <Filter>Source Files\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

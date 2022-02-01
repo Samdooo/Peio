@@ -104,6 +104,7 @@
     <ClInclude Include="..\src\Peio\Graphics\Heap.h" />
     <ClInclude Include="..\src\Peio\Graphics\Global.h" />
     <ClInclude Include="..\src\Peio\Graphics\InputLayout.h" />
+    <ClInclude Include="..\src\Peio\Graphics\MultiPassGraphics.h" />
     <ClInclude Include="..\src\Peio\Graphics\PipelineState.h" />
     <ClInclude Include="..\src\Peio\Graphics\PipelineStateHeader.h" />
     <ClInclude Include="..\src\Peio\Graphics\RenderTargetHeap.h" />
@@ -130,6 +131,7 @@
     <ClCompile Include="..\src\Peio\Graphics\Heap.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\Global.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\InputLayout.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\MultiPassGraphics.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\PipelineState.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\RenderTargetHeap.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\RenderTexture.cpp" />

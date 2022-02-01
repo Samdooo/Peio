@@ -11,12 +11,17 @@ namespace Peio::Gfx {
 		this->rtvHandle = rtvHandle;
 
 		D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(format, (UINT64)size.x(), size.y(), 1, 1, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
-		heap.Init(D3D12_HEAP_TYPE_DEFAULT, resourceDesc, D3D12_RESOURCE_STATE_RENDER_TARGET, false, D3D12_HEAP_FLAG_ALLOW_ALL_BUFFERS_AND_TEXTURES);
+
+		heap.Init(D3D12_HEAP_TYPE_DEFAULT, resourceDesc, D3D12_RESOURCE_STATE_RENDER_TARGET);
+		heap.SetResourceState(D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 		device->CreateRenderTargetView(heap.GetBuffer(), nullptr, rtvHandle);
 		device->CreateShaderResourceView(heap.GetBuffer(), nullptr, srvHandle);
+	}
 
-		heap.SetResourceState(D3D12_RESOURCE_STATE_RENDER_TARGET);
+	void RenderTexture::SetRenderTarget(ID3D12GraphicsCommandList* cmdList) const
+	{
+		cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
 	}
 
 	DXGI_FORMAT RenderTexture::GetFormat() const noexcept
