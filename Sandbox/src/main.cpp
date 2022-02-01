@@ -11,6 +11,7 @@
 #include <Peio/Windows/RawMouseListener.h>
 #include <Peio/Clock.h>
 #include <Peio/Voxels/DenoiseRenderer.h>
+#include <Peio/Graphics/MultiPassGraphics.h>
 
 #include <unordered_map>
 
@@ -65,233 +66,164 @@ int main() {
 		window.CreateClass("Peio Sandbox", 0);
 		window.RegisterClass();
 		window.CreateWindow("Peio Sandbox", WS_POPUP, 0, { 100, 100 }, windowSize);
-
+		
 		window.Show();
-
-		Peio::Gfx::TextureGraphics texGraphics;
-		texGraphics.Init(windowSize);
-
-		texGraphics.Clear({ 0.1f, 0.5f, 0.4f, 1.0f });
-		texGraphics.Render();
-
 
 		Peio::Gfx::WinGraphics graphics;
 		graphics.Init(window.GetHWND(), windowSize, 3, false);
 
+		Peio::Win::RawMouseListener listener;
+		listener.Register(window.GetHWND());
+		Peio::Win::Input::AddListener(&listener);
+		
+		Handler handler;
+		Peio::Win::Input::AddEventHandler(&handler);
+		
+		UINT numVoxels = 128;
+		
+		Peio::Vxl::SubresourceBuffer<Peio::Vxl::VoxelScene> sceneBuffer;
+		sceneBuffer.Allocate(1);
+		sceneBuffer.GetSubresourceBuffer()[0] = { numVoxels, 0, 0.5f, 3, 3, 0.01f, 0.4f };
+		
+		Peio::Vxl::SubresourceBuffer<Material> materialBuffer;
+		materialBuffer.Allocate(1);
+		materialBuffer.GetSubresourceBuffer()[0] = { { 0.0f, 0.5f, 0.7f, 1.0f }, { 0.0f, 0.0f, 0.0f }, 1.0f };
+		
+		Peio::Vxl::SubresourceBuffer<Peio::Float3> voxelPositionBuffer;
+		voxelPositionBuffer.Allocate(numVoxels);
+		
+		{
+			float rad = 5.0f;
+			for (UINT i = 0; i < numVoxels; i++) {
+				float radius = (float)i / (float)(numVoxels - 1) * rad;
+				float y = rad - (float)i / (float)(numVoxels - 1) * rad;
+				float x = cos(GOLDEN_ANGLE * i) * radius;
+				float z = sin(GOLDEN_ANGLE * i) * radius;
+				voxelPositionBuffer.GetSubresourceBuffer()[i] = { x, y, z };
+			}
+		}
+		voxelPositionBuffer.GetSubresourceBuffer()[0] = { 0.0f, 0.0f, 1.0f };
+		voxelPositionBuffer.GetSubresourceBuffer()[1] = { 1.5f, 0.0f, 1.0f };
+		voxelPositionBuffer.GetSubresourceBuffer()[2] = { 0.0f, 2.0f, 1.0f };
+		
+		Peio::Vxl::SubresourceBuffer<UINT> voxelMaterialBuffer;
+		voxelMaterialBuffer.Allocate(numVoxels);
+		for (UINT i = 0; i < numVoxels; i++)
+		voxelMaterialBuffer.GetSubresourceBuffer()[i] = { 0 };
+		
+		Peio::Gfx::ShaderResourceView srv;
+		srv.InitBuffer(
+			{ sizeof(Peio::Vxl::VoxelScene), sizeof(Material), sizeof(Peio::Float3) * numVoxels, sizeof(UINT) * numVoxels },
+			{ 1, 1, numVoxels, numVoxels },
+			{ D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+			  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, 
+			  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, 
+			  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE }
+		);
+		srv.GetResources()[0].Upload(sceneBuffer.GetResourceData(), graphics.GetCommandList());
+		srv.GetResources()[1].Upload(materialBuffer.GetResourceData(), graphics.GetCommandList());
+		srv.GetResources()[2].Upload(voxelPositionBuffer.GetResourceData(), graphics.GetCommandList());
+		srv.GetResources()[3].Upload(voxelMaterialBuffer.GetResourceData(), graphics.GetCommandList());
+		
+		Peio::Vxl::VoxelRenderer renderer;
+		renderer.Init(graphics.GetCommandList(), &srv, {}, {}, PI / 2, (float)windowSize.y() / (float)windowSize.x());
+		
+		Camera camera = {};
+		handler.rotation = &camera.rotation;
+		
+		Peio::Clock<double> clock;
+		double frameLength = 1.0f / 300.0;
+		
+		Peio::Clock<double> fpsClock;
+		int frameCount = 0;
+		
+		Peio::Clock<double> deltaClock;
+		
+		float acceleration = 1.0f;
+		float retardation = 0.5f;
+		
+		Peio::Gfx::MultiPassGraphics mpGraphics;
+		mpGraphics.Init(DXGI_FORMAT_R32G32B32A32_FLOAT, windowSize, 3, 2);
+		
 		Peio::Vxl::DenoiseRenderer denoiser;
 		denoiser.Init(graphics.GetCommandList(), (Peio::Float2)windowSize);
 
 		while (true) {
 			window.HandleMessages();
-
-			graphics.Clear({});
+			double deltaTime = deltaClock.Restart().Seconds();
+		
+			if (Keydown('W')) {
+				camera.velocity.x() += (float)deltaTime * acceleration * -sin(camera.rotation.x());
+				camera.velocity.z() += (float)deltaTime * acceleration * cos(camera.rotation.x());
+			}
+			if (Keydown('S')) {
+				camera.velocity.x() -= (float)deltaTime * acceleration * -sin(camera.rotation.x());
+				camera.velocity.z() -= (float)deltaTime * acceleration * cos(camera.rotation.x());
+			}
+			if (Keydown('D')) {
+				camera.velocity.x() += (float)deltaTime * acceleration * cos(camera.rotation.x());
+				camera.velocity.z() += (float)deltaTime * acceleration * sin(camera.rotation.x());
+			}
+			if (Keydown('A')) {
+				camera.velocity.x() -= (float)deltaTime * acceleration * cos(camera.rotation.x());
+				camera.velocity.z() -= (float)deltaTime * acceleration * sin(camera.rotation.x());
+			}
+			if (Keydown(VK_SPACE)) {
+				camera.velocity.y() += (float)deltaTime * acceleration;
+			}
+			if (Keydown(VK_SHIFT)) {
+				camera.velocity.y() -= (float)deltaTime * acceleration;
+			}
+		
+			if (Keydown(VK_RIGHT)) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].x() += 0.1f;
+			}
+			if (Keydown(VK_LEFT)) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].x() -= 0.1f;
+			}
+			if (Keydown(VK_UP)) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].z() += 0.1f;
+			}
+			if (Keydown(VK_DOWN)) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].z() -= 0.1f;
+			}
+			if (Keydown('O')) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].y() += 0.1f;
+			}
+			if (Keydown('L')) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].y() -= 0.1f;
+			}
+			srv.GetResources()[2].Upload(voxelPositionBuffer.GetResourceData(), graphics.GetCommandList());
+		
+			camera.position += camera.velocity;
+		
+			camera.velocity -= camera.velocity * retardation;
+			//camera.velocity -= camera.velocity * (retardation / (float)deltaTime);
+		
+			renderer.SetCameraPosition(camera.position);
+			renderer.SetCameraRotation(camera.rotation);
+			renderer.UpdateCamera(graphics.GetCommandList());
+		
+			graphics.Clear({ 0.0f, 0.0f, 0.0f, 1.0f });
 			
-			denoiser.Render(graphics.GetCommandList(), viewPort, scissorRect, texGraphics.GetSrvHeap().GetHeap());
+			mpGraphics.BeginPass(graphics.GetCommandList(), graphics.GetFrameIndex(), { 1.0f, 0.0f, 0.0f, 1.0f });
+			renderer.Draw(graphics.GetCommandList(), viewPort, scissorRect);
+			mpGraphics.EndPass(graphics.GetCommandList());
 			
+			graphics.GetRenderTargets().SetRenderTarget(graphics.GetCommandList());
+			denoiser.Render(graphics.GetCommandList(), viewPort, scissorRect, mpGraphics.GetPreviousSrv().GetHeap(), mpGraphics.GetPreviousGpuHandle());
+		
 			graphics.Render();
-
+		
+			while (clock.Elapsed().Seconds() < frameLength);
+			clock.Restart();
+		
+			frameCount++;
+			if (fpsClock.Elapsed().Seconds() >= 1.0) {
+				std::cout << "FPS: " << ((double)frameCount / fpsClock.Restart().Seconds()) << std::endl;
+				frameCount = 0;
+			}
 		}
-
-		//Peio::Gfx::WinGraphics graphics;
-		//graphics.Init(window.GetHWND(), windowSize, 3, false);
-		//
-		//D3D12_RESOURCE_DESC textureDesc = {};
-		//textureDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-		//textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		//textureDesc.MipLevels = 1;
-		//textureDesc.Alignment = 0;
-		//textureDesc.DepthOrArraySize = 1;
-		//textureDesc.SampleDesc = { 1, 0 };
-		//textureDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-		//textureDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
-		//textureDesc.Width = windowSize.x();
-		//textureDesc.Height = windowSize.y();
-		//
-		//D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-		//srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-		//srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		//srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-		//srvDesc.Texture2D.MipLevels = 1;
-		//
-		//Peio::Gfx::DescriptorHeap srvHeap;
-		//srvHeap.Init(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
-		//
-		//D3D12_RENDER_TARGET_VIEW_DESC rtvDesc;
-		//rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-		//rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		//rtvDesc.Texture2D.MipSlice = 1;
-		//
-		//Peio::Gfx::TextureGraphics texGraphics;
-		//texGraphics.Init(windowSize);
-		////std::cout << "Init" << std::endl;
-		////texGraphics.Clear({ 0.2f, 0.6f, 0.3f, 1.0f });
-		////std::cout << "Clear" << std::endl;
-		////texGraphics.Render();
-		////std::cout << "Render" << std::endl;
-		//
-		//Peio::Vxl::DenoiseRenderer denoiser;
-		//denoiser.Init(graphics.GetCommandList());
-		//
-		//std::cout << "Init" << std::endl;
-		//
-		//while (true) {
-		//	window.HandleMessages();
-		//
-		//	graphics.Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
-		//
-		//	denoiser.Render(graphics.GetCommandList(), viewPort, scissorRect, texGraphics.GetDescriptorHeap().GetHeap());
-		//
-		//	graphics.Render();
-		//}
-
-		//Peio::Win::RawMouseListener listener;
-		//listener.Register(window.GetHWND());
-		//Peio::Win::Input::AddListener(&listener);
-		//
-		//Handler handler;
-		//Peio::Win::Input::AddEventHandler(&handler);
-		//
-		//Peio::Gfx::TextureGraphics graphics;
-		////graphics.Init(window.GetHWND(), windowSize, 3, false);
-		//graphics.Init(windowSize, 3);
-		//
-		//D3D12_VIEWPORT viewPort = { 0.0f, 0.0f, (float)windowSize.x(), (float)windowSize.y(), 0.0f, 1.0f};
-		//RECT scissorRect = { 0, 0, windowSize.x(), windowSize.y() };
-		//
-		//UINT numVoxels = 128;
-		//
-		//Peio::Vxl::SubresourceBuffer<Peio::Vxl::VoxelScene> sceneBuffer;
-		//sceneBuffer.Allocate(1);
-		//sceneBuffer.GetSubresourceBuffer()[0] = { numVoxels, 0, 0.5f, 4, 4, 0.01f, 0.4f };
-		//
-		//Peio::Vxl::SubresourceBuffer<Material> materialBuffer;
-		//materialBuffer.Allocate(1);
-		//materialBuffer.GetSubresourceBuffer()[0] = { { 0.0f, 0.5f, 0.7f, 1.0f }, { 0.0f, 0.0f, 0.0f }, 1.0f };
-		//
-		//Peio::Vxl::SubresourceBuffer<Peio::Float3> voxelPositionBuffer;
-		//voxelPositionBuffer.Allocate(numVoxels);
-		//
-		//{
-		//	float rad = 5.0f;
-		//	for (UINT i = 0; i < numVoxels; i++) {
-		//		float radius = (float)i / (float)(numVoxels - 1) * rad;
-		//		float y = rad - (float)i / (float)(numVoxels - 1) * rad;
-		//		float x = cos(GOLDEN_ANGLE * i) * radius;
-		//		float z = sin(GOLDEN_ANGLE * i) * radius;
-		//		voxelPositionBuffer.GetSubresourceBuffer()[i] = { x, y, z };
-		//	}
-		//}
-		//voxelPositionBuffer.GetSubresourceBuffer()[0] = { 0.0f, 0.0f, 1.0f };
-		//voxelPositionBuffer.GetSubresourceBuffer()[1] = { 1.5f, 0.0f, 1.0f };
-		//voxelPositionBuffer.GetSubresourceBuffer()[2] = { 0.0f, 2.0f, 1.0f };
-		//
-		//Peio::Vxl::SubresourceBuffer<UINT> voxelMaterialBuffer;
-		//voxelMaterialBuffer.Allocate(numVoxels);
-		//for (UINT i = 0; i < numVoxels; i++)
-		//voxelMaterialBuffer.GetSubresourceBuffer()[i] = { 0 };
-		//
-		//Peio::Gfx::ShaderResourceView srv;
-		//srv.InitBuffer(
-		//	{ sizeof(Peio::Vxl::VoxelScene), sizeof(Material), sizeof(Peio::Float3) * numVoxels, sizeof(UINT) * numVoxels },
-		//	{ 1, 1, numVoxels, numVoxels },
-		//	{ D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-		//	  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, 
-		//	  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, 
-		//	  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE }
-		//);
-		//srv.GetResources()[0].Upload(sceneBuffer.GetResourceData(), graphics.GetCommandList());
-		//srv.GetResources()[1].Upload(materialBuffer.GetResourceData(), graphics.GetCommandList());
-		//srv.GetResources()[2].Upload(voxelPositionBuffer.GetResourceData(), graphics.GetCommandList());
-		//srv.GetResources()[3].Upload(voxelMaterialBuffer.GetResourceData(), graphics.GetCommandList());
-		//
-		//Peio::Vxl::VoxelRenderer renderer;
-		//renderer.Init(graphics.GetCommandList(), &srv, {}, {}, PI / 2, (float)windowSize.y() / (float)windowSize.x());
-		//
-		//Camera camera = {};
-		//handler.rotation = &camera.rotation;
-		//
-		//Peio::Clock<double> clock;
-		//double frameLength = 1.0f / 300.0;
-		//
-		//Peio::Clock<double> fpsClock;
-		//int frameCount = 0;
-		//
-		//Peio::Clock<double> deltaClock;
-		//
-		//float acceleration = 1.0f;
-		//float retardation = 0.5f;
-		//
-		//while (true) {
-		//	window.HandleMessages();
-		//	double deltaTime = deltaClock.Restart().Seconds();
-		//
-		//	if (Keydown('W')) {
-		//		camera.velocity.x() += (float)deltaTime * acceleration * -sin(camera.rotation.x());
-		//		camera.velocity.z() += (float)deltaTime * acceleration * cos(camera.rotation.x());
-		//	}
-		//	if (Keydown('S')) {
-		//		camera.velocity.x() -= (float)deltaTime * acceleration * -sin(camera.rotation.x());
-		//		camera.velocity.z() -= (float)deltaTime * acceleration * cos(camera.rotation.x());
-		//	}
-		//	if (Keydown('D')) {
-		//		camera.velocity.x() += (float)deltaTime * acceleration * cos(camera.rotation.x());
-		//		camera.velocity.z() += (float)deltaTime * acceleration * sin(camera.rotation.x());
-		//	}
-		//	if (Keydown('A')) {
-		//		camera.velocity.x() -= (float)deltaTime * acceleration * cos(camera.rotation.x());
-		//		camera.velocity.z() -= (float)deltaTime * acceleration * sin(camera.rotation.x());
-		//	}
-		//	if (Keydown(VK_SPACE)) {
-		//		camera.velocity.y() += (float)deltaTime * acceleration;
-		//	}
-		//	if (Keydown(VK_SHIFT)) {
-		//		camera.velocity.y() -= (float)deltaTime * acceleration;
-		//	}
-		//
-		//	if (Keydown(VK_RIGHT)) {
-		//		voxelPositionBuffer.GetSubresourceBuffer()[0].x() += 0.1f;
-		//	}
-		//	if (Keydown(VK_LEFT)) {
-		//		voxelPositionBuffer.GetSubresourceBuffer()[0].x() -= 0.1f;
-		//	}
-		//	if (Keydown(VK_UP)) {
-		//		voxelPositionBuffer.GetSubresourceBuffer()[0].z() += 0.1f;
-		//	}
-		//	if (Keydown(VK_DOWN)) {
-		//		voxelPositionBuffer.GetSubresourceBuffer()[0].z() -= 0.1f;
-		//	}
-		//	if (Keydown('O')) {
-		//		voxelPositionBuffer.GetSubresourceBuffer()[0].y() += 0.1f;
-		//	}
-		//	if (Keydown('L')) {
-		//		voxelPositionBuffer.GetSubresourceBuffer()[0].y() -= 0.1f;
-		//	}
-		//	srv.GetResources()[2].Upload(voxelPositionBuffer.GetResourceData(), graphics.GetCommandList());
-		//
-		//	camera.position += camera.velocity;
-		//
-		//	camera.velocity -= camera.velocity * retardation;
-		//	//camera.velocity -= camera.velocity * (retardation / (float)deltaTime);
-		//
-		//	renderer.SetCameraPosition(camera.position);
-		//	renderer.SetCameraRotation(camera.rotation);
-		//	renderer.UpdateCamera(graphics.GetCommandList());
-		//
-		//	graphics.Clear({ 0.0f, 0.0f, 0.0f, 1.0f });
-		//
-		//	renderer.Draw(graphics.GetCommandList(), viewPort, scissorRect);
-		//
-		//	graphics.Render();
-		//
-		//	while (clock.Elapsed().Seconds() < frameLength);
-		//	clock.Restart();
-		//
-		//	frameCount++;
-		//	if (fpsClock.Elapsed().Seconds() >= 1.0) {
-		//		std::cout << "FPS: " << ((double)frameCount / fpsClock.Restart().Seconds()) << std::endl;
-		//		frameCount = 0;
-		//	}
-		//}
 
 	}
 	catch (Peio::Gfx::Exception exception) {
