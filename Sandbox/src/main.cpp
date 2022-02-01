@@ -68,6 +68,7 @@ int main() {
 		window.CreateWindow("Peio Sandbox", WS_POPUP, 0, { 100, 100 }, windowSize);
 		
 		window.Show();
+		ShowCursor(FALSE);
 
 		Peio::Gfx::WinGraphics graphics;
 		graphics.Init(window.GetHWND(), windowSize, 3, false);
@@ -83,11 +84,12 @@ int main() {
 		
 		Peio::Vxl::SubresourceBuffer<Peio::Vxl::VoxelScene> sceneBuffer;
 		sceneBuffer.Allocate(1);
-		sceneBuffer.GetSubresourceBuffer()[0] = { numVoxels, 0, 0.5f, 3, 3, 0.01f, 0.4f };
+		sceneBuffer.GetSubresourceBuffer()[0] = { numVoxels, 0, 0.5f, 9, 3, 0.01f, 0.99f };
 		
 		Peio::Vxl::SubresourceBuffer<Material> materialBuffer;
-		materialBuffer.Allocate(1);
+		materialBuffer.Allocate(2);
 		materialBuffer.GetSubresourceBuffer()[0] = { { 0.0f, 0.5f, 0.7f, 1.0f }, { 0.0f, 0.0f, 0.0f }, 1.0f };
+		materialBuffer.GetSubresourceBuffer()[1] = { { 0.0f, 0.0f, 0.0f, 1.0f }, { 10.0f, 0.0f, 10.0f }, 1.0f };
 		
 		Peio::Vxl::SubresourceBuffer<Peio::Float3> voxelPositionBuffer;
 		voxelPositionBuffer.Allocate(numVoxels);
@@ -110,10 +112,12 @@ int main() {
 		voxelMaterialBuffer.Allocate(numVoxels);
 		for (UINT i = 0; i < numVoxels; i++)
 		voxelMaterialBuffer.GetSubresourceBuffer()[i] = { 0 };
-		
+
+		voxelMaterialBuffer.GetSubresourceBuffer()[0] = { 1 };
+
 		Peio::Gfx::ShaderResourceView srv;
 		srv.InitBuffer(
-			{ sizeof(Peio::Vxl::VoxelScene), sizeof(Material), sizeof(Peio::Float3) * numVoxels, sizeof(UINT) * numVoxels },
+			{ sizeof(Peio::Vxl::VoxelScene), sizeof(Material) * 2, sizeof(Peio::Float3) * numVoxels, sizeof(UINT) * numVoxels },
 			{ 1, 1, numVoxels, numVoxels },
 			{ D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 			  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, 

@@ -29,11 +29,13 @@ int GetSide(in out float4 col) {
 
 float4 main(VS_OUTPUT input) : SV_TARGET
 {
-	const int radius = 10;
+	const int radius = 8;
 	const float2 invSize = 1.0f / input.size;
 
 	float4 primary = tex.Sample(state, input.texCoord * invSize);
 	int side = GetSide(primary);
+	if (side == -1)
+		return float4(primary.rgb, 1.0f);
 
 	float4 total = 0.0f;
 	float count = 0.0f;
