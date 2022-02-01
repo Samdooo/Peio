@@ -5,7 +5,7 @@
 #include "VoxelPS_sky.hlsl"
 #include "VoxelPS_lightspread.hlsl"
 
-float3 LightTrace(float3 origin, float3 startRay, float4 pixelPosition){
+float3 LightTrace(float3 origin, float3 startRay, float4 pixelPosition, out VoxelRay primaryRay){
     //VoxelRay ray;
     //for (uint i = 0; i < 16; i++) {
     //    ray = VoxelTrace(origin, startRay, -1);
@@ -16,7 +16,7 @@ float3 LightTrace(float3 origin, float3 startRay, float4 pixelPosition){
     const uint maxNumRays = scene[0].maxNumRays;
     const uint maxHitRays = scene[0].maxHitRays;
     
-    float angleOffset = GOLDEN_ANGLE * pixelPosition.x + GOLDEN_ANGLE * pixelPosition.y * 10.0f;
+    float angleOffset = (pixelPosition.y * 640.0f + pixelPosition.x) % (2 * PI);
 
     VoxelRay ray[maxLayers];
     LightSpread spread[maxLayers - 1];
@@ -77,6 +77,7 @@ float3 LightTrace(float3 origin, float3 startRay, float4 pixelPosition){
             up = true;
         }
     }
+    primaryRay = ray[1];
     //return float3((float)numRays / 255.0f, (float)numUps / 255.0f, (float)numDowns / 255.0f);
     //return float3((float)numRays / 255.0f, (float)numRays / 255.0f, (float)numRays / 255.0f);
     return light[0];

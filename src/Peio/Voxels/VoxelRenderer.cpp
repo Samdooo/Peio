@@ -25,7 +25,8 @@ namespace Peio::Vxl {
 			D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
 			D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS);
 
-		pipelineState = Gfx::PipelineState::Create(Gfx::PipelineState::CreateDesc(
+
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc = Gfx::PipelineState::CreateDesc(
 			Gfx::InputLayout::Create({
 				Gfx::InputElement::Create("POSITION", DXGI_FORMAT_R32G32_FLOAT),
 				Gfx::InputElement::Create("CAMERA_POSITION", DXGI_FORMAT_R32G32B32_FLOAT),
@@ -34,7 +35,11 @@ namespace Peio::Vxl {
 				Gfx::InputElement::Create("ASPECT_RATIO", DXGI_FORMAT_R32_FLOAT),
 				}),
 				rootSignature.Get(), Gfx::Shader::Load("../bin/VoxelShaders/VoxelVS.cso"), Gfx::Shader::Load("../bin/VoxelShaders/VoxelPS.cso")
-				));
+				);
+		pipelineDesc.BlendState.IndependentBlendEnable = FALSE;
+		pipelineDesc.BlendState.RenderTarget[0].BlendEnable = FALSE;
+
+		pipelineState = Gfx::PipelineState::Create(pipelineDesc);
 	}
 
 	void VoxelRenderer::SetCameraPosition(Float3 position)

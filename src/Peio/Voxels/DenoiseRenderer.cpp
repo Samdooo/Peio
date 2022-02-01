@@ -9,7 +9,7 @@ namespace Peio::Vxl {
 		for (UINT i = 0; i < 6; i++) {
 			vertexBuffer.GetSubresourceBuffer()[i] = InputVertex{
 				{ (i >= 1 && i <= 3) ? 1.0f : -1.0f, (i >= 2 && i <= 4) ? -1.0f : 1.0f }, 
-				{ (i >= 1 && i <= 3) ? 1.0f : 0.0f, (i >= 2 && i <= 4) ? 1.0f : 0.0f}, 
+				{ (i >= 1 && i <= 3) ? size.x() : 0.0f, (i >= 2 && i <= 4) ? size.y() : 0.0f},
 				size
 			};
 		}
@@ -41,18 +41,22 @@ namespace Peio::Vxl {
 			D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
 			D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS);
 
-		pipelineState = Gfx::PipelineState::Create(Gfx::PipelineState::CreateDesc(
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc = Gfx::PipelineState::CreateDesc(
 			Gfx::InputLayout::Create({
 				Gfx::InputElement::Create("POSITION", DXGI_FORMAT_R32G32_FLOAT),
 				Gfx::InputElement::Create("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT),
 				Gfx::InputElement::Create("SIZE", DXGI_FORMAT_R32G32_FLOAT)
 				}),
-				rootSignature.Get(), Gfx::Shader::Load("../bin/VoxelShaders/DenoiseVS.cso"), Gfx::Shader::Load("../bin/VoxelShaders/DenoisePS.cso")
-				));
+			rootSignature.Get(), Gfx::Shader::Load("../bin/VoxelShaders/DenoiseVS.cso"), Gfx::Shader::Load("../bin/VoxelShaders/DenoisePS.cso")
+		);
+		pipelineDesc.BlendState.IndependentBlendEnable = FALSE;
+		pipelineDesc.BlendState.RenderTarget[0].BlendEnable = FALSE;
+
+		pipelineState = Gfx::PipelineState::Create(pipelineDesc);
 
 	}
 
-	void DenoiseRenderer::Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, ID3D12DescriptorHeap* heap)
+	void DenoiseRenderer::Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, ID3D12DescriptorHeap* heap, D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle)
 	{
 		cmdList->SetGraphicsRootSignature(rootSignature.Get());
 		cmdList->SetPipelineState(pipelineState.Get());
@@ -62,7 +66,7 @@ namespace Peio::Vxl {
 
 		ID3D12DescriptorHeap* heaps[1] = { heap };
 		cmdList->SetDescriptorHeaps(1, heaps);
-		cmdList->SetGraphicsRootDescriptorTable(0, heap->GetGPUDescriptorHandleForHeapStart());
+		cmdList->SetGraphicsRootDescriptorTable(0, gpuHandle);
 
 		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		cmdList->IASetVertexBuffers(0, 1, &vertexBuffer.GetBufferView());

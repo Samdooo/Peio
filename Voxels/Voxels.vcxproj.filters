@@ -31,10 +31,10 @@
     <FxCompile Include="..\src\Peio\Voxels\Shaders\VoxelVS.hlsl">
       <Filter>Source Files\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="..\src\Peio\Voxels\DenoiseVS.hlsl">
+    <FxCompile Include="..\src\Peio\Voxels\Shaders\DenoisePS.hlsl">
       <Filter>Source Files\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="..\src\Peio\Voxels\DenoisePS.hlsl">
+    <FxCompile Include="..\src\Peio\Voxels\Shaders\DenoiseVS.hlsl">
       <Filter>Source Files\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

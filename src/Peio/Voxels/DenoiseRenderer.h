@@ -10,7 +10,7 @@ namespace Peio::Vxl {
 	struct PEIO_VXL_EXPORT DenoiseRenderer {
 
 		void Init(ID3D12GraphicsCommandList* cmdList, Float2 size);
-		void Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, ID3D12DescriptorHeap* heap);
+		void Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, ID3D12DescriptorHeap* heap, D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle);
 
 	protected:
 
