@@ -7,37 +7,26 @@ namespace Peio {
 	template <typename T_branch, typename T_leaf>
 	struct Tree {
 
-	protected:
-
-		size_t numLayers = 0;
-		size_t numChildren = 0;
-
-		T_branch** branches = nullptr;
-		size_t numBranches = 0;
-
-		T_leaf* leaves = nullptr;
-		size_t numLeaves = 0;
-
-	public:
-
 		void Allocate(size_t numLayers, size_t numChildren) {
 			this->numLayers = numLayers;
 			this->numChildren = numChildren;
-			if (numLayers > 1)
-				branches = new T_branch * [numLayers - 1];
+			if (numLayers > 1) {
+				branches = new T_branch*[numLayers - 1];
+			}
+			numLeaves = numChildren;
 			numBranches = 0;
-			numLeaves = 1;
 			for (size_t i = 0; i < numLayers - 1; i++) {
-				branches[i] = (T_branch*)numBranches;
+				branches[i] = reinterpret_cast<T_branch*>(numBranches);
 				numBranches += numLeaves;
 				numLeaves *= numChildren;
 			}
-			if (numBranches)
+			leaves = new T_leaf[numLeaves];
+
+			if (numLayers > 1) {
 				branches[0] = new T_branch[numBranches];
-			for (size_t i = 0; i < numLayers - 1; i++)
-				branchLayers[i] = branches[0] + (size_t)branchLayers[i];
-			if (numLeaves)
-				leaves = new T_leaf[numLeaves];
+				for (size_t i = 1; i < numLayers - 1; i++)
+					branches[i] = branches[0] + reinterpret_cast<size_t>(branches[i]);
+			}
 		}
 
 		_NODISCARD size_t GetNumLayers() const noexcept {
@@ -46,22 +35,21 @@ namespace Peio {
 		_NODISCARD size_t GetNumChildren() const noexcept {
 			return numChildren;
 		}
-
-		_NODISCARD T_branch* const* GetBranches() const noexcept {
-			return branchLayers;
-		}
 		_NODISCARD size_t GetNumBranches() const noexcept {
 			return numBranches;
-		}
-
-		_NODISCARD T_leaf* GetLeaves() const noexcept {
-			return leafBuffer;
 		}
 		_NODISCARD size_t GetNumLeaves() const noexcept {
 			return numLeaves;
 		}
 
-		~PositionTree() {
+		_NODISCARD T_branch* const* GetBranches() const noexcept {
+			return branches;
+		}
+		_NODISCARD T_leaf* GetLeaves() const noexcept {
+			return leaves;
+		}
+
+		~Tree() {
 			if (branches[0])
 				delete[] branches[0];
 			if (branches)
@@ -70,13 +58,19 @@ namespace Peio {
 				delete[] leaves;
 		}
 
+	protected:
+
+		size_t numLayers = 0;
+		size_t numChildren = 0;
+		size_t numBranches = 0;
+		size_t numLeaves = 0;
+
+		T_branch** branches = nullptr;
+		T_leaf* leaves = nullptr;
+
+	public:
+
 		struct Iterator {
-
-		protected:
-
-			const Tree& tree;
-			size_t layerIndex;
-			size_t index;
 
 			Iterator(const Tree& tree, size_t layerIndex = 0, size_t index = 0) : tree(tree), layerIndex(layerIndex), index(index) {}
 
@@ -90,17 +84,17 @@ namespace Peio {
 				return layerIndex > 0;
 			}
 
-			_NODISCARD T_branch* GetBranch() const {
+			_NODISCARD T_branch& GetBranch() const {
 				if (IsLeaf()) {
 					throw PEIO_EXCEPTION("Tried to get a branch from a leaf iterator.");
 				}
-				return &tree.GetBranches()[layerIndex][index];
+				return tree.GetBranches()[layerIndex][index];
 			}
-			_NODISCARD T_leaf* GetLeaf() const {
+			_NODISCARD T_leaf& GetLeaf() const {
 				if (IsBranch()) {
 					throw PEIO_EXCEPTION("Tried to get a leaf from a branch iterator.");
 				}
-				return &tree.GetLeaves()[index];
+				return tree.GetLeaves()[index];
 			}
 
 			_NODISCARD Iterator GetChild(size_t index) const {
@@ -113,10 +107,7 @@ namespace Peio {
 				return Iterator(tree, layerIndex + 1, this->index * tree.GetNumChildren() + index);
 			}
 
-			_NODISCARD Iterator GetSibling(size_t sibling) const {
-				if (layerIndex == 0) {
-					throw PEIO_EXCEPTION("Tried to get a sibling from a root iterator.");
-				}
+			_NODISCARD Iterator GetSibling(size_t index) const {
 				if (index >= tree.GetNumChildren()) {
 					throw PEIO_EXCEPTION("Sibling index out of bounds.");
 				}
@@ -130,7 +121,17 @@ namespace Peio {
 				return Iterator(tree, layerIndex - 1, index / tree.GetNumChildren());
 			}
 
+		protected:
+
+			const Tree& tree;
+			size_t layerIndex = 0;
+			size_t index = 0;
+
 		};
+
+		_NODISCARD Iterator GetRootIterator() const {
+			return Iterator(*this, 0, 0);
+		}
 
 	};
 
