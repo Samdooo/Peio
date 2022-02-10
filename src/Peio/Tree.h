@@ -129,8 +129,8 @@ namespace Peio {
 
 		};
 
-		_NODISCARD Iterator GetRootIterator() const {
-			return Iterator(*this, 0, 0);
+		_NODISCARD Iterator GetRootIterator(size_t index = 0) const {
+			return Iterator(*this, 0, index);
 		}
 
 	};
