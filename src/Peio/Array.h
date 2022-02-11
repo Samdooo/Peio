@@ -16,61 +16,32 @@ namespace Peio {
 		using _array::_Elems;
 		using _array::array;
 
+		template <typename... Ts>
+		CommonArray(Ts... vals) {
+			static_assert(sizeof...(Ts) == length, "Wrong number of arguments given to CommonArray.");
+			size_t i = 0;
+			((_Elems[i++] = (T)vals), ...);
+		}
+
 		template <typename TT>
-		CommonArray(const CommonArray<TT, length>& that) noexcept {
+		CommonArray(const CommonArray<TT, length>& that) {
 			for (size_t i = 0; i < length; i++)
 				_Elems[i] = (T)that[i];
 		}
 
 		template <typename TT>
-		CommonArray<T, length>& operator=(const CommonArray<TT, length>& that) noexcept {
+		CommonArray<T, length>& operator=(const CommonArray<TT, length>& that) {
 			for (int i = 0; i < length; i++)
 				_Elems[i] = (T)that[i];
 			return *this;
 		}
 
-		CommonArray(const std::initializer_list<T>& l) noexcept {
+		CommonArray(const std::initializer_list<T>& l) {
 			memcpy(_Elems, l.begin(), sizeof(_Elems));
 		}
 
 		CommonArray<T, length>& operator=(const std::initializer_list<T>& l) {
 			memcpy(_Elems, l.begin(), sizeof(_Elems));
-			return *this;
-		}
-
-		CommonArray<T, length>& operator+=(const CommonArray<T, length>& that) {
-			for (size_t i = 0; i < length; i++)
-				_Elems[i] += that[i];
-			return *this;
-		}
-
-		CommonArray<T, length>& operator-=(const CommonArray<T, length>& that) {
-			for (size_t i = 0; i < length; i++)
-				_Elems[i] -= that[i];
-			return *this;
-		}
-
-		CommonArray<T, length>& operator*=(const CommonArray<T, length>& that) {
-			for (size_t i = 0; i < length; i++)
-				_Elems[i] *= that[i];
-			return *this;
-		}
-
-		CommonArray<T, length>& operator*=(T val) {
-			for (size_t i = 0; i < length; i++)
-				_Elems[i] *= val;
-			return *this;
-		}
-
-		CommonArray<T, length>& operator/=(const CommonArray<T, length>& that) {
-			for (size_t i = 0; i < length; i++)
-				_Elems[i] /= that[i];
-			return *this;
-		}
-
-		CommonArray<T, length>& operator/=(T val) {
-			for (size_t i = 0; i < length; i++)
-				_Elems[i] /= val;
 			return *this;
 		}
 
@@ -90,81 +61,11 @@ namespace Peio {
 			return reinterpret_cast<byte*>(this);
 		}
 
-		_NODISCARD std::string ToString() const noexcept {
+		_NODISCARD std::string ToString() const {
 			std::string result = "[";
 			for (size_t i = 0; i < length - 1; i++)
 				result += std::to_string(_Elems[i]) + ", ";
 			result += std::to_string(_Elems[length - 1]) + "]";
-			return result;
-		}
-
-		_NODISCARD constexpr operator bool() const noexcept {
-			for (size_t i = 0; i < length; i++)
-				if (!_Elems[i])
-					return false;
-			return true;
-		}
-
-		CommonArray<T, length> operator+(const CommonArray<T, length>& that) const {
-			CommonArray<T, length> result;
-			for (int i = 0; i < length; i++)
-				result[i] = _Elems[i] + that[i];
-			return result;
-		}
-
-		CommonArray<T, length> operator+(T val) const {
-			CommonArray<T, length> result;
-			for (int i = 0; i < length; i++)
-				result[i] = _Elems[i] + val;
-			return result;
-		}
-
-		CommonArray<T, length> operator-(const CommonArray<T, length>& that) const {
-			CommonArray<T, length> result;
-			for (int i = 0; i < length; i++)
-				result[i] = _Elems[i] - that[i];
-			return result;
-		}
-
-		CommonArray<T, length> operator-(T val) const {
-			CommonArray<T, length> result;
-			for (int i = 0; i < length; i++)
-				result[i] = _Elems[i] - val;
-			return result;
-		}
-
-		CommonArray<T, length> operator-() const {
-			CommonArray<T, length> result;
-			for (int i = 0; i < length; i++)
-				result[i] = -result[i];
-			return result;
-		}
-
-		CommonArray<T, length> operator*(const CommonArray<T, length>& that) const {
-			CommonArray<T, length> result;
-			for (int i = 0; i < length; i++)
-				result[i] = _Elems[i] * that[i];
-			return result;
-		}
-
-		CommonArray<T, length> operator*(T val) const {
-			CommonArray<T, length> result;
-			for (int i = 0; i < length; i++)
-				result[i] = _Elems[i] * val;
-			return result;
-		}
-
-		CommonArray<T, length> operator/(const CommonArray<T, length>& that) const {
-			CommonArray<T, length> result;
-			for (int i = 0; i < length; i++)
-				result[i] = _Elems[i] / that[i];
-			return result;
-		}
-
-		CommonArray<T, length> operator/(T val) const {
-			CommonArray<T, length> result;
-			for (int i = 0; i < length; i++)
-				result[i] = _Elems[i] / val;
 			return result;
 		}
 
