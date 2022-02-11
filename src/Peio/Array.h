@@ -17,9 +17,12 @@ namespace Peio {
 		using _array::array;
 
 		template <typename... Ts>
-		CommonArray(Ts... vals) {
-			static_assert(sizeof...(Ts) == length, "Wrong number of arguments given to CommonArray.");
-			size_t i = 0;
+		CommonArray(T first, Ts... vals) {
+			/* 'first' is necessary to allow construction from an implicit template conversion.  */
+			static_assert((std::is_convertible<Ts, T>::value && ...), "Wrong argument type(s) given to CommonArray.");
+			static_assert(sizeof...(Ts) == (length - 1), "Wrong number of arguments given to CommonArray.");
+			_Elems[0] = first;
+			size_t i = 1;
 			((_Elems[i++] = (T)vals), ...);
 		}
 
