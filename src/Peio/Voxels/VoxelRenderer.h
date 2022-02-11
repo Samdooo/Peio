@@ -17,7 +17,7 @@ namespace Peio::Vxl {
 		void SetAspectRatio(float aspectRatio);
 		void UpdateCamera(ID3D12GraphicsCommandList* cmdList);
 
-		void Draw(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect);
+		void Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect);
 
 	protected:
 
