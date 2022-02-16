@@ -12,6 +12,7 @@
 #include <Peio/Clock.h>
 #include <Peio/Voxels/DenoiseRenderer.h>
 #include <Peio/Graphics/MultiPassGraphics.h>
+#include <Peio/Voxels/PositionTree.h>
 
 #include <unordered_map>
 
@@ -52,7 +53,58 @@ struct Camera {
 
 #define GOLDEN_ANGLE 2.399963229728653f
 
+void PrintDepth(int depth) {
+	for (int i = 0; i < depth; i++)
+		std::cout << "  ";
+}
+
+void Print(const Peio::Vxl::PositionTree& tree) {
+	UINT layerSize = tree.GetNumChildren();
+	for (size_t i = 0; i < tree.GetNumLayers() - 1; i++) {
+		std::cout << "{  ";
+		for (size_t j = 0; j < layerSize; j++) {
+			std::cout << "[ " << tree.GetBranches()[i][j].descriptor << ", " << ((Peio::Int3)tree.GetBranches()[i][j].boundaries[0]).ToString() << ", " << ((Peio::Int3)tree.GetBranches()[i][j].boundaries[1]).ToString() << "]" << "  ";
+		}
+		std::cout << "}" << std::endl;
+		layerSize *= tree.GetNumChildren();
+	}
+	for (size_t i = 0; i < layerSize; i++) {
+		std::cout << tree.GetLeaves()[i].index << "  ";
+	}
+	std::cout << std::endl;
+}
+
+struct PositionTree : public Peio::Vxl::PositionTree {
+
+	Peio::Float3* voxelPositions = nullptr;
+
+	Peio::Array<Peio::Float3, 2> GetBoundaries(UINT index) const override {
+		std::cout << index << std::endl;
+		return { voxelPositions[index] - 0.5f, voxelPositions[index] + 0.5f };
+	}
+
+};
+
 int main() {
+
+	std::vector<Peio::Float3> voxelPositions = {
+		{ 1.0f, 1.0f, 1.0f },
+		{ 2.0f, 2.0f, 2.0f },
+		{ 3.0f, 3.0f, 3.0f },
+		{ 4.0f, 4.0f, 4.0f }
+	};
+
+	PositionTree tree;
+	tree.voxelPositions = &voxelPositions[0];
+
+	tree.Allocate(2, 3);
+	tree.Insert(Peio::Vxl::PositionLeaf{ 0 });
+	Print(tree);
+	tree.Insert(Peio::Vxl::PositionLeaf{ 1 });
+	tree.Insert(Peio::Vxl::PositionLeaf{ 2 });
+	tree.Insert(Peio::Vxl::PositionLeaf{ 3 });
+	Print(tree);
+	return 0;
 
 	try {
 
@@ -211,7 +263,7 @@ int main() {
 			graphics.Clear({ 0.0f, 0.0f, 0.0f, 1.0f });
 			
 			mpGraphics.BeginPass(graphics.GetCommandList(), graphics.GetFrameIndex(), { 1.0f, 0.0f, 0.0f, 1.0f });
-			renderer.Draw(graphics.GetCommandList(), viewPort, scissorRect);
+			renderer.Render(graphics.GetCommandList(), viewPort, scissorRect);
 			mpGraphics.EndPass(graphics.GetCommandList());
 			
 			graphics.GetRenderTargets().SetRenderTarget(graphics.GetCommandList());
