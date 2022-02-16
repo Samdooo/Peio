@@ -57,12 +57,18 @@
     <ClInclude Include="..\src\Peio\Voxels\DenoiseRenderer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Voxels\PositionTree.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Voxels\VoxelRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Peio\Voxels\DenoiseRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Voxels\PositionTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

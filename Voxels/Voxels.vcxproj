@@ -140,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\Voxels\DenoiseRenderer.h" />
+    <ClInclude Include="..\src\Peio\Voxels\PositionTree.h" />
     <ClInclude Include="..\src\Peio\Voxels\SubresourceBuffer.h" />
     <ClInclude Include="..\src\Peio\Voxels\VertexBuffer.h" />
     <ClInclude Include="..\src\Peio\Voxels\VoxelRenderer.h" />
@@ -148,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Voxels\DenoiseRenderer.cpp" />
+    <ClCompile Include="..\src\Peio\Voxels\PositionTree.cpp" />
     <ClCompile Include="..\src\Peio\Voxels\VoxelRenderer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
