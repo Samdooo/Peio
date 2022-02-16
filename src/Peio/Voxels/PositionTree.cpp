@@ -1,8 +1,6 @@
 #define PEIO_VXL_EXPORTING
 #include "PositionTree.h"
 
-#include <iostream>
-
 namespace Peio::Vxl {
 
 	bool PositionBranch::IsFull(UINT numChildren) const
@@ -41,7 +39,7 @@ namespace Peio::Vxl {
 		return changed;
 	}
 
-	bool PositionBranch::Contains(const Array<Float3, 2>& that) const
+	bool PositionBranch::Intersects(const Array<Float3, 2>& that) const
 	{
 		for (size_t i = 0; i < 3; i++)
 			if (that[0][i] > boundaries[1][i] || that[1][i] < boundaries[0][i])
@@ -57,9 +55,8 @@ namespace Peio::Vxl {
 		return false;
 	}
 
-	void PositionTree::UpdateParent(const Iterator& it) const
+	void PositionTree::UpdateBoundaries(const Iterator& it) const
 	{
-		std::cout << "Updated parent" << std::endl;
 		if (!it.HasParent())
 			return;
 		Array<Float3, 2> boundaries;
@@ -68,13 +65,12 @@ namespace Peio::Vxl {
 		else
 			boundaries = GetBoundaries(it.GetLeaf().index);
 		if (it.GetParent().GetBranch().Fit(boundaries)) {
-			UpdateParent(it.GetParent());
+			UpdateBoundaries(it.GetParent());
 		}
 	}
 
 	bool PositionTree::Insert(PositionLeaf leaf, const Iterator& it) const
 	{
-		std::cout << "Inserted" << std::endl;
 		if (it.IsBranch()) {
 			for (UINT i = 0; i < numChildren; i++) {
 				if (!it.GetBranch().GetStatus(i)) {
@@ -88,7 +84,7 @@ namespace Peio::Vxl {
 		}
 		else {
 			it.GetLeaf() = leaf;
-			UpdateParent(it);
+			UpdateBoundaries(it);
 			return true;
 		}
 	}

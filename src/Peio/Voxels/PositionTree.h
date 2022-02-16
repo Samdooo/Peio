@@ -13,7 +13,7 @@ namespace Peio::Vxl {
 		bool GetStatus(UINT index) const;
 		void SetStatus(UINT index, bool full);
 		bool Fit(const Array<Float3, 2>& that);
-		bool Contains(const Array<Float3, 2>& that) const;
+		bool Intersects(const Array<Float3, 2>& that) const;
 	};
 	struct PositionLeaf {
 		UINT index;
@@ -26,11 +26,11 @@ namespace Peio::Vxl {
 		virtual Array<Float3, 2> GetBoundaries(UINT) const = 0;
 
 		bool Insert(PositionLeaf leaf) const;
-		void UpdateParent(const Iterator& it) const;
 
 	protected:
 
 		bool Insert(PositionLeaf leaf, const Iterator& it) const;
+		void UpdateBoundaries(const Iterator& it) const;
 
 	};
 
