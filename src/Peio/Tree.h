@@ -74,6 +74,18 @@ namespace Peio {
 
 			Iterator(const Tree& tree, size_t layerIndex = 0, size_t index = 0) : tree(tree), layerIndex(layerIndex), index(index) {}
 
+			_NODISCARD const Tree& GetTree() const noexcept {
+				return tree;
+			}
+
+			_NODISCARD UINT GetLayerIndex() const noexcept {
+				return layerIndex;
+			}
+
+			_NODISCARD UINT GetIndex() const noexcept {
+				return index;
+			}
+
 			_NODISCARD bool IsBranch() const noexcept {
 				return layerIndex < tree.GetNumLayers() - 1;
 			}
