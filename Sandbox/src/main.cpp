@@ -63,7 +63,7 @@ void Print(const Peio::Vxl::PositionTree& tree) {
 	for (size_t i = 0; i < tree.GetNumLayers() - 1; i++) {
 		std::cout << "{  ";
 		for (size_t j = 0; j < layerSize; j++) {
-			std::cout << "[ " << tree.GetBranches()[i][j].descriptor << ", " << ((Peio::Int3)tree.GetBranches()[i][j].boundaries[0]).ToString() << ", " << ((Peio::Int3)tree.GetBranches()[i][j].boundaries[1]).ToString() << "]" << "  ";
+			std::cout << "[ " << tree.GetBranches()[i][j].descriptor << " ]" << "  ";
 		}
 		std::cout << "}" << std::endl;
 		layerSize *= tree.GetNumChildren();
@@ -79,7 +79,6 @@ struct PositionTree : public Peio::Vxl::PositionTree {
 	Peio::Float3* voxelPositions = nullptr;
 
 	Peio::Array<Peio::Float3, 2> GetBoundaries(UINT index) const override {
-		std::cout << index << std::endl;
 		return { voxelPositions[index] - 0.5f, voxelPositions[index] + 0.5f };
 	}
 
@@ -91,18 +90,26 @@ int main() {
 		{ 1.0f, 1.0f, 1.0f },
 		{ 2.0f, 2.0f, 2.0f },
 		{ 3.0f, 3.0f, 3.0f },
-		{ 4.0f, 4.0f, 4.0f }
+		{ 4.0f, 4.0f, 4.0f },
+		{ 5.0f, 6.0f, 7.0f },
+		{ 6.0f, 5.0f, 4.0f },
 	};
 
 	PositionTree tree;
 	tree.voxelPositions = &voxelPositions[0];
 
-	tree.Allocate(2, 3);
+	tree.Allocate(3, 2);
+	for (UINT i = 0; i < tree.GetNumBranches(); i++)
+		tree.GetBranches()[0][i] = { 0, Peio::Array<Peio::Float3, 2>{ Peio::Float3{ D3D12_FLOAT32_MAX, D3D12_FLOAT32_MAX, D3D12_FLOAT32_MAX }, Peio::Float3{ -D3D12_FLOAT32_MAX, -D3D12_FLOAT32_MAX, -D3D12_FLOAT32_MAX  } } };
+	for (UINT i = 0; i < tree.GetNumLeaves(); i++)
+		tree.GetLeaves()[i] = { (UINT)-1 };
+
 	tree.Insert(Peio::Vxl::PositionLeaf{ 0 });
-	Print(tree);
 	tree.Insert(Peio::Vxl::PositionLeaf{ 1 });
 	tree.Insert(Peio::Vxl::PositionLeaf{ 2 });
 	tree.Insert(Peio::Vxl::PositionLeaf{ 3 });
+	tree.Insert(Peio::Vxl::PositionLeaf{ 4 });
+	tree.Insert(Peio::Vxl::PositionLeaf{ 5 });
 	Print(tree);
 	return 0;
 
