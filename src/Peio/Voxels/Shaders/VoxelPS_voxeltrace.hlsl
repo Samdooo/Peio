@@ -16,8 +16,11 @@ struct VoxelRay {
 VoxelRay VoxelTrace(const float3 origin, const float3 ray, uint skip){
     
     const uint numLayers = 10;
+    const uint branchSize = 7;
     const float3 invRay = 1.0f / ray;
     const float3 invRad = abs(invRay * scene[0].voxelRadius);
+    
+    bool3 rayNeg = bool3(ray.x < 0.0f, ray.y < 0.0f, ray.z < 0.0f);
     
     VoxelRay result;
     result.side = -1;
@@ -25,24 +28,63 @@ VoxelRay VoxelTrace(const float3 origin, const float3 ray, uint skip){
     
     float minScale = 1.#INF;
     
-    uint descriptor = 0;
+    uint descriptor[2];
+    uint descriptorIndex = 0;
     
     uint layerIndex = 0, index = 0;
+    uint layerSize = 3;
+    uint layerOffset = 0;
+    
     bool up = true;
     [loop] while (true) {
         if (up){
-            // Zero the "two checked" descriptor bit for current layer
-            descriptor &= ~(1 << (2 * layerIndex + 1));
-            
-            // Sort
-            float3 scales = 0;
-            for (uint i = 0; i < 3; i++){
+            if (layerIndex == numLayers - 1){
+                // Check the objects
+                
+                
                 
             }
-            
+            else {
+                // Zero the "two checked" descriptor bit for current layer
+                descriptor &= ~(1 << (2 * layerIndex + 1));
+                
+                // Sort by scale
+                float3 scales = 0;
+                [unroll] for (uint i = 0; i < 3; i++){
+                    uint offset = (layerOffset + index + i) * branchSize + 1;
+                    float3 minPoint = float3(asfloat(positionBranches[offset]), asfloat(positionBranches[offset + 1]), asfloat(positionBranches[offset + 2]));
+                    float3 maxPoint = float3(asfloat(positionBranches[offset + 3]), asfloat(positionBranches[offset + 4]), asfloat(positionBranches[offset + 5]));
+                    
+                    [unroll] for (uint j = 0; j < 3; j++){
+                        if (rayNeg[j]){
+                            
+                        }
+                        else {
+                            
+                        }
+                    }
+                    
+                }
+            }
         }
         else {
             
+        }
+        if (up){
+            layerOffset += layerSize;
+            layerSize *= 3;
+            index *= 3;
+            layerIndex++;
+            if ((layerIndex & 7) == 0)
+                descriptorIndex++;
+        }
+        else {
+            layerOffset -= layerSize;
+            layerSize /= 3;
+            index /= 3;
+            layerIndex--;
+            if ((layerIndex & 7) == 7)
+                descriptorIndex--;
         }
     }
     
