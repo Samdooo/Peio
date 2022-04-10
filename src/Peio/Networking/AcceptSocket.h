@@ -16,6 +16,10 @@ namespace Peio::Net {
 			}
 		}
 
+		_NODISCARD const Hint& GetGlobal() const noexcept {
+			return global;
+		}
+
 	protected:
 
 		Hint global = {};

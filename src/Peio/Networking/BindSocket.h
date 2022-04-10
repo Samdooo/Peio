@@ -15,6 +15,10 @@ namespace Peio::Net {
 			this->local = local;
 		}
 
+		_NODISCARD const Hint& GetLocal() const noexcept {
+			return local;
+		}
+
 	protected:
 
 		Hint local = {};

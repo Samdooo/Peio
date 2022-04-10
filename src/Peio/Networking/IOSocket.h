@@ -18,6 +18,6 @@ namespace Peio::Net {
 			return send(Socket<>::sock, buf, length, 0);
 		}
 	};
-	using SendEvent = SocketEvent<ReceiveSocket>;
+	using SendEvent = SocketEvent<SendSocket>;
 
 }
