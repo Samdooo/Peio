@@ -3,40 +3,29 @@
 
 namespace Peio::Vxl {
 
-	bool PositionBranch::IsFull(UINT numChildren) const
+	bool PositionBranch::HasChild(size_t index) const
 	{
-		return descriptor == ((1 << numChildren) - 1);
+		return descriptor.test(index * 2);
 	}
 
-	bool PositionBranch::GetStatus(UINT index) const
+	void PositionBranch::HasChild(size_t index, bool set)
 	{
-		return descriptor & (1 << index);
+		descriptor.set(index * 2, set);
 	}
 
-	void PositionBranch::SetStatus(UINT index, bool full)
+	bool PositionBranch::HasFull(size_t index) const
 	{
-		if (full)
-			descriptor |= (1 << index);
-		else
-			descriptor &= ~(1 << index);
+		return descriptor.test(index * 2 + 1);
 	}
 
-	bool PositionBranch::Fit(const Array<Float3, 2>& that)
+	void PositionBranch::HasFull(size_t index, bool set)
 	{
-		bool changed = false;
-		for (size_t i = 0; i < 3; i++) {
-			if (that[0][i] < boundaries[0][i]) {
-				boundaries[0][i] = that[0][i];
-				changed = true;
-			}
-		}
-		for (size_t i = 0; i < 3; i++) {
-			if (that[1][i] > boundaries[1][i]) {
-				boundaries[1][i] = that[1][i];
-				changed = true;
-			}
-		}
-		return changed;
+		descriptor.set(index * 2 + 1, set);
+	}
+
+	bool PositionBranch::IsFull(size_t numChildren) const
+	{
+		return descriptor._Getword(0) == ((1U << (numChildren * 2)) - 1U);
 	}
 
 	bool PositionBranch::Intersects(const Array<Float3, 2>& that) const
@@ -47,36 +36,81 @@ namespace Peio::Vxl {
 		return true;
 	}
 
-	bool PositionTree::Insert(PositionLeaf leaf) const
+	void PositionTree::UpdateDescriptors(const Iterator& it) const
 	{
-		for (size_t i = 0; i < numChildren; i++)
-			if (Insert(leaf, GetRootIterator(i)))
-				return true;
-		return false;
+		if (it.IsLeaf())
+			throw PEIO_EXCEPTION("UpdateDescriptors called on a Leaf iterator.");
+
+		PositionBranch branch;
+		for (size_t i = 0; i < numChildren; i++) {
+			Iterator child = it.GetChild(i);
+			if (!child.IsLeaf()) {
+				branch.HasChild(i, child.GetBranch().descriptor.any());
+				branch.HasFull(i, child.GetBranch().IsFull(numChildren));
+			}
+		}
+		if (branch.descriptor != it.GetBranch().descriptor) {
+			it.GetBranch().descriptor = branch.descriptor;
+			
+		}
+		if (it.HasParent())
+			UpdateDescriptors(it.GetParent());
 	}
 
 	void PositionTree::UpdateBoundaries(const Iterator& it) const
 	{
-		if (!it.HasParent())
-			return;
-		Array<Float3, 2> boundaries;
-		if (it.IsBranch())
-			boundaries = it.GetBranch().boundaries;
-		else
-			boundaries = GetBoundaries(it.GetLeaf().index);
-		if (it.GetParent().GetBranch().Fit(boundaries)) {
-			UpdateBoundaries(it.GetParent());
+		if (it.IsLeaf())
+			throw PEIO_EXCEPTION("UpdateBoundaries called on a Leaf iterator.");
+
+		PositionBranch& branch = it.GetBranch();
+		Array<Float3, 2> boundaries = {};
+
+		for (size_t i = 0; i < numChildren; i++) {
+			if (!branch.HasChild(i))
+				continue;
+			Iterator child = it.GetChild(i);
+			Array<Float3, 2> childBounds;
+			if (child.IsLeaf())
+				childBounds = GetBoundaries(child.GetLeaf().index);
+			else
+				childBounds = child.GetBranch().boundaries;
+			if (i == 0)
+				boundaries = childBounds;
+			else {
+				for (size_t j = 0; j < 3; j++) {
+					if (childBounds[0][j] < boundaries[0][j])
+						boundaries[0][j] = childBounds[0][j];
+					if (childBounds[1][j] > boundaries[1][j])
+						boundaries[1][j] = childBounds[1][j];
+				}
+			}
+		}
+		if (branch.boundaries != boundaries) {
+			branch.boundaries = boundaries;
+			if (it.HasParent())
+				UpdateBoundaries(it.GetParent());
 		}
 	}
 
-	bool PositionTree::Insert(PositionLeaf leaf, const Iterator& it) const
+	bool PositionTree::Insert(PositionLeaf leaf) const
+	{
+		for (size_t i = 0; i < numChildren; i++)
+			if (Insert(leaf, GetRootIterator(i), i))
+				return true;
+		return false;
+	}
+
+	bool PositionTree::Insert(PositionLeaf leaf, const Iterator& it, size_t index) const
 	{
 		if (it.IsBranch()) {
-			for (UINT i = 0; i < numChildren; i++) {
-				if (!it.GetBranch().GetStatus(i)) {
-					Insert(leaf, it.GetChild(i));
-					if (it.GetChild(i).IsLeaf() || it.GetChild(i).GetBranch().IsFull(numChildren))
-						it.GetBranch().SetStatus(i, true);
+			PositionBranch& branch = it.GetBranch();
+
+			for (size_t i = 0; i < numChildren; i++) {
+				if (!branch.HasFull(i)) {
+					return Insert(leaf, it.GetChild(i), i);
+					//branch.HasChild(i, true);
+					//if (it.GetChild(i).IsLeaf() || it.GetChild(i).GetBranch().IsFull(numChildren))
+					//	it.GetBranch().HasFull(i, true);
 					return true;
 				}
 			}
@@ -84,7 +118,14 @@ namespace Peio::Vxl {
 		}
 		else {
 			it.GetLeaf() = leaf;
-			UpdateBoundaries(it);
+			if (it.HasParent()) {
+				Iterator parent = it.GetParent();
+				parent.GetBranch().HasChild(index, true);
+				parent.GetBranch().HasFull(index, true);
+				if (parent.HasParent())
+					UpdateDescriptors(parent.GetParent());
+				UpdateBoundaries(parent);
+			}
 			return true;
 		}
 	}

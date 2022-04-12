@@ -63,7 +63,10 @@ void Print(const Peio::Vxl::PositionTree& tree) {
 	for (size_t i = 0; i < tree.GetNumLayers() - 1; i++) {
 		std::cout << "{  ";
 		for (size_t j = 0; j < layerSize; j++) {
+			if (j > 16)
+				break;
 			std::cout << "[ " << tree.GetBranches()[i][j].descriptor << " ]" << "  ";
+			//std::cout << "[ " << tree.GetBranches()[i][j].boundaries[0].ToString() << " - " << tree.GetBranches()[i][j].boundaries[1].ToString() << " ] ";
 		}
 		std::cout << "}" << std::endl;
 		layerSize *= tree.GetNumChildren();
@@ -84,43 +87,99 @@ struct PositionTree : public Peio::Vxl::PositionTree {
 
 };
 
+using uint = unsigned int;
+
 int main() {
 
-	std::vector<Peio::Float3> voxelPositions = {
-		{ 1.0f, 1.0f, 1.0f },
-		{ 2.0f, 2.0f, 2.0f },
-		{ 3.0f, 3.0f, 3.0f },
-		{ 4.0f, 4.0f, 4.0f },
-		{ 5.0f, 6.0f, 7.0f },
-		{ 6.0f, 5.0f, 4.0f },
-	};
+	//std::vector<Peio::Float3> voxelPositions = {};
+	//Peio::Float3 minBound = { D3D12_FLOAT32_MAX, D3D12_FLOAT32_MAX, D3D12_FLOAT32_MAX }, maxBound = { -D3D12_FLOAT32_MAX, -D3D12_FLOAT32_MAX, -D3D12_FLOAT32_MAX };
+	//for (UINT i = 0; i < 18; i++) {
+	//	voxelPositions.push_back({ float(rand()) / (float)RAND_MAX * 100.0f, float(rand()) / (float)RAND_MAX * 100.0f, float(rand()) / (float)RAND_MAX * 100.0f });
+	//	for (UINT j = 0; j < 3; j++) {
+	//		if ((voxelPositions.back()[j] - 0.5f) < minBound[j])
+	//			minBound[j] = (voxelPositions.back()[j] - 0.5f);
+	//		if ((voxelPositions.back()[j] + 0.5f) > maxBound[j])
+	//			maxBound[j] = (voxelPositions.back()[j] + 0.5f);
+	//	}
+	//}
+	//std::cout << minBound.ToString() << " - " << maxBound.ToString() << std::endl;
+	//
+	//PositionTree tree;
+	//tree.Allocate(10, 3);
+	//
+	//ZeroMemory(tree.GetBranches()[0], tree.GetNumBranches() * sizeof(Peio::Vxl::PositionBranch));
+	//ZeroMemory(tree.GetLeaves(), tree.GetNumLeaves() * sizeof(Peio::Vxl::PositionLeaf));
+	//
+	//tree.voxelPositions = &voxelPositions[0];
+	//for (UINT i = 0; i < voxelPositions.size(); i++) {
+	//	if (!tree.Insert({ i })) {
+	//		std::cout << "FAILED" << std::endl;
+	//		exit(0);
+	//	}
+	//}
+	//std::cout << tree.GetRootIterator().GetBranch().boundaries[0].ToString() << " - " << tree.GetRootIterator().GetBranch().boundaries[1].ToString() << std::endl;
+	//std::cout << tree.GetRootIterator(1).GetBranch().boundaries[0].ToString() << " - " << tree.GetRootIterator(1).GetBranch().boundaries[1].ToString() << std::endl;
 
-	PositionTree tree;
-	tree.voxelPositions = &voxelPositions[0];
-
-	tree.Allocate(3, 2);
-	for (UINT i = 0; i < tree.GetNumBranches(); i++)
-		tree.GetBranches()[0][i] = { 0, Peio::Array<Peio::Float3, 2>{ Peio::Float3{ D3D12_FLOAT32_MAX, D3D12_FLOAT32_MAX, D3D12_FLOAT32_MAX }, Peio::Float3{ -D3D12_FLOAT32_MAX, -D3D12_FLOAT32_MAX, -D3D12_FLOAT32_MAX  } } };
-	for (UINT i = 0; i < tree.GetNumLeaves(); i++)
-		tree.GetLeaves()[i] = { (UINT)-1 };
-
-	tree.Insert(Peio::Vxl::PositionLeaf{ 0 });
-	tree.Insert(Peio::Vxl::PositionLeaf{ 1 });
-	tree.Insert(Peio::Vxl::PositionLeaf{ 2 });
-	tree.Insert(Peio::Vxl::PositionLeaf{ 3 });
-	tree.Insert(Peio::Vxl::PositionLeaf{ 4 });
-	tree.Insert(Peio::Vxl::PositionLeaf{ 5 });
-	Print(tree);
-	return 0;
+	//const uint numLayers = 4;
+	//const uint numChildren = 3;
+	//
+	//uint layerSize = numChildren; // In nodes
+	//uint layerOffset = 0;
+	//uint layerIndex = 0;
+	//uint nodeIndex = 0;
+	//
+	//uint branchIndices[numLayers];
+	//for (uint i = 0; i < numLayers; i++)
+	//	branchIndices[i] = 0;
+	//
+	//uint descriptors[numLayers];
+	//descriptors[0] = -1;
+	//
+	//bool up = true;
+	//while (true) {
+	//	//std::cout << layerIndex << ": " << nodeIndex << std::endl;
+	//	if (layerIndex == numLayers - 1) {
+	//		for (uint v = 0; v < numChildren; v++) {
+	//			std::cout << (nodeIndex + v) << std::endl;
+	//		}
+	//		up = false;
+	//	}
+	//	else {
+	//		up = false;
+	//		for (; branchIndices[layerIndex] < numChildren; branchIndices[layerIndex]++) {
+	//			nodeIndex += branchIndices[layerIndex];
+	//			branchIndices[layerIndex]++;
+	//			branchIndices[layerIndex + 1] = 0;
+	//			up = true;
+	//			break;
+	//		}
+	//	}
+	//
+	//	if (up) {
+	//		layerIndex++;
+	//		layerOffset += layerSize;
+	//		layerSize *= numChildren;
+	//		nodeIndex *= numChildren;
+	//	}
+	//	else {
+	//		if (layerIndex == 0)
+	//			break;
+	//		layerIndex--;
+	//		layerSize /= numChildren;
+	//		layerOffset -= layerSize;
+	//		nodeIndex /= numChildren;
+	//		//nodeIndex -= nodeIndex % numChildren;
+	//	}
+	//}
 
 	try {
-
+	
 		Peio::Gfx::Init();
-
+	
 		Peio::Int2 windowSize = { 640, 360 };
 		D3D12_VIEWPORT viewPort = { 0.0f, 0.0f, (float)windowSize.x(), (float)windowSize.y(), 0.0f, 1.0f };
 		RECT scissorRect = { 0, 0, windowSize.x(), windowSize.y() };
-
+	
 		Peio::Win::Window window;
 		window.CreateClass("Peio Sandbox", 0);
 		window.RegisterClass();
@@ -128,10 +187,10 @@ int main() {
 		
 		window.Show();
 		ShowCursor(FALSE);
-
+	
 		Peio::Gfx::WinGraphics graphics;
 		graphics.Init(window.GetHWND(), windowSize, 3, false);
-
+	
 		Peio::Win::RawMouseListener listener;
 		listener.Register(window.GetHWND());
 		Peio::Win::Input::AddListener(&listener);
@@ -139,7 +198,7 @@ int main() {
 		Handler handler;
 		Peio::Win::Input::AddEventHandler(&handler);
 		
-		UINT numVoxels = 128;
+		UINT numVoxels = 59049;
 		
 		Peio::Vxl::SubresourceBuffer<Peio::Vxl::VoxelScene> sceneBuffer;
 		sceneBuffer.Allocate(1);
@@ -152,9 +211,9 @@ int main() {
 		
 		Peio::Vxl::SubresourceBuffer<Peio::Float3> voxelPositionBuffer;
 		voxelPositionBuffer.Allocate(numVoxels);
-		
+	
 		{
-			float rad = 5.0f;
+			float rad = 200.0f;
 			for (UINT i = 0; i < numVoxels; i++) {
 				float radius = (float)i / (float)(numVoxels - 1) * rad;
 				float y = rad - (float)i / (float)(numVoxels - 1) * rad;
@@ -166,28 +225,50 @@ int main() {
 		voxelPositionBuffer.GetSubresourceBuffer()[0] = { 0.0f, 0.0f, 1.0f };
 		voxelPositionBuffer.GetSubresourceBuffer()[1] = { 1.5f, 0.0f, 1.0f };
 		voxelPositionBuffer.GetSubresourceBuffer()[2] = { 0.0f, 2.0f, 1.0f };
-		
+		//voxelPositionBuffer.GetSubresourceBuffer()[3] = { 4.0f, 2.0f, -1.0f };
+		//voxelPositionBuffer.GetSubresourceBuffer()[4] = { 5.5f, 2.0f, -1.0f };
+		//voxelPositionBuffer.GetSubresourceBuffer()[5] = { 4.0f, 4.0f, -1.0f };
+	
 		Peio::Vxl::SubresourceBuffer<UINT> voxelMaterialBuffer;
 		voxelMaterialBuffer.Allocate(numVoxels);
 		for (UINT i = 0; i < numVoxels; i++)
-		voxelMaterialBuffer.GetSubresourceBuffer()[i] = { 0 };
-
+			voxelMaterialBuffer.GetSubresourceBuffer()[i] = { 0 };
 		voxelMaterialBuffer.GetSubresourceBuffer()[0] = { 1 };
-
+	
+		PositionTree tree;
+		tree.Allocate(10, 3);
+		ZeroMemory(tree.GetBranches()[0], tree.GetNumBranches() * sizeof(Peio::Vxl::PositionBranch));
+		ZeroMemory(tree.GetLeaves(), tree.GetNumLeaves() * sizeof(Peio::Vxl::PositionLeaf));
+		tree.voxelPositions = voxelPositionBuffer.GetSubresourceBuffer();
+		for (UINT i = 0; i < numVoxels; i++) {
+			tree.Insert(Peio::Vxl::PositionLeaf{ i });
+		}
+	
+		Peio::Vxl::SubresourceBuffer<Peio::Vxl::PositionBranch> branchBuffer;
+		branchBuffer.SetBuffer(tree.GetBranches()[0], tree.GetNumBranches());
+		
+		Peio::Vxl::SubresourceBuffer<Peio::Vxl::PositionLeaf> leafBuffer;
+		leafBuffer.SetBuffer(tree.GetLeaves(), tree.GetNumLeaves());
+	
 		Peio::Gfx::ShaderResourceView srv;
 		srv.InitBuffer(
-			{ sizeof(Peio::Vxl::VoxelScene), sizeof(Material) * 2, sizeof(Peio::Float3) * numVoxels, sizeof(UINT) * numVoxels },
-			{ 1, 1, numVoxels, numVoxels },
+			{ sizeof(Peio::Vxl::VoxelScene), sizeof(Material) * 2, sizeof(Peio::Float3) * numVoxels, sizeof(UINT) * numVoxels, 
+			  sizeof(Peio::Vxl::PositionBranch) * tree.GetNumBranches(), sizeof(Peio::Vxl::PositionLeaf) * tree.GetNumLeaves() },
+			{ 1, 1, numVoxels, numVoxels, (UINT)tree.GetNumBranches(), (UINT)tree.GetNumLeaves() },
 			{ D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 			  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, 
 			  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, 
+			  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+			  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 			  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE }
 		);
 		srv.GetResources()[0].Upload(sceneBuffer.GetResourceData(), graphics.GetCommandList());
 		srv.GetResources()[1].Upload(materialBuffer.GetResourceData(), graphics.GetCommandList());
 		srv.GetResources()[2].Upload(voxelPositionBuffer.GetResourceData(), graphics.GetCommandList());
 		srv.GetResources()[3].Upload(voxelMaterialBuffer.GetResourceData(), graphics.GetCommandList());
-		
+		srv.GetResources()[4].Upload(branchBuffer.GetResourceData(), graphics.GetCommandList());
+		srv.GetResources()[5].Upload(leafBuffer.GetResourceData(), graphics.GetCommandList());
+	
 		Peio::Vxl::VoxelRenderer renderer;
 		renderer.Init(graphics.GetCommandList(), &srv, {}, {}, PI / 2, (float)windowSize.y() / (float)windowSize.x());
 		
@@ -204,17 +285,18 @@ int main() {
 		
 		float acceleration = 1.0f;
 		float retardation = 0.5f;
-		
-		Peio::Gfx::MultiPassGraphics mpGraphics;
-		mpGraphics.Init(DXGI_FORMAT_R32G32B32A32_FLOAT, windowSize, 3, 2);
-		
-		Peio::Vxl::DenoiseRenderer denoiser;
-		denoiser.Init(graphics.GetCommandList(), (Peio::Float2)windowSize);
-
+	
 		while (true) {
 			window.HandleMessages();
 			double deltaTime = deltaClock.Restart().Seconds();
 		
+			if (Keydown(VK_CONTROL)) {
+				acceleration = 10.0f;
+			}
+			else {
+				acceleration = 1.0f;
+			}
+
 			if (Keydown('W')) {
 				camera.velocity.x() += (float)deltaTime * acceleration * -sin(camera.rotation.x());
 				camera.velocity.z() += (float)deltaTime * acceleration * cos(camera.rotation.x());
@@ -256,26 +338,23 @@ int main() {
 			if (Keydown('L')) {
 				voxelPositionBuffer.GetSubresourceBuffer()[0].y() -= 0.1f;
 			}
+	
+			tree.UpdateBoundaries(tree.GetLeafIterator().GetParent());
+			
 			srv.GetResources()[2].Upload(voxelPositionBuffer.GetResourceData(), graphics.GetCommandList());
-		
+			srv.GetResources()[4].Upload(branchBuffer.GetResourceData(), graphics.GetCommandList());
+			srv.GetResources()[5].Upload(leafBuffer.GetResourceData(), graphics.GetCommandList());
+	
 			camera.position += camera.velocity;
 		
 			camera.velocity -= camera.velocity * retardation;
-			//camera.velocity -= camera.velocity * (retardation / (float)deltaTime);
 		
 			renderer.SetCameraPosition(camera.position);
 			renderer.SetCameraRotation(camera.rotation);
 			renderer.UpdateCamera(graphics.GetCommandList());
 		
 			graphics.Clear({ 0.0f, 0.0f, 0.0f, 1.0f });
-			
-			mpGraphics.BeginPass(graphics.GetCommandList(), graphics.GetFrameIndex(), { 1.0f, 0.0f, 0.0f, 1.0f });
 			renderer.Render(graphics.GetCommandList(), viewPort, scissorRect);
-			mpGraphics.EndPass(graphics.GetCommandList());
-			
-			graphics.GetRenderTargets().SetRenderTarget(graphics.GetCommandList());
-			denoiser.Render(graphics.GetCommandList(), viewPort, scissorRect, mpGraphics.GetPreviousSrv().GetHeap(), mpGraphics.GetPreviousGpuHandle());
-		
 			graphics.Render();
 		
 			while (clock.Elapsed().Seconds() < frameLength);
@@ -287,7 +366,7 @@ int main() {
 				frameCount = 0;
 			}
 		}
-
+	
 	}
 	catch (Peio::Gfx::Exception exception) {
 		std::cout << "GfxException: " << exception.msg << " " << exception.file

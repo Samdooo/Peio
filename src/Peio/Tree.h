@@ -74,15 +74,23 @@ namespace Peio {
 
 			Iterator(const Tree& tree, size_t layerIndex = 0, size_t index = 0) : tree(tree), layerIndex(layerIndex), index(index) {}
 
+			Iterator(const Iterator& that) : tree(that.tree), layerIndex(that.layerIndex), index(that.index) {}
+
+			Iterator& operator=(const Iterator& that) {
+				layerIndex = that.layerIndex;
+				index = that.index;
+				return *this;
+			}
+
 			_NODISCARD const Tree& GetTree() const noexcept {
 				return tree;
 			}
 
-			_NODISCARD UINT GetLayerIndex() const noexcept {
+			_NODISCARD size_t GetLayerIndex() const noexcept {
 				return layerIndex;
 			}
 
-			_NODISCARD UINT GetIndex() const noexcept {
+			_NODISCARD size_t GetIndex() const noexcept {
 				return index;
 			}
 
@@ -141,8 +149,16 @@ namespace Peio {
 
 		};
 
+		_NODISCARD Iterator GetIterator(size_t layerIndex, size_t index) const {
+			return Iterator(*this, layerIndex, index);
+		}
+
 		_NODISCARD Iterator GetRootIterator(size_t index = 0) const {
-			return Iterator(*this, 0, index);
+			return GetIterator(0, index);
+		}
+
+		_NODISCARD Iterator GetLeafIterator(size_t index = 0) const {
+			return GetIterator(numLayers - 1, index);
 		}
 
 	};

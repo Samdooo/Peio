@@ -16,78 +16,183 @@ struct VoxelRay {
 VoxelRay VoxelTrace(const float3 origin, const float3 ray, uint skip){
     
     const uint numLayers = 10;
-    const uint branchSize = 7;
+    const uint numChildren = 3;
     const float3 invRay = 1.0f / ray;
     const float3 invRad = abs(invRay * scene[0].voxelRadius);
-    
-    bool3 rayNeg = bool3(ray.x < 0.0f, ray.y < 0.0f, ray.z < 0.0f);
     
     VoxelRay result;
     result.side = -1;
     result.normal = ray;
     
     float minScale = 1.#INF;
-    
-    uint descriptor[2];
-    uint descriptorIndex = 0;
-    
-    uint layerIndex = 0, index = 0;
-    uint layerSize = 3;
+    uint layerSize = numChildren; // In nodes
     uint layerOffset = 0;
+    uint layerIndex = 0;
+    uint nodeIndex = 0;
     
-    bool up = true;
-    [loop] while (true) {
-        if (up){
-            if (layerIndex == numLayers - 1){
-                // Check the objects
-                
-                
-                
-            }
-            else {
-                // Zero the "two checked" descriptor bit for current layer
-                descriptor &= ~(1 << (2 * layerIndex + 1));
-                
-                // Sort by scale
-                float3 scales = 0;
-                [unroll] for (uint i = 0; i < 3; i++){
-                    uint offset = (layerOffset + index + i) * branchSize + 1;
-                    float3 minPoint = float3(asfloat(positionBranches[offset]), asfloat(positionBranches[offset + 1]), asfloat(positionBranches[offset + 2]));
-                    float3 maxPoint = float3(asfloat(positionBranches[offset + 3]), asfloat(positionBranches[offset + 4]), asfloat(positionBranches[offset + 5]));
-                    
-                    [unroll] for (uint j = 0; j < 3; j++){
-                        if (rayNeg[j]){
-                            
-                        }
-                        else {
-                            
-                        }
-                    }
-                    
-                }
-            }
-        }
-        else {
-            
-        }
-        if (up){
-            layerOffset += layerSize;
-            layerSize *= 3;
-            index *= 3;
-            layerIndex++;
-            if ((layerIndex & 7) == 0)
-                descriptorIndex++;
-        }
-        else {
-            layerOffset -= layerSize;
-            layerSize /= 3;
-            index /= 3;
-            layerIndex--;
-            if ((layerIndex & 7) == 7)
-                descriptorIndex--;
+    uint branchIndices[numLayers];
+    [unroll(numLayers)] for (uint i = 0; i < numLayers; i++)
+        branchIndices[i] = 0;
+    
+    uint descriptors[numLayers];
+    descriptors[0] = -1;
+    
+    /*
+    for (uint i = 0; i < scene[0].numVoxels; i++){
+        float3 voxel = voxelPositions[i];
+        
+        voxel -= origin;
+        voxel *= invRay;
+           
+        float curMax = min(voxel.x + invRad.x, min(voxel.y + invRad.y, voxel.z + invRad.z));
+        if (curMax <= 0.0f)
+            continue;
+        float curMin = max(voxel.x - invRad.x, max(voxel.y - invRad.y, voxel.z - invRad.z));
+        
+        if (curMax < curMin || curMin >= minScale || curMin <= 0.0f)
+            continue;
+        
+        minScale = curMin;
+        result.collisionVoxel = positionLeaves[nodeIndex + i].voxelIndex;
+        
+        result.side = 0;
+        [unroll(2)] for(int i = 1; i < 3; i++) {
+            if ((voxel[i] - invRad[i]) > (voxel[result.side] - invRad[result.side]))
+                result.side = i;
         }
     }
-    
+    for (uint i = 0; i < numChildren; i++){
+        if (!(descriptors[0] & (1 << i)))
+            continue;
+        PositionBranch branch = positionBranches[i];
+        branch.lowerBound -= origin;
+        branch.higherBound -= origin;
+        
+        branch.lowerBound *= invRay;
+        branch.higherBound *= invRay;
+        
+        float curMax = min(max(branch.lowerBound.x, branch.higherBound.x), 
+                       min(max(branch.lowerBound.y, branch.higherBound.y), 
+                           max(branch.lowerBound.z, branch.higherBound.z)));
+        if (curMax <= 0.0f)
+            continue;
+        float curMin = max(min(branch.lowerBound.x, branch.higherBound.x), 
+                       max(min(branch.lowerBound.y, branch.higherBound.y), 
+                           min(branch.lowerBound.z, branch.higherBound.z)));
+        
+        if (curMax < curMin || curMin >= minScale)
+            continue;
+            
+        result.side = 0;
+        result.collisionVoxel = 0;
+        break;
+    }
+    */
+
+    uint maxLayer = 0;
+    bool up = true;
+
+    [loop] while (true) {
+        if (layerIndex > maxLayer)
+            maxLayer = layerIndex;
+        if (layerIndex == numLayers - 1) {
+            [unroll(numChildren)] for (uint v = 0; v < numChildren; v++) {
+                if (!(descriptors[layerIndex] & (1U << (v * 2))))
+                    continue;
+                float3 voxel = voxelPositions[positionLeaves[nodeIndex + v].voxelIndex];
+                voxel -= origin;
+                voxel *= invRay;
+                
+                float curMax = min(voxel.x + invRad.x, min(voxel.y + invRad.y, voxel.z + invRad.z));
+                if (curMax <= 0.0f)
+                    continue;
+                float curMin = max(voxel.x - invRad.x, max(voxel.y - invRad.y, voxel.z - invRad.z));
+                
+                if (curMax < curMin || curMin >= minScale || curMin <= 0.0f)
+                    continue;
+                
+                minScale = curMin;
+                result.collisionVoxel = positionLeaves[nodeIndex + v].voxelIndex;
+                
+                result.side = 0;
+                [unroll(2)] for(int j = 1; j < 3; j++) {
+                    if ((voxel[j] - invRad[j]) > (voxel[result.side] - invRad[result.side]))
+                        result.side = j;
+                }
+            }
+            up = false;
+        }
+        else {
+            up = false;
+            [unroll(numChildren)] for (; branchIndices[layerIndex] < numChildren; branchIndices[layerIndex]++) {
+                if (!(descriptors[layerIndex] & (1U << (branchIndices[layerIndex] * 2))))
+                    continue;
+                PositionBranch branch = positionBranches[layerOffset + nodeIndex + branchIndices[layerIndex]];
+                
+                branch.lowerBound -= origin;
+                branch.higherBound -= origin;
+                
+                branch.lowerBound *= invRay;
+                branch.higherBound *= invRay;
+                
+                float curMax = min(max(branch.lowerBound.x, branch.higherBound.x), 
+                               min(max(branch.lowerBound.y, branch.higherBound.y), 
+                                   max(branch.lowerBound.z, branch.higherBound.z)));
+                if (curMax <= 0.0f)
+                    continue;
+                float curMin = max(min(branch.lowerBound.x, branch.higherBound.x), 
+                               max(min(branch.lowerBound.y, branch.higherBound.y), 
+                                   min(branch.lowerBound.z, branch.higherBound.z)));
+                
+                if (curMax < curMin || curMin >= minScale)
+                    continue;
+                
+                nodeIndex += branchIndices[layerIndex];
+                descriptors[layerIndex + 1] = branch.descriptor;
+                branchIndices[layerIndex]++;
+                branchIndices[layerIndex + 1] = 0;
+                up = true;
+                break;
+            }
+        }
+        
+        if (up){
+            layerIndex++;
+            layerOffset += layerSize;
+            layerSize *= numChildren;
+            nodeIndex *= numChildren;
+        }
+        else {
+            if (layerIndex == 0)
+                break;
+            layerIndex--;
+            layerSize /= numChildren;
+            layerOffset -= layerSize;
+            nodeIndex /= numChildren * numChildren;
+            nodeIndex *= numChildren;
+        }
+    }
+    if (result.side != -1)
+        maxLayer++;
+    if (maxLayer != 0) {
+        result.side = 0;
+        float f = (float)maxLayer / (float)numLayers;
+        result.material.colorEmission = float4(f, f, f, 1.0f);
+        return result;
+    }
+
+    if (result.side != -1){
+        result.collision = origin + (ray * minScale);
+        result.normal = ray;
+        if (result.side == 0)
+            result.normal.x = -result.normal.x;
+        else if (result.side == 1) 
+            result.normal.y = -result.normal.y;
+        else
+            result.normal.z = -result.normal.z;
+        result.material = materials[voxelMaterials[result.collisionVoxel]];
+    }
+    return result;
 }
 
 //uint MaxIndex(float3 v) {

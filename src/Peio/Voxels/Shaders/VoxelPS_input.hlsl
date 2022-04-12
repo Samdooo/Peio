@@ -35,8 +35,17 @@ StructuredBuffer<Material> materials : register(t1);
 
 StructuredBuffer<float3> voxelPositions : register(t2);
 StructuredBuffer<uint> voxelMaterials : register(t3);
-StructuredBuffer<uint> positionBranches : register(t4);
-StructuredBuffer<uint> positionLeaves : register(t5);
+
+struct PositionBranch {
+    uint descriptor;
+    float3 lowerBound, higherBound;
+};
+struct PositionLeaf {
+    uint voxelIndex;
+};
+
+StructuredBuffer<PositionBranch> positionBranches : register(t4);
+StructuredBuffer<PositionLeaf> positionLeaves : register(t5);
 
 Material GetMaterial(uint voxelIndex){
     //return materials[asuint(voxelMaterials[voxelIndex])];

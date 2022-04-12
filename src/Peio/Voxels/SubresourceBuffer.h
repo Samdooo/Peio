@@ -23,12 +23,15 @@ namespace Peio::Vxl {
 			return resourceData;
 		}
 
-		void Allocate(size_t n_elements) {
-			Release();
-			buffer = new T_element[n_elements];
+		void SetBuffer(T_element* elements, size_t numElements) {
+			buffer = elements;
 			resourceData.pData = buffer;
-			resourceData.RowPitch = n_elements * sizeof(T_element);
-			resourceData.SlicePitch = n_elements * sizeof(T_element);
+			resourceData.RowPitch = numElements * sizeof(T_element);
+			resourceData.SlicePitch = numElements * sizeof(T_element);
+		}
+
+		void Allocate(size_t numElements) {
+			SetBuffer(new T_element[numElements], numElements);
 		}
 
 		void Release() {
