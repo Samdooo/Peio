@@ -27,7 +27,7 @@ struct Handler : public Peio::EventHandler<Peio::Win::RawMouseMoveEvent> {
 	Peio::Float2* rotation = nullptr;
 
 	void Handle(Peio::Win::RawMouseMoveEvent& event) override {
-		if (!Keydown(VK_CONTROL)) {
+		if (!Keydown(VK_ESCAPE)) {
 			*rotation -= (Peio::Float2)event.movement / 1000.0f;
 			SetCursorPos(200, 200);
 		}
@@ -198,7 +198,7 @@ int main() {
 		Handler handler;
 		Peio::Win::Input::AddEventHandler(&handler);
 		
-		UINT numVoxels = 59049;
+		UINT numVoxels = 150 * 150 * 150;
 		
 		Peio::Vxl::SubresourceBuffer<Peio::Vxl::VoxelScene> sceneBuffer;
 		sceneBuffer.Allocate(1);
@@ -212,19 +212,27 @@ int main() {
 		Peio::Vxl::SubresourceBuffer<Peio::Float3> voxelPositionBuffer;
 		voxelPositionBuffer.Allocate(numVoxels);
 	
-		{
-			float rad = 200.0f;
-			for (UINT i = 0; i < numVoxels; i++) {
-				float radius = (float)i / (float)(numVoxels - 1) * rad;
-				float y = rad - (float)i / (float)(numVoxels - 1) * rad;
-				float x = cos(GOLDEN_ANGLE * i) * radius;
-				float z = sin(GOLDEN_ANGLE * i) * radius;
-				voxelPositionBuffer.GetSubresourceBuffer()[i] = { x, y, z };
+		//{
+		//	float rad = 200.0f;
+		//	for (UINT i = 0; i < numVoxels; i++) {
+		//		float radius = (float)i / (float)(numVoxels - 1) * rad;
+		//		float y = rad - (float)i / (float)(numVoxels - 1) * rad;
+		//		float x = cos(GOLDEN_ANGLE * i) * radius;
+		//		float z = sin(GOLDEN_ANGLE * i) * radius;
+		//		voxelPositionBuffer.GetSubresourceBuffer()[i] = { x, y, z };
+		//	}
+		//}
+		for (UINT x = 0; x < 150; x++) {
+			for (UINT y = 0; y < 150; y++) {
+				for (UINT z = 0; z < 150; z++) {
+					voxelPositionBuffer.GetSubresourceBuffer()[(x * 150 * 150) + (y * 150) + z] = { (float)x * 2, (float)y * 2, (float)z * 2 };
+				}
 			}
 		}
+
 		voxelPositionBuffer.GetSubresourceBuffer()[0] = { 0.0f, 0.0f, 1.0f };
-		voxelPositionBuffer.GetSubresourceBuffer()[1] = { 1.5f, 0.0f, 1.0f };
-		voxelPositionBuffer.GetSubresourceBuffer()[2] = { 0.0f, 2.0f, 1.0f };
+		//voxelPositionBuffer.GetSubresourceBuffer()[1] = { 1.5f, 0.0f, 1.0f };
+		//voxelPositionBuffer.GetSubresourceBuffer()[2] = { 0.0f, 2.0f, 1.0f };
 		//voxelPositionBuffer.GetSubresourceBuffer()[3] = { 4.0f, 2.0f, -1.0f };
 		//voxelPositionBuffer.GetSubresourceBuffer()[4] = { 5.5f, 2.0f, -1.0f };
 		//voxelPositionBuffer.GetSubresourceBuffer()[5] = { 4.0f, 4.0f, -1.0f };
@@ -236,7 +244,7 @@ int main() {
 		voxelMaterialBuffer.GetSubresourceBuffer()[0] = { 1 };
 	
 		PositionTree tree;
-		tree.Allocate(10, 3);
+		tree.Allocate(14, 3);
 		ZeroMemory(tree.GetBranches()[0], tree.GetNumBranches() * sizeof(Peio::Vxl::PositionBranch));
 		ZeroMemory(tree.GetLeaves(), tree.GetNumLeaves() * sizeof(Peio::Vxl::PositionLeaf));
 		tree.voxelPositions = voxelPositionBuffer.GetSubresourceBuffer();
