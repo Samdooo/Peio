@@ -9,7 +9,7 @@ void Peio::Gfx::ShaderResourceView::Init(const std::vector<D3D12_RESOURCE_DESC>&
 	descriptorHeap.Init(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, (UINT)numResources, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 
 	CD3DX12_CPU_DESCRIPTOR_HANDLE handle = (CD3DX12_CPU_DESCRIPTOR_HANDLE)descriptorHeap.GetCPUHandle();
-
+	
 	resources = new Resource[numResources];
 
 	for (UINT i = 0; i < numResources; i++) {

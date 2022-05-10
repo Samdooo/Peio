@@ -3,7 +3,6 @@
 #include "Resource.h"
 #include "DescriptorHeap.h"
 
-
 namespace Peio::Gfx {
 
 	class PEIO_GFX_EXPORT ShaderResourceView {

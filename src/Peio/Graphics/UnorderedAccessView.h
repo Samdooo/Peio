@@ -1,23 +1,30 @@
 #pragma once
 
-#include "DescriptorHeap.h"
 #include "Resource.h"
+#include "DescriptorHeap.h"
 
 namespace Peio::Gfx {
 
-	class PEIO_GFX_EXPORT UnorderedAccessView {
+	struct PEIO_GFX_EXPORT UnorderedAccessView {
 
-	protected:
-		DescriptorHeap descriptorHeap;
-		Resource* resources = nullptr;
-
-	public:
-
-		void Init(const std::vector<UINT64>& sizes, const std::vector<UINT64>& numElements, ID3D12GraphicsCommandList* cmdList);
+		void Init(const std::vector<D3D12_RESOURCE_DESC>& descs, const std::vector<D3D12_RESOURCE_STATES>& states, const std::vector<D3D12_UNORDERED_ACCESS_VIEW_DESC>& uavDescs);
+		//void InitTexture2D()
 
 		_NODISCARD DescriptorHeap& GetDescriptorHeap() noexcept;
+		_NODISCARD ID3D12DescriptorHeap** GetDescriptorHeaps() const noexcept;
 		_NODISCARD Resource* GetResources() const noexcept;
-		_NODISCARD void** GetPointers() const noexcept;
+		_NODISCARD UINT GetNumResources() const noexcept;
+
+		void Release();
+
+		~UnorderedAccessView();
+
+	protected:
+
+		ID3D12DescriptorHeap** descriptorHeaps = new ID3D12DescriptorHeap * [1];
+		DescriptorHeap descriptorHeap = {};
+		Resource* resources = nullptr;
+		UINT numResources = 0;
 
 	};
 
