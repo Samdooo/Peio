@@ -16,6 +16,9 @@
 #include <dxgi1_4.h>
 #include <wrl.h>
 
+#undef min
+#undef max
+
 #pragma comment(lib, "D3D12.lib")
 #pragma comment(lib, "DXGI.lib")
 #pragma comment(lib, "dxguid.lib")

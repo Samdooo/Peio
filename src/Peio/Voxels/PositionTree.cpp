@@ -108,10 +108,6 @@ namespace Peio::Vxl {
 			for (size_t i = 0; i < numChildren; i++) {
 				if (!branch.HasFull(i)) {
 					return Insert(leaf, it.GetChild(i), i);
-					//branch.HasChild(i, true);
-					//if (it.GetChild(i).IsLeaf() || it.GetChild(i).GetBranch().IsFull(numChildren))
-					//	it.GetBranch().HasFull(i, true);
-					return true;
 				}
 			}
 			return false;
@@ -129,5 +125,155 @@ namespace Peio::Vxl {
 			return true;
 		}
 	}
+
+	void PositionTree::Remove(const Iterator& it) const
+	{
+		if (it.IsBranch()) {
+			throw PEIO_EXCEPTION("Tried to remove a Branch.");
+		}
+		if (!it.HasParent())
+			return;
+		PositionBranch& branch = it.GetParent().GetBranch();
+		branch.HasChild(it.GetIndex() % numChildren, false);
+		branch.HasFull(it.GetIndex() % numChildren, false);
+		if (it.GetParent().HasParent()) {
+			UpdateDescriptors(it.GetParent().GetParent());
+		}
+		UpdateBoundaries(it.GetParent());
+	}
+
+	PositionTree::Ray PositionTree::TraceRay(const Float3& origin, const Float3& ray, UINT skip)
+	{
+		const Float3 invRay = Float3(1.0f, 1.0f, 1.0f) / ray;
+		//const Float3 invRad = abs(invRay * scene[0].voxelRadius);
+
+		Ray result(GetRootIterator());
+		result.normal = ray;
+
+		float minScale = D3D12_FLOAT32_MAX;
+		uint layerSize = numChildren; // In nodes
+		uint layerOffset = 0;
+		uint layerIndex = 0;
+		uint nodeIndex = 0;
+
+		std::vector<uint> branchIndices(numLayers, 0);
+		std::vector<uint> descriptors(numLayers, 0);
+		descriptors[0] = -1;
+
+		bool up = true;
+
+		while (true) {
+			up = false;
+			for (; branchIndices[layerIndex] < numChildren; branchIndices[layerIndex]++) {
+				if (!(descriptors[layerIndex] & (1U << (branchIndices[layerIndex] * 2))))
+					continue;
+				Array<Float3, 2> boundaries = 
+					(layerIndex == numLayers - 1)
+					? GetBoundaries(leaves[nodeIndex + branchIndices[layerIndex]].index)
+					: branches[0][layerOffset + nodeIndex + branchIndices[layerIndex]].boundaries;
+				//PositionBranch branch = branches[0][layerOffset + nodeIndex + branchIndices[layerIndex]];
+
+				boundaries -= origin;
+				boundaries *= invRay;
+
+				float curMax = std::min(std::max(boundaries[0].x(), boundaries[1].x()),
+					std::min(std::max(boundaries[0].y(), boundaries[1].y()),
+						std::max(boundaries[0].z(), boundaries[1].z())));
+				if (curMax <= 0.0f)
+					continue;
+				float curMin = std::max(std::min(boundaries[0].x(), boundaries[1].x()),
+					std::max(std::min(boundaries[0].y(), boundaries[1].y()),
+						std::min(boundaries[0].z(), boundaries[1].z())));
+
+				if (curMax < curMin || curMin >= minScale)
+					continue;
+
+				if (layerIndex == numLayers - 1) {
+					minScale = curMin;
+					result.it = GetLeafIterator(nodeIndex + branchIndices[layerIndex]);
+					result.collisionVoxel = leaves[nodeIndex + branchIndices[layerIndex]].index;
+					result.side = 0;
+					for (int i = 1; i < 3; i++) {
+						if (std::min(boundaries[0][i], boundaries[1][i]) > std::min(boundaries[0][result.side], boundaries[1][result.side]))
+							result.side = i;
+					}
+				}
+				else {
+					nodeIndex += branchIndices[layerIndex];
+					descriptors[layerIndex + 1] = branches[0][layerOffset + nodeIndex + branchIndices[layerIndex]].descriptor._Getword(0);
+					branchIndices[layerIndex]++;
+					branchIndices[layerIndex + 1] = 0;
+					up = true;
+					break;
+				}
+			}
+			if (up) {
+				layerIndex++;
+				layerOffset += layerSize;
+				layerSize *= numChildren;
+				nodeIndex *= numChildren;
+			}
+			else {
+				if (layerIndex == 0)
+					break;
+				layerIndex--;
+				layerSize /= numChildren;
+				layerOffset -= layerSize;
+				nodeIndex /= numChildren * numChildren;
+				nodeIndex *= numChildren;
+			}
+		}
+		if (result.side != -1) {
+			result.collision = origin + (ray * minScale);
+			result.normal[result.side] = -result.normal[result.side];
+		}
+		return result;
+	}
+
+	//PositionTree::Iterator PositionTree::TraceRay(const Float3& origin, const Float3& ray, UINT skip)
+	//{
+	//	Iterator result = GetRootIterator();
+	//	float minScale = D3D12_FLOAT32_MAX;
+	//	for (size_t i = 0; i < numChildren; i++) {
+	//		Iterator it = GetRootIterator(i);
+	//		TraceRay(origin, ray, skip, it, minScale, result);
+	//	}
+	//	return result;
+	//}
+	//
+	//void PositionTree::TraceRay(const Float3& origin, const Float3& ray, UINT skip, Iterator it, float& minScale, Iterator& result)
+	//{
+	//	Array<Float3, 2> boundaries = it.IsLeaf() ? GetBoundaries(it.GetLeaf().index) : it.GetBranch().boundaries;
+	//	boundaries[0] -= origin;
+	//	boundaries[1] -= origin;
+	//	boundaries[0] /= ray;
+	//	boundaries[1] /= ray;
+	//
+	//	float curMax = std::min(std::max(boundaries[0].x(), boundaries[1].x()),
+	//		std::min(std::max(boundaries[0].y(), boundaries[1].y()),
+	//			std::max(boundaries[0].z(), boundaries[1].z())));
+	//
+	//	if (curMax <= 0.0f)
+	//		return;
+	//
+	//	float curMin = std::max(std::min(boundaries[0].x(), boundaries[1].x()),
+	//		std::max(std::min(boundaries[0].y(), boundaries[1].y()),
+	//			std::min(boundaries[0].z(), boundaries[1].z())));
+	//
+	//	if (curMin > curMax || curMin >= minScale)
+	//		return;
+	//
+	//	if (it.IsLeaf()) {
+	//		result = it;
+	//		minScale = curMin;
+	//	}
+	//	else {
+	//		for (size_t i = 0; i < numChildren; i++) {
+	//			if (it.GetBranch().HasChild(i)) {
+	//				TraceRay(origin, ray, skip, it.GetChild(i), minScale, result);
+	//			}
+	//		}
+	//	}
+	//}
 
 }
