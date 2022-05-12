@@ -3,7 +3,7 @@
 
 namespace Peio::Vxl {
 
-	void VoxelRenderer::Init(ID3D12GraphicsCommandList* cmdList, Gfx::ShaderResourceView* srv, Float3 cameraPosition, Float2 cameraRotation, float fov, float aspectRatio)
+	void VoxelRenderer::Init(ID3D12GraphicsCommandList* cmdList, Gfx::ShaderResourceView* srv, Gfx::UnorderedAccessView* uav, Float3 cameraPosition, Float2 cameraRotation, float fov, float aspectRatio)
 	{
 		vertexBuffer.Allocate(6);
 		for (UINT i = 0; i < 6; i++) {
@@ -14,17 +14,19 @@ namespace Peio::Vxl {
 		vertexBuffer.Upload(cmdList);
 
 		this->srv = srv;
+		this->uav = uav;
 
-		std::vector<D3D12_ROOT_PARAMETER> rootParams(srv->GetNumResources());
+		std::vector<D3D12_ROOT_PARAMETER> rootParams(srv->GetNumResources() + uav->GetNumResources());
 		for (UINT i = 0; i < srv->GetNumResources(); i++)
 			rootParams[i] = Gfx::RootParameter::CreateShaderResourceView(i, D3D12_SHADER_VISIBILITY_PIXEL);
+		for (UINT i = 0; i < uav->GetNumResources(); i++)
+			rootParams[srv->GetNumResources() + i] = Gfx::RootParameter::CreateUnorderedAccessView(i + 1, D3D12_SHADER_VISIBILITY_PIXEL);
 
 		rootSignature = Gfx::RootSignature::Create(rootParams, {},
 			D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
 			D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
 			D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
 			D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS);
-
 
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc = Gfx::PipelineState::CreateDesc(
 			Gfx::InputLayout::Create({
@@ -81,6 +83,8 @@ namespace Peio::Vxl {
 
 		for (UINT i = 0; i < srv->GetNumResources(); i++)
 			cmdList->SetGraphicsRootShaderResourceView(i, srv->GetResources()[i].GetGPUAddress());
+		for (UINT i = 0; i < uav->GetNumResources(); i++)
+			cmdList->SetGraphicsRootUnorderedAccessView(i + 1, uav->GetResources()[i].GetGPUAddress());
 
 		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		cmdList->IASetVertexBuffers(0, 1, &vertexBuffer.GetBufferView());

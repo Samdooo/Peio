@@ -2,6 +2,7 @@
 
 #include "VertexBuffer.h"
 #include "..\Graphics\ShaderResourceView.h"
+#include "..\Graphics\UnorderedAccessView.h"
 #include "..\Graphics\InputLayout.h"
 #include "..\Graphics\PipelineStateHeader.h"
 
@@ -9,7 +10,7 @@ namespace Peio::Vxl {
 
 	struct PEIO_VXL_EXPORT VoxelRenderer {
 
-		void Init(ID3D12GraphicsCommandList* cmdList, Gfx::ShaderResourceView* srv, Float3 cameraPosition, Float2 cameraRotation, float fov, float aspectRatio);
+		void Init(ID3D12GraphicsCommandList* cmdList, Gfx::ShaderResourceView* srv, Gfx::UnorderedAccessView* uav, Float3 cameraPosition, Float2 cameraRotation, float fov, float aspectRatio);
 
 		void SetCameraPosition(Float3 position);
 		void SetCameraRotation(Float2 rotation);
@@ -34,6 +35,7 @@ namespace Peio::Vxl {
 		Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState = nullptr;
 
 		Gfx::ShaderResourceView* srv = nullptr;
+		Gfx::UnorderedAccessView* uav = nullptr;
 
 	};
 

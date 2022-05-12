@@ -25,6 +25,28 @@ namespace Peio::Gfx {
 		descriptorHeaps[0] = descriptorHeap.GetHeap();
 	}
 
+	void UnorderedAccessView::InitBuffer(const std::vector<UINT64>& sizes, const std::vector<UINT>& numElements, const std::vector<D3D12_RESOURCE_STATES>& states)
+	{
+		numResources = sizes.size();
+
+		std::vector<D3D12_RESOURCE_DESC> resourceDescs(numResources);
+		std::vector<D3D12_UNORDERED_ACCESS_VIEW_DESC> uavDescs(numResources);
+
+		for (UINT i = 0; i < numResources; i++) {
+			resourceDescs[i] = CD3DX12_RESOURCE_DESC::Buffer(sizes[i]);
+			resourceDescs[i].Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+
+			uavDescs[i].ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+			uavDescs[i].Format = DXGI_FORMAT_UNKNOWN;
+			uavDescs[i].Buffer.FirstElement = 0;
+			uavDescs[i].Buffer.NumElements = numElements[i];
+			uavDescs[i].Buffer.StructureByteStride = (UINT)(sizes[i] / numElements[i]);
+			uavDescs[i].Buffer.CounterOffsetInBytes = 0;
+			uavDescs[i].Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
+		}
+		Init(resourceDescs, states, uavDescs);
+	}
+
 	void UnorderedAccessView::InitTexture2D(const std::vector<Uint2>& sizes, const std::vector<DXGI_FORMAT>& formats, const std::vector<D3D12_RESOURCE_STATES>& states)
 	{
 		numResources = sizes.size();
