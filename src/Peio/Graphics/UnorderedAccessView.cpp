@@ -25,6 +25,32 @@ namespace Peio::Gfx {
 		descriptorHeaps[0] = descriptorHeap.GetHeap();
 	}
 
+	void UnorderedAccessView::InitTexture2D(const std::vector<Uint2>& sizes, const std::vector<DXGI_FORMAT>& formats, const std::vector<D3D12_RESOURCE_STATES>& states)
+	{
+		numResources = sizes.size();
+
+		std::vector<D3D12_RESOURCE_DESC> resourceDescs(numResources);
+		std::vector<D3D12_UNORDERED_ACCESS_VIEW_DESC> uavDescs(numResources);
+
+		for (UINT i = 0; i < numResources; i++) {
+			resourceDescs[i].Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+			resourceDescs[i].Format = formats[i];
+			resourceDescs[i].Width = sizes[i].x();
+			resourceDescs[i].Height = sizes[i].y();
+			resourceDescs[i].DepthOrArraySize = 1;
+			resourceDescs[i].Alignment = 0;
+			resourceDescs[i].Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+			resourceDescs[i].MipLevels = 1;
+			resourceDescs[i].SampleDesc = { 1, 0 };
+			resourceDescs[i].Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+
+			uavDescs[i].ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
+			uavDescs[i].Format = formats[i];
+			uavDescs[i].Texture2D = { 0, 0 };
+		}
+		Init(resourceDescs, states, uavDescs);
+	}
+
 	DescriptorHeap& UnorderedAccessView::GetDescriptorHeap() noexcept
 	{
 		return descriptorHeap;
