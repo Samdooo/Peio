@@ -42,13 +42,13 @@ void Peio::Gfx::RootSignature::Init(D3D12_ROOT_SIGNATURE_FLAGS flags)
 	UINT srvIndex = 0;
 	for (UINT i = 0; i < srvs.size(); i++) {
 		for (UINT j = 0; j < srvs[i].GetNumResources(); j++) {
-			RootParameter::CreateShaderResourceView(srvIndex++, srvs[i].GetVisibility());
+			rootParameters.push_back(RootParameter::CreateShaderResourceView(srvIndex++, srvs[i].GetVisibility()));
 		}
 	}
 	UINT uavIndex = 1;
 	for (UINT i = 0; i < uavs.size(); i++) {
 		for (UINT j = 0; j < uavs[i].GetNumResources(); j++) {
-			RootParameter::CreateShaderResourceView(uavIndex++, uavs[i].GetVisibility());
+			rootParameters.push_back(RootParameter::CreateUnorderedAccessView(uavIndex++, uavs[i].GetVisibility()));
 		}
 	}
 

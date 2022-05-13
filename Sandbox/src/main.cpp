@@ -236,6 +236,10 @@ int main() {
 		Peio::Vxl::SubresourceBuffer<Peio::Float4> uavBuffer;
 		uavBuffer.Allocate(640 * 360);
 
+		for (UINT i = 0; i < 640 * 360; i++) {
+			uavBuffer.GetSubresourceBuffer()[i] = { 0.1f, 0.5f, 0.8f, 1.0f };
+		}
+
 		Peio::Gfx::RootSignature rootSignature;
 		rootSignature.uavs.resize(1);
 		rootSignature.uavs[0].Init(1);
