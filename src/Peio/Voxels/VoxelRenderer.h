@@ -1,8 +1,7 @@
 #pragma once
 
 #include "VertexBuffer.h"
-#include "..\Graphics\ShaderResourceView.h"
-#include "..\Graphics\UnorderedAccessView.h"
+#include "..\Graphics\RootSignature.h"
 #include "..\Graphics\InputLayout.h"
 #include "..\Graphics\PipelineStateHeader.h"
 
@@ -10,7 +9,7 @@ namespace Peio::Vxl {
 
 	struct PEIO_VXL_EXPORT VoxelRenderer {
 
-		void Init(ID3D12GraphicsCommandList* cmdList, Gfx::ShaderResourceView* srv, Gfx::UnorderedAccessView* uav, Float3 cameraPosition, Float2 cameraRotation, float fov, float aspectRatio);
+		void Init(ID3D12GraphicsCommandList* cmdList, Gfx::RootSignature* rootSignature, Float3 cameraPosition, Float2 cameraRotation, float fov, float aspectRatio);
 
 		void SetCameraPosition(Float3 position);
 		void SetCameraRotation(Float2 rotation);
@@ -31,11 +30,8 @@ namespace Peio::Vxl {
 		};
 		VertexBuffer<InputVertex> vertexBuffer = {};
 
-		Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature = nullptr;
+		Gfx::RootSignature* rootSignature = nullptr;
 		Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState = nullptr;
-
-		Gfx::ShaderResourceView* srv = nullptr;
-		Gfx::UnorderedAccessView* uav = nullptr;
 
 	};
 

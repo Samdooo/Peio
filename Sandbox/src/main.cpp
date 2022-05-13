@@ -120,118 +120,136 @@ int main() {
 		Peio::Gfx::WinGraphics graphics;
 		graphics.Init(window.GetHWND(), windowSize, 3, false);
 	
-		Peio::Win::RawMouseListener listener;
-		listener.Register(window.GetHWND());
-		Peio::Win::Input::AddListener(&listener);
-		
-		Handler handler;
-		Peio::Win::Input::AddEventHandler(&handler);
-		
-		UINT numVoxels = 10 * 10 * 10;
-		
-		Peio::Vxl::SubresourceBuffer<Peio::Vxl::VoxelScene> sceneBuffer;
-		sceneBuffer.Allocate(1);
-		sceneBuffer.GetSubresourceBuffer()[0] = { numVoxels, 0, 0.5f, 9, 3, 0.01f, 0.99f };
-		
-		Peio::Vxl::SubresourceBuffer<Material> materialBuffer;
-		materialBuffer.Allocate(2);
-		materialBuffer.GetSubresourceBuffer()[0] = { { 0.0f, 0.5f, 0.7f, 1.0f }, { 0.0f, 0.0f, 0.0f }, 1.0f };
-		materialBuffer.GetSubresourceBuffer()[1] = { { 0.0f, 0.0f, 0.0f, 1.0f }, { 10.0f, 0.0f, 10.0f }, 1.0f };
-		
-		Peio::Vxl::SubresourceBuffer<Peio::Float3> voxelPositionBuffer;
-		voxelPositionBuffer.Allocate(numVoxels);
-
-		//{
-		//	float rad = 200.0f;
-		//	for (UINT i = 0; i < numVoxels; i++) {
-		//		float radius = (float)i / (float)(numVoxels - 1) * rad;
-		//		float y = rad - (float)i / (float)(numVoxels - 1) * rad;
-		//		float x = cos(GOLDEN_ANGLE * i) * radius;
-		//		float z = sin(GOLDEN_ANGLE * i) * radius;
-		//		voxelPositionBuffer.GetSubresourceBuffer()[i] = { x, y, z };
+		//Peio::Win::RawMouseListener listener;
+		//listener.Register(window.GetHWND());
+		//Peio::Win::Input::AddListener(&listener);
+		//
+		//Handler handler;
+		//Peio::Win::Input::AddEventHandler(&handler);
+		//
+		//UINT numVoxels = 10 * 10 * 10;
+		//
+		//Peio::Vxl::SubresourceBuffer<Peio::Vxl::VoxelScene> sceneBuffer;
+		//sceneBuffer.Allocate(1);
+		//sceneBuffer.GetSubresourceBuffer()[0] = { numVoxels, 0, 0.5f, 9, 3, 0.01f, 0.99f };
+		//
+		//Peio::Vxl::SubresourceBuffer<Material> materialBuffer;
+		//materialBuffer.Allocate(2);
+		//materialBuffer.GetSubresourceBuffer()[0] = { { 0.0f, 0.5f, 0.7f, 1.0f }, { 0.0f, 0.0f, 0.0f }, 1.0f };
+		//materialBuffer.GetSubresourceBuffer()[1] = { { 0.0f, 0.0f, 0.0f, 1.0f }, { 10.0f, 0.0f, 10.0f }, 1.0f };
+		//
+		//Peio::Vxl::SubresourceBuffer<Peio::Float3> voxelPositionBuffer;
+		//voxelPositionBuffer.Allocate(numVoxels);
+		//
+		////{
+		////	float rad = 200.0f;
+		////	for (UINT i = 0; i < numVoxels; i++) {
+		////		float radius = (float)i / (float)(numVoxels - 1) * rad;
+		////		float y = rad - (float)i / (float)(numVoxels - 1) * rad;
+		////		float x = cos(GOLDEN_ANGLE * i) * radius;
+		////		float z = sin(GOLDEN_ANGLE * i) * radius;
+		////		voxelPositionBuffer.GetSubresourceBuffer()[i] = { x, y, z };
+		////	}
+		////}
+		//for (UINT x = 0; x < 10; x++) {
+		//	for (UINT y = 0; y < 10; y++) {
+		//		for (UINT z = 0; z < 10; z++) {
+		//			voxelPositionBuffer.GetSubresourceBuffer()[(x * 10 * 10) + (y * 10) + z] = { (float)x * 2, (float)y * 2, (float)z * 2 };
+		//		}
 		//	}
 		//}
-		for (UINT x = 0; x < 10; x++) {
-			for (UINT y = 0; y < 10; y++) {
-				for (UINT z = 0; z < 10; z++) {
-					voxelPositionBuffer.GetSubresourceBuffer()[(x * 10 * 10) + (y * 10) + z] = { (float)x * 2, (float)y * 2, (float)z * 2 };
-				}
-			}
-		}
-
-		//voxelPositionBuffer.GetSubresourceBuffer()[0] = { 0.0f, 0.0f, 1.0f };
-		//voxelPositionBuffer.GetSubresourceBuffer()[1] = { 1.5f, 0.0f, 1.0f };
-		//voxelPositionBuffer.GetSubresourceBuffer()[2] = { 0.0f, 2.0f, 1.0f };
-		//voxelPositionBuffer.GetSubresourceBuffer()[3] = { 4.0f, 2.0f, -1.0f };
-		//voxelPositionBuffer.GetSubresourceBuffer()[4] = { 5.5f, 2.0f, -1.0f };
-		//voxelPositionBuffer.GetSubresourceBuffer()[5] = { 4.0f, 4.0f, -1.0f };
-	
-		Peio::Vxl::SubresourceBuffer<UINT> voxelMaterialBuffer;
-		voxelMaterialBuffer.Allocate(numVoxels);
-		for (UINT i = 0; i < numVoxels; i++)
-			voxelMaterialBuffer.GetSubresourceBuffer()[i] = { 0 };
-		voxelMaterialBuffer.GetSubresourceBuffer()[0] = { 1 };
-	
-		PositionTree tree;
-		tree.Allocate(14, 3);
-		ZeroMemory(tree.GetBranches()[0], tree.GetNumBranches() * sizeof(Peio::Vxl::PositionBranch));
-		ZeroMemory(tree.GetLeaves(), tree.GetNumLeaves() * sizeof(Peio::Vxl::PositionLeaf));
-		tree.voxelPositions = voxelPositionBuffer.GetSubresourceBuffer();
-		for (UINT i = 0; i < numVoxels; i++) {
-			tree.Insert(Peio::Vxl::PositionLeaf{ i });
-		}
-	
-		Peio::Vxl::SubresourceBuffer<Peio::Vxl::PositionBranch> branchBuffer;
-		branchBuffer.SetBuffer(tree.GetBranches()[0], tree.GetNumBranches());
+		//
+		////voxelPositionBuffer.GetSubresourceBuffer()[0] = { 0.0f, 0.0f, 1.0f };
+		////voxelPositionBuffer.GetSubresourceBuffer()[1] = { 1.5f, 0.0f, 1.0f };
+		////voxelPositionBuffer.GetSubresourceBuffer()[2] = { 0.0f, 2.0f, 1.0f };
+		////voxelPositionBuffer.GetSubresourceBuffer()[3] = { 4.0f, 2.0f, -1.0f };
+		////voxelPositionBuffer.GetSubresourceBuffer()[4] = { 5.5f, 2.0f, -1.0f };
+		////voxelPositionBuffer.GetSubresourceBuffer()[5] = { 4.0f, 4.0f, -1.0f };
+		//
+		//Peio::Vxl::SubresourceBuffer<UINT> voxelMaterialBuffer;
+		//voxelMaterialBuffer.Allocate(numVoxels);
+		//for (UINT i = 0; i < numVoxels; i++)
+		//	voxelMaterialBuffer.GetSubresourceBuffer()[i] = { 0 };
+		//voxelMaterialBuffer.GetSubresourceBuffer()[0] = { 1 };
+		//
+		//PositionTree tree;
+		//tree.Allocate(14, 3);
+		//ZeroMemory(tree.GetBranches()[0], tree.GetNumBranches() * sizeof(Peio::Vxl::PositionBranch));
+		//ZeroMemory(tree.GetLeaves(), tree.GetNumLeaves() * sizeof(Peio::Vxl::PositionLeaf));
+		//tree.voxelPositions = voxelPositionBuffer.GetSubresourceBuffer();
+		//for (UINT i = 0; i < numVoxels; i++) {
+		//	tree.Insert(Peio::Vxl::PositionLeaf{ i });
+		//}
+		//
+		//Peio::Vxl::SubresourceBuffer<Peio::Vxl::PositionBranch> branchBuffer;
+		//branchBuffer.SetBuffer(tree.GetBranches()[0], tree.GetNumBranches());
+		//
+		//Peio::Vxl::SubresourceBuffer<Peio::Vxl::PositionLeaf> leafBuffer;
+		//leafBuffer.SetBuffer(tree.GetLeaves(), tree.GetNumLeaves());
+		//
+		//Peio::Gfx::ShaderResourceView srv;
+		//srv.InitBuffer(
+		//	{ sizeof(Peio::Vxl::VoxelScene), sizeof(Material) * 2, sizeof(Peio::Float3) * numVoxels, sizeof(UINT) * numVoxels, 
+		//	  sizeof(Peio::Vxl::PositionBranch) * tree.GetNumBranches(), sizeof(Peio::Vxl::PositionLeaf) * tree.GetNumLeaves() },
+		//	{ 1, 1, numVoxels, numVoxels, (UINT)tree.GetNumBranches(), (UINT)tree.GetNumLeaves() },
+		//	{ D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		//	  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, 
+		//	  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, 
+		//	  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		//	  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		//	  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE }
+		//);
+		//srv.GetResources()[0].Upload(sceneBuffer.GetResourceData(), graphics.GetCommandList());
+		//srv.GetResources()[1].Upload(materialBuffer.GetResourceData(), graphics.GetCommandList());
+		//srv.GetResources()[2].Upload(voxelPositionBuffer.GetResourceData(), graphics.GetCommandList());
+		//srv.GetResources()[3].Upload(voxelMaterialBuffer.GetResourceData(), graphics.GetCommandList());
+		//srv.GetResources()[4].Upload(branchBuffer.GetResourceData(), graphics.GetCommandList());
+		//srv.GetResources()[5].Upload(leafBuffer.GetResourceData(), graphics.GetCommandList());
+		//
+		//
+		//Peio::Gfx::UnorderedAccessView uav;
+		//uav.InitBuffer({ sizeof(float) * 640 * 360 * 4 }, { 640 * 360 }, { D3D12_RESOURCE_STATE_UNORDERED_ACCESS/*D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE*/});
+		//
+		//float* uavTextureData = new float[640 * 360 * 4];
+		//for (UINT i = 0; i < 360; i++) {
+		//	for (UINT j = 0; j < 640; j++) {
+		//		uavTextureData[(i * 640 + j) * 4 + 0] = 50.0f / 255.0f;
+		//		uavTextureData[(i * 640 + j) * 4 + 1] = 150.0f / 255.0f;
+		//		uavTextureData[(i * 640 + j) * 4 + 2] = 200.0f / 255.0f;
+		//		uavTextureData[(i * 640 + j) * 4 + 3] = 255.0f / 255.0f;
+		//	}
+		//}
+		//
+		//Peio::Vxl::SubresourceBuffer<float> uavTextureBuffer;
+		//uavTextureBuffer.SetBuffer(uavTextureData, 640 * 360 * 4);
+		//uav.GetResources()[0].Upload(uavTextureBuffer.GetResourceData(), graphics.GetCommandList());
+		//
+		////uav.GetResources()[0].Transition(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, graphics.GetCommandList());
+		//
+		//Peio::Vxl::VoxelRenderer renderer;
+		//renderer.Init(graphics.GetCommandList(), &srv, &uav, {}, {}, PI / 2, (float)windowSize.y() / (float)windowSize.x());
+		//
+		////Camera camera = {};
+		////handler.rotation = &camera.rotation;
 		
-		Peio::Vxl::SubresourceBuffer<Peio::Vxl::PositionLeaf> leafBuffer;
-		leafBuffer.SetBuffer(tree.GetLeaves(), tree.GetNumLeaves());
-	
-		Peio::Gfx::ShaderResourceView srv;
-		srv.InitBuffer(
-			{ sizeof(Peio::Vxl::VoxelScene), sizeof(Material) * 2, sizeof(Peio::Float3) * numVoxels, sizeof(UINT) * numVoxels, 
-			  sizeof(Peio::Vxl::PositionBranch) * tree.GetNumBranches(), sizeof(Peio::Vxl::PositionLeaf) * tree.GetNumLeaves() },
-			{ 1, 1, numVoxels, numVoxels, (UINT)tree.GetNumBranches(), (UINT)tree.GetNumLeaves() },
-			{ D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-			  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, 
-			  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, 
-			  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-			  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-			  D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE }
-		);
-		srv.GetResources()[0].Upload(sceneBuffer.GetResourceData(), graphics.GetCommandList());
-		srv.GetResources()[1].Upload(materialBuffer.GetResourceData(), graphics.GetCommandList());
-		srv.GetResources()[2].Upload(voxelPositionBuffer.GetResourceData(), graphics.GetCommandList());
-		srv.GetResources()[3].Upload(voxelMaterialBuffer.GetResourceData(), graphics.GetCommandList());
-		srv.GetResources()[4].Upload(branchBuffer.GetResourceData(), graphics.GetCommandList());
-		srv.GetResources()[5].Upload(leafBuffer.GetResourceData(), graphics.GetCommandList());
-	
+		//Peio::Float4* uavData = new Peio::Float4[640 * 360];
+		Peio::Vxl::SubresourceBuffer<Peio::Float4> uavBuffer;
+		uavBuffer.Allocate(640 * 360);
 
-		Peio::Gfx::UnorderedAccessView uav;
-		uav.InitBuffer({ sizeof(float) * 640 * 360 * 4 }, { 640 * 360 }, { D3D12_RESOURCE_STATE_UNORDERED_ACCESS/*D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE*/});
+		Peio::Gfx::RootSignature rootSignature;
+		rootSignature.uavs.resize(1);
+		rootSignature.uavs[0].Init(1);
+		rootSignature.uavs[0].CreateBufferUAV(0, uavBuffer.GetBufferSize(), uavBuffer.GetNumElements(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+		rootSignature.uavs[0].GetResources()[0].Upload(uavBuffer.GetResourceData(), graphics.GetCommandList());
 
-		float* uavTextureData = new float[640 * 360 * 4];
-		for (UINT i = 0; i < 360; i++) {
-			for (UINT j = 0; j < 640; j++) {
-				uavTextureData[(i * 640 + j) * 4 + 0] = 50.0f / 255.0f;
-				uavTextureData[(i * 640 + j) * 4 + 1] = 150.0f / 255.0f;
-				uavTextureData[(i * 640 + j) * 4 + 2] = 200.0f / 255.0f;
-				uavTextureData[(i * 640 + j) * 4 + 3] = 255.0f / 255.0f;
-			}
-		}
-
-		Peio::Vxl::SubresourceBuffer<float> uavTextureBuffer;
-		uavTextureBuffer.SetBuffer(uavTextureData, 640 * 360 * 4);
-		uav.GetResources()[0].Upload(uavTextureBuffer.GetResourceData(), graphics.GetCommandList());
-
-		//uav.GetResources()[0].Transition(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, graphics.GetCommandList());
+		rootSignature.Init(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS);
 
 		Peio::Vxl::VoxelRenderer renderer;
-		renderer.Init(graphics.GetCommandList(), &srv, &uav, {}, {}, PI / 2, (float)windowSize.y() / (float)windowSize.x());
+		renderer.Init(graphics.GetCommandList(), &rootSignature, {}, {}, PI / 2, 360.0f / 640.0f);
 
-		Camera camera = {};
-		handler.rotation = &camera.rotation;
-		
 		Peio::Clock<double> clock;
 		double frameLength = 1.0f / 300.0;
 		
@@ -247,76 +265,62 @@ int main() {
 			window.HandleMessages();
 			double deltaTime = deltaClock.Restart().Seconds();
 		
-			if (Keydown(VK_CONTROL)) {
-				acceleration = 10.0f;
-			}
-			else {
-				acceleration = 1.0f;
-			}
-			
-			if (Keydown('W')) {
-				camera.velocity.x() += (float)deltaTime * acceleration * -sin(camera.rotation.x());
-				camera.velocity.z() += (float)deltaTime * acceleration * cos(camera.rotation.x());
-			}
-			if (Keydown('S')) {
-				camera.velocity.x() -= (float)deltaTime * acceleration * -sin(camera.rotation.x());
-				camera.velocity.z() -= (float)deltaTime * acceleration * cos(camera.rotation.x());
-			}
-			if (Keydown('D')) {
-				camera.velocity.x() += (float)deltaTime * acceleration * cos(camera.rotation.x());
-				camera.velocity.z() += (float)deltaTime * acceleration * sin(camera.rotation.x());
-			}
-			if (Keydown('A')) {
-				camera.velocity.x() -= (float)deltaTime * acceleration * cos(camera.rotation.x());
-				camera.velocity.z() -= (float)deltaTime * acceleration * sin(camera.rotation.x());
-			}
-			if (Keydown(VK_SPACE)) {
-				camera.velocity.y() += (float)deltaTime * acceleration;
-			}
-			if (Keydown(VK_SHIFT)) {
-				camera.velocity.y() -= (float)deltaTime * acceleration;
-			}
-			
-			if (Keydown(VK_RIGHT)) {
-				voxelPositionBuffer.GetSubresourceBuffer()[0].x() += 0.1f;
-			}
-			if (Keydown(VK_LEFT)) {
-				voxelPositionBuffer.GetSubresourceBuffer()[0].x() -= 0.1f;
-			}
-			if (Keydown(VK_UP)) {
-				voxelPositionBuffer.GetSubresourceBuffer()[0].z() += 0.1f;
-			}
-			if (Keydown(VK_DOWN)) {
-				voxelPositionBuffer.GetSubresourceBuffer()[0].z() -= 0.1f;
-			}
-			if (Keydown('O')) {
-				voxelPositionBuffer.GetSubresourceBuffer()[0].y() += 0.1f;
-			}
-			if (Keydown('L')) {
-				voxelPositionBuffer.GetSubresourceBuffer()[0].y() -= 0.1f;
-			}
-			
-			if (Keydown('U')) {
-				//while (Keydown('U'));
-			
-				Peio::Float3 ray(0, 0, 1);
-				ray = RotateX(ray, camera.rotation.y());
-				ray = RotateY(ray, camera.rotation.x());
-				PositionTree::Ray result = tree.TraceRay(camera.position, ray, -1);
-				if (result.side != -1) {
-					tree.Remove(result.it);
-					srv.GetResources()[4].Upload(branchBuffer.GetResourceData(), graphics.GetCommandList());
-					srv.GetResources()[5].Upload(leafBuffer.GetResourceData(), graphics.GetCommandList());
-				}
-			}
+			//if (Keydown(VK_CONTROL)) {
+			//	acceleration = 10.0f;
+			//}
+			//else {
+			//	acceleration = 1.0f;
+			//}
+			//
+			//if (Keydown('W')) {
+			//	camera.velocity.x() += (float)deltaTime * acceleration * -sin(camera.rotation.x());
+			//	camera.velocity.z() += (float)deltaTime * acceleration * cos(camera.rotation.x());
+			//}
+			//if (Keydown('S')) {
+			//	camera.velocity.x() -= (float)deltaTime * acceleration * -sin(camera.rotation.x());
+			//	camera.velocity.z() -= (float)deltaTime * acceleration * cos(camera.rotation.x());
+			//}
+			//if (Keydown('D')) {
+			//	camera.velocity.x() += (float)deltaTime * acceleration * cos(camera.rotation.x());
+			//	camera.velocity.z() += (float)deltaTime * acceleration * sin(camera.rotation.x());
+			//}
+			//if (Keydown('A')) {
+			//	camera.velocity.x() -= (float)deltaTime * acceleration * cos(camera.rotation.x());
+			//	camera.velocity.z() -= (float)deltaTime * acceleration * sin(camera.rotation.x());
+			//}
+			//if (Keydown(VK_SPACE)) {
+			//	camera.velocity.y() += (float)deltaTime * acceleration;
+			//}
+			//if (Keydown(VK_SHIFT)) {
+			//	camera.velocity.y() -= (float)deltaTime * acceleration;
+			//}
+			//
+			//if (Keydown(VK_RIGHT)) {
+			//	voxelPositionBuffer.GetSubresourceBuffer()[0].x() += 0.1f;
+			//}
+			//if (Keydown(VK_LEFT)) {
+			//	voxelPositionBuffer.GetSubresourceBuffer()[0].x() -= 0.1f;
+			//}
+			//if (Keydown(VK_UP)) {
+			//	voxelPositionBuffer.GetSubresourceBuffer()[0].z() += 0.1f;
+			//}
+			//if (Keydown(VK_DOWN)) {
+			//	voxelPositionBuffer.GetSubresourceBuffer()[0].z() -= 0.1f;
+			//}
+			//if (Keydown('O')) {
+			//	voxelPositionBuffer.GetSubresourceBuffer()[0].y() += 0.1f;
+			//}
+			//if (Keydown('L')) {
+			//	voxelPositionBuffer.GetSubresourceBuffer()[0].y() -= 0.1f;
+			//}
 	
-			camera.position += camera.velocity;
+			//camera.position += camera.velocity;
+			//
+			//camera.velocity -= camera.velocity * retardation;
 			
-			camera.velocity -= camera.velocity * retardation;
-			
-			renderer.SetCameraPosition(camera.position);
-			renderer.SetCameraRotation(camera.rotation);
-			renderer.UpdateCamera(graphics.GetCommandList());
+			//renderer.SetCameraPosition(camera.position);
+			//renderer.SetCameraRotation(camera.rotation);
+			//renderer.UpdateCamera(graphics.GetCommandList());
 		
 			graphics.Clear({ 0.0f, 0.0f, 0.0f, 1.0f });
 			renderer.Render(graphics.GetCommandList(), viewPort, scissorRect);
