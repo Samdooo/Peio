@@ -110,6 +110,7 @@
     <ClInclude Include="..\src\Peio\Graphics\RenderTargetHeap.h" />
     <ClInclude Include="..\src\Peio\Graphics\RenderTexture.h" />
     <ClInclude Include="..\src\Peio\Graphics\Resource.h" />
+    <ClInclude Include="..\src\Peio\Graphics\ShaderResourceBuffer.h" />
     <ClInclude Include="..\src\Peio\Graphics\SubresourceArray.h" />
     <ClInclude Include="..\src\Peio\Graphics\RootParameter.h" />
     <ClInclude Include="..\src\Peio\Graphics\RootSignature.h" />
@@ -139,6 +140,7 @@
     <ClCompile Include="..\src\Peio\Graphics\RootParameter.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\RootSignature.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\Shader.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\ShaderResourceBuffer.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\ShaderResourceView.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\SwapChain.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\TextureGraphics.cpp" />

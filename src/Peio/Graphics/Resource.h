@@ -19,6 +19,7 @@ namespace Peio::Gfx {
 	public:
 
 		void Init(D3D12_RESOURCE_DESC resourceDesc, D3D12_RESOURCE_STATES resourceState, bool copyFootprints = false);
+		void InitBuffer(UINT64 size, D3D12_RESOURCE_STATES resourceState, bool copyFootprints = false);
 
 		void Upload(const D3D12_SUBRESOURCE_DATA& data, ID3D12GraphicsCommandList* cmdList);
 

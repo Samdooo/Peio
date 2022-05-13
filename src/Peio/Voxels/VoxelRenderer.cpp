@@ -84,7 +84,7 @@ namespace Peio::Vxl {
 		for (UINT i = 0; i < srv->GetNumResources(); i++)
 			cmdList->SetGraphicsRootShaderResourceView(i, srv->GetResources()[i].GetGPUAddress());
 		for (UINT i = 0; i < uav->GetNumResources(); i++)
-			cmdList->SetGraphicsRootUnorderedAccessView(i + 1, uav->GetResources()[i].GetGPUAddress());
+			cmdList->SetGraphicsRootUnorderedAccessView(srv->GetNumResources() + i, uav->GetResources()[i].GetGPUAddress());
 
 		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		cmdList->IASetVertexBuffers(0, 1, &vertexBuffer.GetBufferView());

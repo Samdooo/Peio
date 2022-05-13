@@ -140,7 +140,7 @@ int main() {
 		
 		Peio::Vxl::SubresourceBuffer<Peio::Float3> voxelPositionBuffer;
 		voxelPositionBuffer.Allocate(numVoxels);
-	
+
 		//{
 		//	float rad = 200.0f;
 		//	for (UINT i = 0; i < numVoxels; i++) {
@@ -208,7 +208,7 @@ int main() {
 	
 
 		Peio::Gfx::UnorderedAccessView uav;
-		uav.InitBuffer({ sizeof(float) * 640 * 360 * 4 }, { 640 * 360 }, { D3D12_RESOURCE_STATE_UNORDERED_ACCESS });
+		uav.InitBuffer({ sizeof(float) * 640 * 360 * 4 }, { 640 * 360 }, { D3D12_RESOURCE_STATE_UNORDERED_ACCESS/*D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE*/});
 
 		float* uavTextureData = new float[640 * 360 * 4];
 		for (UINT i = 0; i < 360; i++) {
@@ -222,16 +222,12 @@ int main() {
 
 		Peio::Vxl::SubresourceBuffer<float> uavTextureBuffer;
 		uavTextureBuffer.SetBuffer(uavTextureData, 640 * 360 * 4);
-		std::cout << "1" << std::endl;
 		uav.GetResources()[0].Upload(uavTextureBuffer.GetResourceData(), graphics.GetCommandList());
-		std::cout << "2" << std::endl;
 
 		//uav.GetResources()[0].Transition(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, graphics.GetCommandList());
 
 		Peio::Vxl::VoxelRenderer renderer;
 		renderer.Init(graphics.GetCommandList(), &srv, &uav, {}, {}, PI / 2, (float)windowSize.y() / (float)windowSize.x());
-		
-		std::cout << "2.5" << std::endl;
 
 		Camera camera = {};
 		handler.rotation = &camera.rotation;
@@ -251,81 +247,79 @@ int main() {
 			window.HandleMessages();
 			double deltaTime = deltaClock.Restart().Seconds();
 		
-			//if (Keydown(VK_CONTROL)) {
-			//	acceleration = 10.0f;
-			//}
-			//else {
-			//	acceleration = 1.0f;
-			//}
-			//
-			//if (Keydown('W')) {
-			//	camera.velocity.x() += (float)deltaTime * acceleration * -sin(camera.rotation.x());
-			//	camera.velocity.z() += (float)deltaTime * acceleration * cos(camera.rotation.x());
-			//}
-			//if (Keydown('S')) {
-			//	camera.velocity.x() -= (float)deltaTime * acceleration * -sin(camera.rotation.x());
-			//	camera.velocity.z() -= (float)deltaTime * acceleration * cos(camera.rotation.x());
-			//}
-			//if (Keydown('D')) {
-			//	camera.velocity.x() += (float)deltaTime * acceleration * cos(camera.rotation.x());
-			//	camera.velocity.z() += (float)deltaTime * acceleration * sin(camera.rotation.x());
-			//}
-			//if (Keydown('A')) {
-			//	camera.velocity.x() -= (float)deltaTime * acceleration * cos(camera.rotation.x());
-			//	camera.velocity.z() -= (float)deltaTime * acceleration * sin(camera.rotation.x());
-			//}
-			//if (Keydown(VK_SPACE)) {
-			//	camera.velocity.y() += (float)deltaTime * acceleration;
-			//}
-			//if (Keydown(VK_SHIFT)) {
-			//	camera.velocity.y() -= (float)deltaTime * acceleration;
-			//}
-			//
-			//if (Keydown(VK_RIGHT)) {
-			//	voxelPositionBuffer.GetSubresourceBuffer()[0].x() += 0.1f;
-			//}
-			//if (Keydown(VK_LEFT)) {
-			//	voxelPositionBuffer.GetSubresourceBuffer()[0].x() -= 0.1f;
-			//}
-			//if (Keydown(VK_UP)) {
-			//	voxelPositionBuffer.GetSubresourceBuffer()[0].z() += 0.1f;
-			//}
-			//if (Keydown(VK_DOWN)) {
-			//	voxelPositionBuffer.GetSubresourceBuffer()[0].z() -= 0.1f;
-			//}
-			//if (Keydown('O')) {
-			//	voxelPositionBuffer.GetSubresourceBuffer()[0].y() += 0.1f;
-			//}
-			//if (Keydown('L')) {
-			//	voxelPositionBuffer.GetSubresourceBuffer()[0].y() -= 0.1f;
-			//}
-			//
-			//if (Keydown('U')) {
-			//	//while (Keydown('U'));
-			//
-			//	Peio::Float3 ray(0, 0, 1);
-			//	ray = RotateX(ray, camera.rotation.y());
-			//	ray = RotateY(ray, camera.rotation.x());
-			//	PositionTree::Ray result = tree.TraceRay(camera.position, ray, -1);
-			//	if (result.side != -1) {
-			//		tree.Remove(result.it);
-			//		srv.GetResources()[4].Upload(branchBuffer.GetResourceData(), graphics.GetCommandList());
-			//		srv.GetResources()[5].Upload(leafBuffer.GetResourceData(), graphics.GetCommandList());
-			//	}
-			//}
+			if (Keydown(VK_CONTROL)) {
+				acceleration = 10.0f;
+			}
+			else {
+				acceleration = 1.0f;
+			}
+			
+			if (Keydown('W')) {
+				camera.velocity.x() += (float)deltaTime * acceleration * -sin(camera.rotation.x());
+				camera.velocity.z() += (float)deltaTime * acceleration * cos(camera.rotation.x());
+			}
+			if (Keydown('S')) {
+				camera.velocity.x() -= (float)deltaTime * acceleration * -sin(camera.rotation.x());
+				camera.velocity.z() -= (float)deltaTime * acceleration * cos(camera.rotation.x());
+			}
+			if (Keydown('D')) {
+				camera.velocity.x() += (float)deltaTime * acceleration * cos(camera.rotation.x());
+				camera.velocity.z() += (float)deltaTime * acceleration * sin(camera.rotation.x());
+			}
+			if (Keydown('A')) {
+				camera.velocity.x() -= (float)deltaTime * acceleration * cos(camera.rotation.x());
+				camera.velocity.z() -= (float)deltaTime * acceleration * sin(camera.rotation.x());
+			}
+			if (Keydown(VK_SPACE)) {
+				camera.velocity.y() += (float)deltaTime * acceleration;
+			}
+			if (Keydown(VK_SHIFT)) {
+				camera.velocity.y() -= (float)deltaTime * acceleration;
+			}
+			
+			if (Keydown(VK_RIGHT)) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].x() += 0.1f;
+			}
+			if (Keydown(VK_LEFT)) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].x() -= 0.1f;
+			}
+			if (Keydown(VK_UP)) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].z() += 0.1f;
+			}
+			if (Keydown(VK_DOWN)) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].z() -= 0.1f;
+			}
+			if (Keydown('O')) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].y() += 0.1f;
+			}
+			if (Keydown('L')) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].y() -= 0.1f;
+			}
+			
+			if (Keydown('U')) {
+				//while (Keydown('U'));
+			
+				Peio::Float3 ray(0, 0, 1);
+				ray = RotateX(ray, camera.rotation.y());
+				ray = RotateY(ray, camera.rotation.x());
+				PositionTree::Ray result = tree.TraceRay(camera.position, ray, -1);
+				if (result.side != -1) {
+					tree.Remove(result.it);
+					srv.GetResources()[4].Upload(branchBuffer.GetResourceData(), graphics.GetCommandList());
+					srv.GetResources()[5].Upload(leafBuffer.GetResourceData(), graphics.GetCommandList());
+				}
+			}
 	
-			//camera.position += camera.velocity;
-			//
-			//camera.velocity -= camera.velocity * retardation;
-			//
-			//renderer.SetCameraPosition(camera.position);
-			//renderer.SetCameraRotation(camera.rotation);
-			//renderer.UpdateCamera(graphics.GetCommandList());
+			camera.position += camera.velocity;
+			
+			camera.velocity -= camera.velocity * retardation;
+			
+			renderer.SetCameraPosition(camera.position);
+			renderer.SetCameraRotation(camera.rotation);
+			renderer.UpdateCamera(graphics.GetCommandList());
 		
-			std::cout << "3" << std::endl;
 			graphics.Clear({ 0.0f, 0.0f, 0.0f, 1.0f });
 			renderer.Render(graphics.GetCommandList(), viewPort, scissorRect);
-			std::cout << "4" << std::endl;
 			graphics.Render();
 		
 			while (clock.Elapsed().Seconds() < frameLength);

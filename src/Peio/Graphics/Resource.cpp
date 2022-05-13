@@ -9,6 +9,11 @@ void Peio::Gfx::Resource::Init(D3D12_RESOURCE_DESC resourceDesc, D3D12_RESOURCE_
 	uploadHeap.Init(D3D12_HEAP_TYPE_UPLOAD, resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, copyFootprints);
 }
 
+void Peio::Gfx::Resource::InitBuffer(UINT64 size, D3D12_RESOURCE_STATES resourceState, bool copyFootprints)
+{
+	Init(CD3DX12_RESOURCE_DESC::Buffer(size), resourceState, copyFootprints);
+}
+
 void Peio::Gfx::Resource::Upload(const D3D12_SUBRESOURCE_DATA& data, ID3D12GraphicsCommandList* cmdList)
 {
 	D3D12_RESOURCE_STATES oldState = resourceState;
