@@ -263,7 +263,7 @@ int main() {
 		Peio::Gfx::SubresourceBuffer<Peio::Vxl::VoxelScene> sceneBuffer;
 		sceneBuffer.Allocate(1);
 		sceneBuffer.GetSubresourceBuffer()[0] = {
-			(Peio::Uint2)windowSize, 10, 1, 0.5f, 20
+			(Peio::Uint2)windowSize, 10, 1, 0.5f, 5
 		};
 		
 		Peio::Gfx::SubresourceBuffer<Material> materialBuffer;
@@ -272,7 +272,7 @@ int main() {
 			{ 0.1f, 0.7f, 0.9f, 1.0f }, { 0.0f, 0.0f, 0.0f }
 		};
 		materialBuffer.GetSubresourceBuffer()[1] = {
-			{ 0.0f, 0.0f, 0.0f, 1.0f }, { 3.0f, 0.6f, 2.6f }
+			{ 0.0f, 0.0f, 0.0f, 1.0f }, { 9.0f, 2.0f, 8.0f }
 		};
 
 		Peio::Gfx::SubresourceBuffer<Peio::Float3> voxelPositionBuffer;
