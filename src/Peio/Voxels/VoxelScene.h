@@ -6,15 +6,11 @@ namespace Peio::Vxl {
 
 	struct VoxelScene {
 
+		Uint2 screenSize;
 		UINT numVoxels;
 		UINT numMaterials;
 		float voxelRadius;
-		UINT maxNumRays;
-		UINT maxHitRays;
-		float minLightDeviation;
-		float maxLightDeviation;
-		//UINT numCollisions;
-		//float lightRadius;
+		UINT numRays;
 
 	};
 

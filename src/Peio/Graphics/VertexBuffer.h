@@ -1,12 +1,12 @@
 #pragma once
 
 #include "SubresourceBuffer.h"
-#include "..\Graphics\Resource.h"
+#include "Resource.h"
 
-namespace Peio::Vxl {
+namespace Peio::Gfx {
 
 	template <typename T_vertex>
-	struct VertexBuffer : public Gfx::Resource, public SubresourceBuffer<T_vertex> {
+	struct VertexBuffer : public Resource, public SubresourceBuffer<T_vertex> {
 
 		_NODISCARD const D3D12_VERTEX_BUFFER_VIEW& GetBufferView() const noexcept {
 			return bufferView;

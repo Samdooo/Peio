@@ -1,8 +1,8 @@
 #pragma once
 
-#include "VoxelsHeader.h"
+#include "GraphicsHeader.h"
 
-namespace Peio::Vxl {
+namespace Peio::Gfx {
 
 	template <typename T_element>
 	struct SubresourceBuffer {

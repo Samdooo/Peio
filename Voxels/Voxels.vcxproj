@@ -141,8 +141,6 @@
   <ItemGroup>
     <ClInclude Include="..\src\Peio\Voxels\DenoiseRenderer.h" />
     <ClInclude Include="..\src\Peio\Voxels\PositionTree.h" />
-    <ClInclude Include="..\src\Peio\Voxels\SubresourceBuffer.h" />
-    <ClInclude Include="..\src\Peio\Voxels\VertexBuffer.h" />
     <ClInclude Include="..\src\Peio\Voxels\VoxelRenderer.h" />
     <ClInclude Include="..\src\Peio\Voxels\VoxelScene.h" />
     <ClInclude Include="..\src\Peio\Voxels\VoxelsHeader.h" />

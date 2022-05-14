@@ -29,9 +29,6 @@
     <Filter Include="Source Files\Utils\Heaps\Texturing">
       <UniqueIdentifier>{e4a40693-b2ed-4682-badf-687c4f5e5a47}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Utils\Heaps\Views\Buffers">
-      <UniqueIdentifier>{0eb32010-c3a7-4fd9-987f-9ce2d6c7f74a}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\Graphics\GraphicsHeader.h">
@@ -121,8 +118,11 @@
     <ClInclude Include="..\src\Peio\Graphics\MultiPassGraphics.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Peio\Graphics\ShaderResourceBuffer.h">
-      <Filter>Source Files\Utils\Heaps\Views\Buffers</Filter>
+    <ClInclude Include="..\src\Peio\Graphics\SubresourceBuffer.h">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\VertexBuffer.h">
+      <Filter>Source Files\Utils\Heaps</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -194,9 +194,6 @@
     </ClCompile>
     <ClCompile Include="..\src\Peio\Graphics\MultiPassGraphics.cpp">
       <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Peio\Graphics\ShaderResourceBuffer.cpp">
-      <Filter>Source Files\Utils\Heaps\Views\Buffers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

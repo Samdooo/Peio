@@ -1,6 +1,7 @@
 #pragma once
 
-#include "VertexBuffer.h"
+#include "VoxelsHeader.h"
+#include "..\Graphics\VertexBuffer.h"
 #include "..\Graphics\RootSignature.h"
 #include "..\Graphics\InputLayout.h"
 #include "..\Graphics\PipelineStateHeader.h"
@@ -28,7 +29,7 @@ namespace Peio::Vxl {
 			float fov = 1.5f;
 			float aspectRatio = 1.0f;
 		};
-		VertexBuffer<InputVertex> vertexBuffer = {};
+		Gfx::VertexBuffer<InputVertex> vertexBuffer = {};
 
 		Gfx::RootSignature* rootSignature = nullptr;
 		Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState = nullptr;

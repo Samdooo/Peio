@@ -6,7 +6,7 @@
 #define SQRT_2 1.41421356237309f
 #define FLOAT_MAX 3.402823466e+38f
 #define PI 3.14159265358979f
-#define PHI 1.618033988749895f
+#define PHI 0.618033988749895f
 #define GOLDEN_ANGLE 2.399963229728653f
 
 struct VSOutput {
@@ -15,21 +15,20 @@ struct VSOutput {
     float3 sightRay : SIGHT_RAY;
 };
 
+// SRVs
+
 struct Scene {
+    uint2 screenSize;
     uint numVoxels;
     uint numMaterials;
     float voxelRadius;
-    uint maxNumRays;
-    uint maxHitRays;
-    float minLightDeviation;
-    float maxLightDeviation;
+    uint numRays;
 };
 StructuredBuffer<Scene> scene : register(t0);
 
 struct Material {
     float4 colorEmission;
 	float3 lightEmission;
-	float lightSpread;
 };
 StructuredBuffer<Material> materials : register(t1);
 
@@ -48,8 +47,17 @@ StructuredBuffer<PositionBranch> positionBranches : register(t4);
 StructuredBuffer<PositionLeaf> positionLeaves : register(t5);
 
 Material GetMaterial(uint voxelIndex){
-    //return materials[asuint(voxelMaterials[voxelIndex])];
     return materials[voxelMaterials[voxelIndex]];
 }
+
+// UAVs
+
+struct PrimaryRay {
+    uint collisionVoxel;
+    int side; // -1 indicates no collision
+    float3 collision;
+};
+
+RWStructuredBuffer<PrimaryRay> primaryRays : register(u1);
 
 #endif

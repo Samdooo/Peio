@@ -17,6 +17,7 @@
 #include <unordered_map>
 
 #define PI 3.14159265358979f
+#define PHI 0.618033988749895f
 
 bool Keydown(int key) {
 	return GetKeyState(key) & 0x8000;
@@ -39,7 +40,6 @@ struct Material {
 
 	Peio::Float4 colorEmission;
 	Peio::Float3 lightEmission;
-	float lightSpread;
 
 };
 
@@ -47,7 +47,6 @@ struct Camera {
 	Peio::Float3 position = {};
 	Peio::Float2 rotation = {};
 	float fov = 0.0f;
-
 	Peio::Float3 velocity = {};
 };
 
@@ -99,7 +98,18 @@ Peio::Float3 RotateY(Peio::Float3 p, float angle) {
 	return Peio::Float3(c * p.x() - s * p.z(), p.y(), s * p.x() + c * p.z());
 }
 
+struct PrimaryRay {
+	UINT collisionVoxel;
+	int side; // -1 indicates no collision
+	Peio::Float3 collision;
+};
+
 int main() {
+
+	for (int i = 0; i < 10; i++) {
+		std::cout << ((PHI * (double)i) - floor(PHI * (double)i)) << std::endl;
+	}
+	return 0;
 
 	try {
 
@@ -233,18 +243,94 @@ int main() {
 		////handler.rotation = &camera.rotation;
 		
 		//Peio::Float4* uavData = new Peio::Float4[640 * 360];
-		Peio::Vxl::SubresourceBuffer<Peio::Float4> uavBuffer;
-		uavBuffer.Allocate(640 * 360);
+		//Peio::Gfx::SubresourceBuffer<Peio::Float4> uavBuffer;
+		//uavBuffer.Allocate(640 * 360);
+		//
+		//for (UINT i = 0; i < 640 * 360; i++) {
+		//	uavBuffer.GetSubresourceBuffer()[i] = { 0.1f, 0.5f, 0.8f, 1.0f };
+		//}
+		//
+		//Peio::Gfx::RootSignature rootSignature;
+		//rootSignature.uavs.resize(1);
+		//rootSignature.uavs[0].Init(1);
+		//rootSignature.uavs[0].CreateBufferUAV(0, uavBuffer.GetBufferSize(), uavBuffer.GetNumElements(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+		//rootSignature.uavs[0].GetResources()[0].Upload(uavBuffer.GetResourceData(), graphics.GetCommandList());
+		//
+		//rootSignature.Init(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
+		//	D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
+		//	D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
+		//	D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS);
+		//
+		//Peio::Vxl::VoxelRenderer renderer;
+		//renderer.Init(graphics.GetCommandList(), &rootSignature, {}, {}, PI / 2, 360.0f / 640.0f);
 
-		for (UINT i = 0; i < 640 * 360; i++) {
-			uavBuffer.GetSubresourceBuffer()[i] = { 0.1f, 0.5f, 0.8f, 1.0f };
+		Peio::Gfx::SubresourceBuffer<Peio::Vxl::VoxelScene> sceneBuffer;
+		sceneBuffer.Allocate(1);
+		sceneBuffer.GetSubresourceBuffer()[0] = {
+			(Peio::Uint2)windowSize, 10, 1, 0.5f, 5
+		};
+		
+		Peio::Gfx::SubresourceBuffer<Material> materialBuffer;
+		materialBuffer.Allocate(1);
+		materialBuffer.GetSubresourceBuffer()[0] = {
+			{ 0.1f, 0.7f, 0.9f, 1.0f }, { 0.0f, 0.0f, 0.0f }
+		};
+
+		Peio::Gfx::SubresourceBuffer<Peio::Float3> voxelPositionBuffer;
+		voxelPositionBuffer.Allocate(10);
+		for (UINT i = 0; i < 10; i++) {
+			voxelPositionBuffer.GetSubresourceBuffer()[i] = { (float)i * 2, (float)i * 2, (float)(i + 5) * 2 };
+		}
+
+		Peio::Gfx::SubresourceBuffer<UINT> voxelMaterialBuffer;
+		voxelMaterialBuffer.Allocate(10);
+		for (UINT i = 0; i < 10; i++) {
+			voxelMaterialBuffer.GetSubresourceBuffer()[i] = 0;
+		}
+
+		PositionTree positionTree;
+		positionTree.Allocate(10, 3);
+		positionTree.voxelPositions = voxelPositionBuffer.GetSubresourceBuffer();
+
+		Peio::Gfx::SubresourceBuffer<Peio::Vxl::PositionBranch> positionBranchBuffer;
+		positionBranchBuffer.SetBuffer(positionTree.GetBranches()[0], positionTree.GetNumBranches());
+
+		Peio::Gfx::SubresourceBuffer<Peio::Vxl::PositionLeaf> positionLeafBuffer;
+		positionLeafBuffer.SetBuffer(positionTree.GetLeaves(), positionTree.GetNumLeaves());
+		
+		for (UINT i = 0; i < 10; i++) {
+			positionTree.Insert({ i });
 		}
 
 		Peio::Gfx::RootSignature rootSignature;
+		rootSignature.srvs.resize(1);
+
+		rootSignature.srvs[0].Init(6);
+		
+		rootSignature.srvs[0].CreateBufferSRV(0, sceneBuffer.GetBufferSize(), sceneBuffer.GetNumElements(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+		rootSignature.srvs[0].GetResources()[0].Upload(sceneBuffer.GetResourceData(), graphics.GetCommandList());
+
+		rootSignature.srvs[0].CreateBufferSRV(1, materialBuffer.GetBufferSize(), materialBuffer.GetNumElements(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+		rootSignature.srvs[0].GetResources()[1].Upload(materialBuffer.GetResourceData(), graphics.GetCommandList());
+
+		rootSignature.srvs[0].CreateBufferSRV(2, voxelPositionBuffer.GetBufferSize(), voxelPositionBuffer.GetNumElements(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+		rootSignature.srvs[0].GetResources()[2].Upload(voxelPositionBuffer.GetResourceData(), graphics.GetCommandList());
+
+		rootSignature.srvs[0].CreateBufferSRV(3, voxelMaterialBuffer.GetBufferSize(), voxelMaterialBuffer.GetNumElements(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+		rootSignature.srvs[0].GetResources()[3].Upload(voxelMaterialBuffer.GetResourceData(), graphics.GetCommandList());
+
+		rootSignature.srvs[0].CreateBufferSRV(4, positionBranchBuffer.GetBufferSize(), positionBranchBuffer.GetNumElements(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+		rootSignature.srvs[0].GetResources()[4].Upload(positionBranchBuffer.GetResourceData(), graphics.GetCommandList());
+
+		rootSignature.srvs[0].CreateBufferSRV(5, positionLeafBuffer.GetBufferSize(), positionLeafBuffer.GetNumElements(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+		rootSignature.srvs[0].GetResources()[5].Upload(positionLeafBuffer.GetResourceData(), graphics.GetCommandList());
+
+		Peio::Gfx::SubresourceBuffer<PrimaryRay> primaryRayBuffer;
+		primaryRayBuffer.Allocate(windowSize.x() * windowSize.y());
+
 		rootSignature.uavs.resize(1);
-		rootSignature.uavs[0].Init(1);
-		rootSignature.uavs[0].CreateBufferUAV(0, uavBuffer.GetBufferSize(), uavBuffer.GetNumElements(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-		rootSignature.uavs[0].GetResources()[0].Upload(uavBuffer.GetResourceData(), graphics.GetCommandList());
+		
+		rootSignature.uavs[0].CreateBufferUAV(0, primaryRayBuffer.GetBufferSize(), primaryRayBuffer.GetNumElements(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 
 		rootSignature.Init(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
 			D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
@@ -252,10 +338,10 @@ int main() {
 			D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS);
 
 		Peio::Vxl::VoxelRenderer renderer;
-		renderer.Init(graphics.GetCommandList(), &rootSignature, {}, {}, PI / 2, 360.0f / 640.0f);
+		renderer.Init(graphics.GetCommandList(), &rootSignature, {}, {}, PI / 2, (float)windowSize.y() / (float)windowSize.x());
 
 		Peio::Clock<double> clock;
-		double frameLength = 1.0f / 300.0;
+		double frameLength = 1.0f / 60.0;
 		
 		Peio::Clock<double> fpsClock;
 		int frameCount = 0;

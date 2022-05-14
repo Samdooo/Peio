@@ -45,12 +45,6 @@
     <ClInclude Include="..\src\Peio\Voxels\VoxelsHeader.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Peio\Voxels\VertexBuffer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Peio\Voxels\SubresourceBuffer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Peio\Voxels\VoxelScene.h">
       <Filter>Source Files</Filter>
     </ClInclude>
