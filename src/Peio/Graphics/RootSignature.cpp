@@ -75,12 +75,12 @@ void Peio::Gfx::RootSignature::SetRootSignature(ID3D12GraphicsCommandList* cmdLi
 	UINT index = 0;
 	for (UINT i = 0; i < srvs.size(); i++) {
 		for (UINT j = 0; j < srvs[i].GetNumResources(); j++) {
-			cmdList->SetGraphicsRootShaderResourceView(index++, srvs[i].GetResources()[j].GetGPUAddress());
+			cmdList->SetGraphicsRootShaderResourceView(index++, srvs[i].GetResources()[j]->GetGPUAddress());
 		}
 	}
 	for (UINT i = 0; i < uavs.size(); i++) {
 		for (UINT j = 0; j < uavs[i].GetNumResources(); j++) {
-			cmdList->SetGraphicsRootUnorderedAccessView(index++, uavs[i].GetResources()[j].GetGPUAddress());
+			cmdList->SetGraphicsRootUnorderedAccessView(index++, uavs[i].GetResources()[j]->GetGPUAddress());
 		}
 	}
 }

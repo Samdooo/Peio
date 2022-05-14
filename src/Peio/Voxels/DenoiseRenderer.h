@@ -5,13 +5,14 @@
 #include "..\Graphics\ShaderResourceView.h"
 #include "..\Graphics\InputLayout.h"
 #include "..\Graphics\PipelineStateHeader.h"
+#include "..\Graphics\RootSignature.h"
 
 namespace Peio::Vxl {
 
 	struct PEIO_VXL_EXPORT DenoiseRenderer {
 
-		void Init(ID3D12GraphicsCommandList* cmdList, Float2 size);
-		void Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, ID3D12DescriptorHeap* heap, D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle);
+		void Init(ID3D12GraphicsCommandList* cmdList, Gfx::RootSignature* rootSignature, Float2 size);
+		void Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect);
 
 	protected:
 
@@ -22,7 +23,7 @@ namespace Peio::Vxl {
 		};
 		Gfx::VertexBuffer<InputVertex> vertexBuffer = {};
 
-		Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature = nullptr;
+		Gfx::RootSignature* rootSignature = nullptr;
 		Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState = nullptr;
 
 	};

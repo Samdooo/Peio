@@ -102,14 +102,10 @@ struct PrimaryRay {
 	UINT collisionVoxel;
 	int side; // -1 indicates no collision
 	Peio::Float3 collision;
+	Peio::Float3 light;
 };
 
 int main() {
-
-	for (int i = 0; i < 10; i++) {
-		std::cout << ((PHI * (double)i) - floor(PHI * (double)i)) << std::endl;
-	}
-	return 0;
 
 	try {
 
@@ -267,19 +263,22 @@ int main() {
 		Peio::Gfx::SubresourceBuffer<Peio::Vxl::VoxelScene> sceneBuffer;
 		sceneBuffer.Allocate(1);
 		sceneBuffer.GetSubresourceBuffer()[0] = {
-			(Peio::Uint2)windowSize, 10, 1, 0.5f, 5
+			(Peio::Uint2)windowSize, 10, 1, 0.5f, 20
 		};
 		
 		Peio::Gfx::SubresourceBuffer<Material> materialBuffer;
-		materialBuffer.Allocate(1);
+		materialBuffer.Allocate(2);
 		materialBuffer.GetSubresourceBuffer()[0] = {
 			{ 0.1f, 0.7f, 0.9f, 1.0f }, { 0.0f, 0.0f, 0.0f }
+		};
+		materialBuffer.GetSubresourceBuffer()[1] = {
+			{ 0.0f, 0.0f, 0.0f, 1.0f }, { 3.0f, 0.6f, 2.6f }
 		};
 
 		Peio::Gfx::SubresourceBuffer<Peio::Float3> voxelPositionBuffer;
 		voxelPositionBuffer.Allocate(10);
 		for (UINT i = 0; i < 10; i++) {
-			voxelPositionBuffer.GetSubresourceBuffer()[i] = { (float)i * 2, (float)i * 2, (float)(i + 5) * 2 };
+			voxelPositionBuffer.GetSubresourceBuffer()[i] = { (float)i * 1.25f, (float)i * 1.25f, (float)(i + 5) * 1.25f };
 		}
 
 		Peio::Gfx::SubresourceBuffer<UINT> voxelMaterialBuffer;
@@ -287,9 +286,10 @@ int main() {
 		for (UINT i = 0; i < 10; i++) {
 			voxelMaterialBuffer.GetSubresourceBuffer()[i] = 0;
 		}
+		voxelMaterialBuffer.GetSubresourceBuffer()[0] = 1;
 
 		PositionTree positionTree;
-		positionTree.Allocate(10, 3);
+		positionTree.Allocate(5, 3);
 		positionTree.voxelPositions = voxelPositionBuffer.GetSubresourceBuffer();
 
 		Peio::Gfx::SubresourceBuffer<Peio::Vxl::PositionBranch> positionBranchBuffer;
@@ -305,32 +305,47 @@ int main() {
 		Peio::Gfx::RootSignature rootSignature;
 		rootSignature.srvs.resize(1);
 
+		std::cout << "1" << std::endl;
+
 		rootSignature.srvs[0].Init(6);
+		for (UINT i = 0; i < 6; i++) {
+			rootSignature.srvs[0].GetResources()[i] = new Peio::Gfx::Resource;
+		}
+
+		std::cout << "2" << std::endl;
 		
 		rootSignature.srvs[0].CreateBufferSRV(0, sceneBuffer.GetBufferSize(), sceneBuffer.GetNumElements(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-		rootSignature.srvs[0].GetResources()[0].Upload(sceneBuffer.GetResourceData(), graphics.GetCommandList());
-
+		std::cout << "3" << std::endl;
+		rootSignature.srvs[0].GetResources()[0]->Upload(sceneBuffer.GetResourceData(), graphics.GetCommandList());
+		std::cout << "4" << std::endl;
 		rootSignature.srvs[0].CreateBufferSRV(1, materialBuffer.GetBufferSize(), materialBuffer.GetNumElements(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-		rootSignature.srvs[0].GetResources()[1].Upload(materialBuffer.GetResourceData(), graphics.GetCommandList());
+		rootSignature.srvs[0].GetResources()[1]->Upload(materialBuffer.GetResourceData(), graphics.GetCommandList());
 
 		rootSignature.srvs[0].CreateBufferSRV(2, voxelPositionBuffer.GetBufferSize(), voxelPositionBuffer.GetNumElements(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-		rootSignature.srvs[0].GetResources()[2].Upload(voxelPositionBuffer.GetResourceData(), graphics.GetCommandList());
+		rootSignature.srvs[0].GetResources()[2]->Upload(voxelPositionBuffer.GetResourceData(), graphics.GetCommandList());
 
 		rootSignature.srvs[0].CreateBufferSRV(3, voxelMaterialBuffer.GetBufferSize(), voxelMaterialBuffer.GetNumElements(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-		rootSignature.srvs[0].GetResources()[3].Upload(voxelMaterialBuffer.GetResourceData(), graphics.GetCommandList());
+		rootSignature.srvs[0].GetResources()[3]->Upload(voxelMaterialBuffer.GetResourceData(), graphics.GetCommandList());
 
 		rootSignature.srvs[0].CreateBufferSRV(4, positionBranchBuffer.GetBufferSize(), positionBranchBuffer.GetNumElements(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-		rootSignature.srvs[0].GetResources()[4].Upload(positionBranchBuffer.GetResourceData(), graphics.GetCommandList());
+		rootSignature.srvs[0].GetResources()[4]->Upload(positionBranchBuffer.GetResourceData(), graphics.GetCommandList());
 
 		rootSignature.srvs[0].CreateBufferSRV(5, positionLeafBuffer.GetBufferSize(), positionLeafBuffer.GetNumElements(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-		rootSignature.srvs[0].GetResources()[5].Upload(positionLeafBuffer.GetResourceData(), graphics.GetCommandList());
+		rootSignature.srvs[0].GetResources()[5]->Upload(positionLeafBuffer.GetResourceData(), graphics.GetCommandList());
+
+		std::cout << "5" << std::endl;
 
 		Peio::Gfx::SubresourceBuffer<PrimaryRay> primaryRayBuffer;
 		primaryRayBuffer.Allocate(windowSize.x() * windowSize.y());
 
 		rootSignature.uavs.resize(1);
-		
+		rootSignature.uavs[0].Init(1);
+
+		std::cout << "6" << std::endl;
+		rootSignature.uavs[0].GetResources()[0] = new Peio::Gfx::Resource;
 		rootSignature.uavs[0].CreateBufferUAV(0, primaryRayBuffer.GetBufferSize(), primaryRayBuffer.GetNumElements(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+		std::cout << "7" << std::endl;
+
 
 		rootSignature.Init(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
 			D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
@@ -339,6 +354,26 @@ int main() {
 
 		Peio::Vxl::VoxelRenderer renderer;
 		renderer.Init(graphics.GetCommandList(), &rootSignature, {}, {}, PI / 2, (float)windowSize.y() / (float)windowSize.x());
+
+		Peio::Win::RawMouseListener listener;
+		listener.Register(window.GetHWND());
+		Peio::Win::Input::AddListener(&listener);
+
+		Handler handler;
+		Peio::Win::Input::AddEventHandler(&handler);
+
+		Camera camera = {};
+		handler.rotation = &camera.rotation;
+
+		Peio::Gfx::RootSignature denoiseRs;
+		denoiseRs.uavs.push_back(rootSignature.uavs[0]);
+		denoiseRs.Init(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS);
+
+		Peio::Vxl::DenoiseRenderer denoiser;
+		denoiser.Init(graphics.GetCommandList(), &denoiseRs, windowSize);
 
 		Peio::Clock<double> clock;
 		double frameLength = 1.0f / 60.0;
@@ -355,65 +390,72 @@ int main() {
 			window.HandleMessages();
 			double deltaTime = deltaClock.Restart().Seconds();
 		
-			//if (Keydown(VK_CONTROL)) {
-			//	acceleration = 10.0f;
-			//}
-			//else {
-			//	acceleration = 1.0f;
-			//}
-			//
-			//if (Keydown('W')) {
-			//	camera.velocity.x() += (float)deltaTime * acceleration * -sin(camera.rotation.x());
-			//	camera.velocity.z() += (float)deltaTime * acceleration * cos(camera.rotation.x());
-			//}
-			//if (Keydown('S')) {
-			//	camera.velocity.x() -= (float)deltaTime * acceleration * -sin(camera.rotation.x());
-			//	camera.velocity.z() -= (float)deltaTime * acceleration * cos(camera.rotation.x());
-			//}
-			//if (Keydown('D')) {
-			//	camera.velocity.x() += (float)deltaTime * acceleration * cos(camera.rotation.x());
-			//	camera.velocity.z() += (float)deltaTime * acceleration * sin(camera.rotation.x());
-			//}
-			//if (Keydown('A')) {
-			//	camera.velocity.x() -= (float)deltaTime * acceleration * cos(camera.rotation.x());
-			//	camera.velocity.z() -= (float)deltaTime * acceleration * sin(camera.rotation.x());
-			//}
-			//if (Keydown(VK_SPACE)) {
-			//	camera.velocity.y() += (float)deltaTime * acceleration;
-			//}
-			//if (Keydown(VK_SHIFT)) {
-			//	camera.velocity.y() -= (float)deltaTime * acceleration;
-			//}
-			//
-			//if (Keydown(VK_RIGHT)) {
-			//	voxelPositionBuffer.GetSubresourceBuffer()[0].x() += 0.1f;
-			//}
-			//if (Keydown(VK_LEFT)) {
-			//	voxelPositionBuffer.GetSubresourceBuffer()[0].x() -= 0.1f;
-			//}
-			//if (Keydown(VK_UP)) {
-			//	voxelPositionBuffer.GetSubresourceBuffer()[0].z() += 0.1f;
-			//}
-			//if (Keydown(VK_DOWN)) {
-			//	voxelPositionBuffer.GetSubresourceBuffer()[0].z() -= 0.1f;
-			//}
-			//if (Keydown('O')) {
-			//	voxelPositionBuffer.GetSubresourceBuffer()[0].y() += 0.1f;
-			//}
-			//if (Keydown('L')) {
-			//	voxelPositionBuffer.GetSubresourceBuffer()[0].y() -= 0.1f;
-			//}
-	
-			//camera.position += camera.velocity;
-			//
-			//camera.velocity -= camera.velocity * retardation;
+			if (Keydown(VK_CONTROL)) {
+				acceleration = 10.0f;
+			}
+			else {
+				acceleration = 1.0f;
+			}
 			
-			//renderer.SetCameraPosition(camera.position);
-			//renderer.SetCameraRotation(camera.rotation);
-			//renderer.UpdateCamera(graphics.GetCommandList());
+			if (Keydown('W')) {
+				camera.velocity.x() += (float)deltaTime * acceleration * -sin(camera.rotation.x());
+				camera.velocity.z() += (float)deltaTime * acceleration * cos(camera.rotation.x());
+			}
+			if (Keydown('S')) {
+				camera.velocity.x() -= (float)deltaTime * acceleration * -sin(camera.rotation.x());
+				camera.velocity.z() -= (float)deltaTime * acceleration * cos(camera.rotation.x());
+			}
+			if (Keydown('D')) {
+				camera.velocity.x() += (float)deltaTime * acceleration * cos(camera.rotation.x());
+				camera.velocity.z() += (float)deltaTime * acceleration * sin(camera.rotation.x());
+			}
+			if (Keydown('A')) {
+				camera.velocity.x() -= (float)deltaTime * acceleration * cos(camera.rotation.x());
+				camera.velocity.z() -= (float)deltaTime * acceleration * sin(camera.rotation.x());
+			}
+			if (Keydown(VK_SPACE)) {
+				camera.velocity.y() += (float)deltaTime * acceleration;
+			}
+			if (Keydown(VK_SHIFT)) {
+				camera.velocity.y() -= (float)deltaTime * acceleration;
+			}
+			
+			if (Keydown(VK_RIGHT)) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].x() += 0.1f;
+			}
+			if (Keydown(VK_LEFT)) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].x() -= 0.1f;
+			}
+			if (Keydown(VK_UP)) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].z() += 0.1f;
+			}
+			if (Keydown(VK_DOWN)) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].z() -= 0.1f;
+			}
+			if (Keydown('O')) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].y() += 0.1f;
+			}
+			if (Keydown('L')) {
+				voxelPositionBuffer.GetSubresourceBuffer()[0].y() -= 0.1f;
+			}
+			positionTree.UpdateBoundaries(positionTree.GetLeafIterator(0).GetParent());
+			rootSignature.srvs[0].GetResources()[2]->Upload(voxelPositionBuffer.GetResourceData(), graphics.GetCommandList());
+			rootSignature.srvs[0].GetResources()[4]->Upload(positionBranchBuffer.GetResourceData(), graphics.GetCommandList());
+
+
+			camera.position += camera.velocity;
+			
+			camera.velocity -= camera.velocity * retardation;
+			
+			renderer.SetCameraPosition(camera.position);
+			renderer.SetCameraRotation(camera.rotation);
+			renderer.UpdateCamera(graphics.GetCommandList());
 		
 			graphics.Clear({ 0.0f, 0.0f, 0.0f, 1.0f });
+
 			renderer.Render(graphics.GetCommandList(), viewPort, scissorRect);
+			denoiser.Render(graphics.GetCommandList(), viewPort, scissorRect);
+
 			graphics.Render();
 		
 			while (clock.Elapsed().Seconds() < frameLength);

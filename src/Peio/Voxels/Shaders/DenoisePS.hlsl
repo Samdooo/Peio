@@ -1,96 +1,37 @@
-Texture2D tex : register(t0);
-SamplerState state : register(s0);
-
-#define GOLDEN_ANGLE 2.399963229728653f
-
 struct VS_OUTPUT {
-	float4 position : SV_POSITION;
+	float4 pixelPosition : SV_POSITION;
 	float2 texCoord : TEXCOORD;
 	float2 size : SIZE;
 };
 
-bool Sign(float x) {
-	return !bool(asuint(x) & (1 << 31));
-}
+struct PrimaryRay {
+	uint collisionVoxel;
+	int side; // -1 indicates no collision
+	float3 collision;
+	float3 light;
+};
 
-const uint NegZero() {
-	return asfloat(asuint(0.0f) | (1 << 31));
-}
-
-int GetSide(in out float4 col) {
-	int side = int(col.r < 0.0f || col.r == 1.#INF) + 2 * int(col.g < 0.0f || col.g == 1.#INF) - 1;
-	col.rg = abs(col.rg);
-	if (col.r == 1.#INF)
-		col.r = 0.0f;
-	if (col.g == 1.#INF)
-		col.g = 0.0f;
-	return side;
-}
+RWStructuredBuffer<PrimaryRay> primaryRays : register(u1);
 
 float4 main(VS_OUTPUT input) : SV_TARGET
 {
-	const int radius = 8;
-	const float2 invSize = 1.0f / input.size;
+	const int2 pos = int2((int)input.pixelPosition.x, (int)input.pixelPosition.y);
+	const int2 size = int2((int)input.size.x, (int)input.size.y);
 
-	float4 primary = tex.Sample(state, input.texCoord * invSize);
-	int side = GetSide(primary);
-	if (side == -1)
-		return float4(primary.rgb, 1.0f);
+	//float3 light = primaryRays[pos.y * size.x + pos.x].light;
+	float3 light = 0.0f;
 
-	float4 total = 0.0f;
-	float count = 0.0f;
-
-	//return float4(primary.a / 10.0f, primary.a / 10.0f, primary.a / 10.0f, 1.0f);
-
-	[loop] for (int y = max((int)input.texCoord.y - radius, 0); y <= min((int)input.texCoord.y + radius, (int)input.size.y - 1); y++) {
-		[loop] for (int x = max((int)input.texCoord.x - radius, 0); x <= min((int)input.texCoord.x + radius, (int)input.size.x - 1); x++) {
-			float4 col = tex.Sample(state, float2((float)x, (float)y) * invSize);
-			
-			int tmpSide = int(col.r < 0.0f || col.r == 1.#INF) + 2 * int(col.g < 0.0f || col.g == 1.#INF) - 1;
-			
-			if (col.r < 0.0f)
-				col.r = -col.r;
-			else if (col.r == 1.#INF)
-				col.r = 0.0f;
-			if (col.g < 0.0f)
-				col.g = -col.g;
-			else if (col.g == 1.#INF)
-				col.g = 0.0f;
-
-			if (tmpSide == side && abs(col.a - primary.a) <= 0.001f) {
-				total += col;
-				count += 1.0f;
-			}
-
-			//col.rg = abs(col.rg);
-			//if (col.r == 1.#INF)
-			//	col.r = 0.0f;
-			//if (col.g == 1.#INF)
-			//	col.g = 0.0f;
-			//if (/*tmpSide == side && */col.a == primary.a) {
-			//	total += col;
-			//	count += 1.0f;
-			//}
+	int rad = 16;
+	for (int i = max(pos.y - rad, 0); i <= min(pos.y + rad, size.y - 1); i++) {
+		for (int j = max(pos.x - rad, 0); j <= min(pos.x + rad, size.x - 1); j++) {
+			light.r += max(primaryRays[i * size.x + j].light.r - 1.0f, 0.0f);
+			light.g += max(primaryRays[i * size.x + j].light.g - 1.0f, 0.0f);
+			light.b += max(primaryRays[i * size.x + j].light.b - 1.0f, 0.0f);
 		}
 	}
-	total /= count;
-	total.a = 1.0f;
-	return total;
-	//return float4(primary.a / 10.0f, 0.0f, 0.0f, 1.0f);
+	light /= (rad + rad + 1) * (rad + rad + 1);
+	light += primaryRays[pos.y * size.x + pos.x].light;
+	return float4(light, 1.0f);
 
-	//return float4(abs(primary.rgb), 1.0f);
-
-	//}
-	//return float4(0.0f, 0.0f, 0.0f, 1.0f);
-
-	//uint4 test = tex.Sample(state, input.texCoord * fSize);
-	//return float4(test, (float)asuint(test) / 255.0f, 0.0f, 1.0f);
-
-	//if (test == asfloat(5))
-	//	return float4(0.0f, 1.0f, 0.0f, 1.0f);
-	//else
-	//	return float4(1.0f, 0.0f, 0.0f, 1.0f);
-	
-	//return float4((float)voxel / 255.0f, (float)voxel / 2550.0f, (float)voxel / 25500.0f, 1.0f);
-
+	//return float4(primaryRays[(uint)input.pixelPosition.y * (uint)input.size.x + (uint)input.pixelPosition.x].light, 1.0f);
 }

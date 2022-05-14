@@ -3,8 +3,10 @@
 
 namespace Peio::Vxl {
 
-	void DenoiseRenderer::Init(ID3D12GraphicsCommandList* cmdList, Float2 size)
+	void DenoiseRenderer::Init(ID3D12GraphicsCommandList* cmdList, Gfx::RootSignature* rootSignature, Float2 size)
 	{
+		this->rootSignature = rootSignature;
+
 		vertexBuffer.Allocate(6);
 		for (UINT i = 0; i < 6; i++) {
 			vertexBuffer.GetSubresourceBuffer()[i] = InputVertex{
@@ -29,6 +31,9 @@ namespace Peio::Vxl {
 		//sampler.ShaderRegister = 0;
 		//sampler.RegisterSpace = 0;
 		//sampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+
+
 		//
 		//rootSignature = Gfx::RootSignature::Create({
 		//	Gfx::RootParameter::CreateDescriptorTable(Gfx::DescriptorTable::Create({
@@ -41,24 +46,23 @@ namespace Peio::Vxl {
 		//	D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
 		//	D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS);
 		//
-		//D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc = Gfx::PipelineState::CreateDesc(
-		//	Gfx::InputLayout::Create({
-		//		Gfx::InputElement::Create("POSITION", DXGI_FORMAT_R32G32_FLOAT),
-		//		Gfx::InputElement::Create("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT),
-		//		Gfx::InputElement::Create("SIZE", DXGI_FORMAT_R32G32_FLOAT)
-		//		}),
-		//	rootSignature.Get(), Gfx::Shader::Load("../bin/VoxelShaders/DenoiseVS.cso"), Gfx::Shader::Load("../bin/VoxelShaders/DenoisePS.cso")
-		//);
-		//pipelineDesc.BlendState.IndependentBlendEnable = FALSE;
-		//pipelineDesc.BlendState.RenderTarget[0].BlendEnable = FALSE;
-		//
-		//pipelineState = Gfx::PipelineState::Create(pipelineDesc);
-
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc = Gfx::PipelineState::CreateDesc(
+			Gfx::InputLayout::Create({
+				Gfx::InputElement::Create("POSITION", DXGI_FORMAT_R32G32_FLOAT),
+				Gfx::InputElement::Create("TEXCOORD", DXGI_FORMAT_R32G32_FLOAT),
+				Gfx::InputElement::Create("SIZE", DXGI_FORMAT_R32G32_FLOAT)
+				}),
+			rootSignature->GetRootSignature(), Gfx::Shader::Load("../bin/VoxelShaders/DenoiseVS.cso"), Gfx::Shader::Load("../bin/VoxelShaders/DenoisePS.cso")
+		);
+		pipelineDesc.BlendState.IndependentBlendEnable = FALSE;
+		pipelineDesc.BlendState.RenderTarget[0].BlendEnable = FALSE;
+		
+		pipelineState = Gfx::PipelineState::Create(pipelineDesc);
 	}
 
-	void DenoiseRenderer::Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, ID3D12DescriptorHeap* heap, D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle)
+	void DenoiseRenderer::Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect)
 	{
-		cmdList->SetGraphicsRootSignature(rootSignature.Get());
+		rootSignature->SetRootSignature(cmdList);
 		cmdList->SetPipelineState(pipelineState.Get());
 
 		cmdList->RSSetViewports(1, &viewPort);

@@ -13,11 +13,11 @@ namespace Peio::Gfx {
 
 	void ShaderResourceView::CreateSRV(UINT index, D3D12_RESOURCE_DESC resourceDesc, D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc, D3D12_RESOURCE_STATES resourceState)
 	{
-		resources[index].Init(resourceDesc, resourceState, true);
+		resources[index]->Init(resourceDesc, resourceState, true);
 		CD3DX12_CPU_DESCRIPTOR_HANDLE handle = (CD3DX12_CPU_DESCRIPTOR_HANDLE)descriptorHeap.GetCPUHandle();
 		if (index)
 			handle.Offset(index, descriptorHeap.GetHandleIncrementSize());
-		device->CreateShaderResourceView(resources[index].GetBuffer(), &srvDesc, handle);
+		device->CreateShaderResourceView(resources[index]->GetBuffer(), &srvDesc, handle);
 	}
 
 	void ShaderResourceView::CreateBufferSRV(UINT index, UINT64 size, UINT64 numElements, D3D12_RESOURCE_STATES resourceState)
@@ -49,7 +49,7 @@ namespace Peio::Gfx {
 		return descriptorHeap;
 	}
 
-	Resource* ShaderResourceView::GetResources() noexcept
+	Resource** ShaderResourceView::GetResources() noexcept
 	{
 		return &resources[0];
 	}

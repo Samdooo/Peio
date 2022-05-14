@@ -83,11 +83,11 @@ namespace Peio::Gfx {
 
 	void UnorderedAccessView::CreateUAV(UINT index, D3D12_RESOURCE_DESC resourceDesc, D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc, D3D12_RESOURCE_STATES resourceState)
 	{
-		resources[index].Init(resourceDesc, resourceState, true);
+		resources[index]->Init(resourceDesc, resourceState, true);
 		CD3DX12_CPU_DESCRIPTOR_HANDLE handle = (CD3DX12_CPU_DESCRIPTOR_HANDLE)descriptorHeap.GetCPUHandle();
 		if (index)
 			handle.Offset(index, descriptorHeap.GetHandleIncrementSize());
-		device->CreateUnorderedAccessView(resources[index].GetBuffer(), nullptr, &uavDesc, handle);
+		device->CreateUnorderedAccessView(resources[index]->GetBuffer(), nullptr, &uavDesc, handle);
 	}
 
 	void UnorderedAccessView::CreateBufferUAV(UINT index, UINT64 size, UINT64 numElements, D3D12_RESOURCE_STATES resourceState)
@@ -122,7 +122,7 @@ namespace Peio::Gfx {
 		return descriptorHeaps;
 	}
 
-	Resource* UnorderedAccessView::GetResources() noexcept
+	Resource** UnorderedAccessView::GetResources() noexcept
 	{
 		return &resources[0];
 	}

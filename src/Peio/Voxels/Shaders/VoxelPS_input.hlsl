@@ -56,6 +56,7 @@ struct PrimaryRay {
     uint collisionVoxel;
     int side; // -1 indicates no collision
     float3 collision;
+    float3 light;
 };
 
 RWStructuredBuffer<PrimaryRay> primaryRays : register(u1);
