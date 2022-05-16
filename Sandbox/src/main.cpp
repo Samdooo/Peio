@@ -260,6 +260,8 @@ int main() {
 		//Peio::Vxl::VoxelRenderer renderer;
 		//renderer.Init(graphics.GetCommandList(), &rootSignature, {}, {}, PI / 2, 360.0f / 640.0f);
 
+		UINT rad = 3;
+
 		Peio::Gfx::SubresourceBuffer<Peio::Vxl::VoxelScene> sceneBuffer;
 		sceneBuffer.Allocate(1);
 		sceneBuffer.GetSubresourceBuffer()[0] = {
@@ -276,20 +278,28 @@ int main() {
 		};
 
 		Peio::Gfx::SubresourceBuffer<Peio::Float3> voxelPositionBuffer;
-		voxelPositionBuffer.Allocate(10);
-		for (UINT i = 0; i < 10; i++) {
-			voxelPositionBuffer.GetSubresourceBuffer()[i] = { (float)i * 1.25f, (float)i * 1.25f, (float)(i + 5) * 1.25f };
+		voxelPositionBuffer.Allocate(rad * rad * rad + 10000);
+		//for (UINT i = 0; i < 10; i++) {
+		//	voxelPositionBuffer.GetSubresourceBuffer()[i] = { (float)i * 1.25f, (float)i * 1.25f, (float)(i + 5) * 1.25f };
+		//}
+		voxelPositionBuffer.GetSubresourceBuffer()[0] = {};
+		for (UINT x = 0; x < rad; x++) {
+			for (UINT y = 0; y < rad; y++) {
+				for (UINT z = 0; z < rad; z++) {
+					voxelPositionBuffer.GetSubresourceBuffer()[x * rad * rad + y * rad + z] = { (float)x * 2.0f, (float)y * 2.0f, (float)z * 2.0f };
+				}
+			}
 		}
 
 		Peio::Gfx::SubresourceBuffer<UINT> voxelMaterialBuffer;
-		voxelMaterialBuffer.Allocate(10);
-		for (UINT i = 0; i < 10; i++) {
+		voxelMaterialBuffer.Allocate(rad * rad * rad + 10000);
+		for (UINT i = 0; i < rad * rad * rad + 1000; i++) {
 			voxelMaterialBuffer.GetSubresourceBuffer()[i] = 0;
 		}
 		voxelMaterialBuffer.GetSubresourceBuffer()[0] = 1;
 
 		PositionTree positionTree;
-		positionTree.Allocate(5, 3);
+		positionTree.Allocate(10, 3);
 		positionTree.voxelPositions = voxelPositionBuffer.GetSubresourceBuffer();
 
 		Peio::Gfx::SubresourceBuffer<Peio::Vxl::PositionBranch> positionBranchBuffer;
@@ -298,7 +308,7 @@ int main() {
 		Peio::Gfx::SubresourceBuffer<Peio::Vxl::PositionLeaf> positionLeafBuffer;
 		positionLeafBuffer.SetBuffer(positionTree.GetLeaves(), positionTree.GetNumLeaves());
 		
-		for (UINT i = 0; i < 10; i++) {
+		for (UINT i = 0; i < rad * rad * rad; i++) {
 			positionTree.Insert({ i });
 		}
 
@@ -386,6 +396,8 @@ int main() {
 		float acceleration = 1.0f;
 		float retardation = 0.5f;
 	
+		UINT voxelIndex = rad * rad * rad;
+
 		while (true) {
 			window.HandleMessages();
 			double deltaTime = deltaClock.Restart().Seconds();
@@ -438,10 +450,40 @@ int main() {
 			if (Keydown('L')) {
 				voxelPositionBuffer.GetSubresourceBuffer()[0].y() -= 0.1f;
 			}
+
+			if (Keydown('I')) {
+				Peio::Float3 ray = { 0.0f, 0.0f, 1.0f };
+				ray = RotateX(ray, camera.rotation.y());
+				ray = RotateY(ray, camera.rotation.x());
+				PositionTree::Ray traced = positionTree.TraceRay(camera.position, ray, -1);
+				if (traced.side != -1) {
+					Peio::Float3 pos = voxelPositionBuffer.GetSubresourceBuffer()[traced.collisionVoxel];
+					pos[traced.side] += (traced.normal[traced.side] < 0.0f) ? -1.0f : 1.0f;
+					voxelPositionBuffer.GetSubresourceBuffer()[voxelIndex] = pos;
+					positionTree.Insert({ voxelIndex++ });
+					//std::cout << traced.collisionVoxel << " added " << (voxelIndex - 1) << " at " << pos.ToString() << std::endl;
+				}
+			}
+			if (Keydown('U')) {
+				Peio::Float3 ray = { 0.0f, 0.0f, 1.0f };
+				ray = RotateX(ray, camera.rotation.y());
+				ray = RotateY(ray, camera.rotation.x());
+				PositionTree::Ray traced = positionTree.TraceRay(camera.position, ray, -1);
+				if (traced.side != -1) {
+					positionTree.Remove(traced.it);
+					//Peio::Float3 pos = voxelPositionBuffer.GetSubresourceBuffer()[traced.collisionVoxel];
+					//pos[traced.side] += (traced.normal[traced.side] < 0.0f) ? -1.0f : 1.0f;
+					//voxelPositionBuffer.GetSubresourceBuffer()[voxelIndex] = pos;
+					//positionTree.Insert({ voxelIndex++ });
+					//std::cout << traced.collisionVoxel << " added " << (voxelIndex - 1) << " at " << pos.ToString() << std::endl;
+				}
+			}
+
 			positionTree.UpdateBoundaries(positionTree.GetLeafIterator(0).GetParent());
+			positionTree.UpdateBoundaries(positionTree.GetLeafIterator(voxelIndex - 1).GetParent());
 			rootSignature.srvs[0].GetResources()[2]->Upload(voxelPositionBuffer.GetResourceData(), graphics.GetCommandList());
 			rootSignature.srvs[0].GetResources()[4]->Upload(positionBranchBuffer.GetResourceData(), graphics.GetCommandList());
-
+			rootSignature.srvs[0].GetResources()[5]->Upload(positionLeafBuffer.GetResourceData(), graphics.GetCommandList());
 
 			camera.position += camera.velocity;
 			

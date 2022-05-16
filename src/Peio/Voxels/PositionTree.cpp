@@ -144,69 +144,108 @@ namespace Peio::Vxl {
 
 	PositionTree::Ray PositionTree::TraceRay(const Float3& origin, const Float3& ray, UINT skip)
 	{
+		const uint numLayers = 10;
+		const uint numChildren = 3;
 		const Float3 invRay = Float3(1.0f, 1.0f, 1.0f) / ray;
-		//const Float3 invRad = abs(invRay * scene[0].voxelRadius);
+		Float3 invRad = (invRay * 0.5f);
+		invRad.x() = abs(invRad.x());
+		invRad.y() = abs(invRad.y());
+		invRad.z() = abs(invRad.z());
 
 		Ray result(GetRootIterator());
+		result.side = -1;
 		result.normal = ray;
 
-		float minScale = D3D12_FLOAT32_MAX;
+		float minScale = INFINITY;
 		uint layerSize = numChildren; // In nodes
 		uint layerOffset = 0;
 		uint layerIndex = 0;
 		uint nodeIndex = 0;
 
-		std::vector<uint> branchIndices(numLayers, 0);
-		std::vector<uint> descriptors(numLayers, 0);
+		uint branchIndices[numLayers];
+		for (uint i = 0; i < numLayers; i++)
+			branchIndices[i] = 0;
+
+		uint descriptors[numLayers];
 		descriptors[0] = -1;
 
+		uint maxLayer = 0;
 		bool up = true;
+		uint checks = 0;
 
 		while (true) {
-			up = false;
-			for (; branchIndices[layerIndex] < numChildren; branchIndices[layerIndex]++) {
-				if (!(descriptors[layerIndex] & (1U << (branchIndices[layerIndex] * 2))))
-					continue;
-				Array<Float3, 2> boundaries = 
-					(layerIndex == numLayers - 1)
-					? GetBoundaries(leaves[nodeIndex + branchIndices[layerIndex]].index)
-					: branches[0][layerOffset + nodeIndex + branchIndices[layerIndex]].boundaries;
-				//PositionBranch branch = branches[0][layerOffset + nodeIndex + branchIndices[layerIndex]];
+			checks++;
+			if (layerIndex > maxLayer)
+				maxLayer = layerIndex;
+			if (layerIndex == numLayers - 1) {
+				for (uint v = 0; v < numChildren; v++) {
+					if (!(descriptors[layerIndex] & (1U << (v * 2))))
+						continue;
+					Array<Float3, 2> boundaries = GetBoundaries(leaves[nodeIndex + v].index);
+					boundaries[0] -= origin;
+					boundaries[1] -= origin;
 
-				boundaries -= origin;
-				boundaries *= invRay;
+					boundaries[0] *= invRay;
+					boundaries[1] *= invRay;
 
-				float curMax = std::min(std::max(boundaries[0].x(), boundaries[1].x()),
-					std::min(std::max(boundaries[0].y(), boundaries[1].y()),
-						std::max(boundaries[0].z(), boundaries[1].z())));
-				if (curMax <= 0.0f)
-					continue;
-				float curMin = std::max(std::min(boundaries[0].x(), boundaries[1].x()),
-					std::max(std::min(boundaries[0].y(), boundaries[1].y()),
-						std::min(boundaries[0].z(), boundaries[1].z())));
+					float curMax = std::min(std::max(boundaries[0].x(), boundaries[1].x()),
+						std::min(std::max(boundaries[0].y(), boundaries[1].y()),
+							std::max(boundaries[0].z(), boundaries[1].z())));
+					if (curMax <= 0.0f)
+						continue;
+					float curMin = std::max(std::min(boundaries[0].x(), boundaries[1].x()),
+						std::max(std::min(boundaries[0].y(), boundaries[1].y()),
+							std::min(boundaries[0].z(), boundaries[1].z())));
 
-				if (curMax < curMin || curMin >= minScale)
-					continue;
+					if (curMax < curMin || curMin >= minScale)
+						continue;
 
-				if (layerIndex == numLayers - 1) {
 					minScale = curMin;
-					result.it = GetLeafIterator(nodeIndex + branchIndices[layerIndex]);
-					result.collisionVoxel = leaves[nodeIndex + branchIndices[layerIndex]].index;
+					result.collisionVoxel = leaves[nodeIndex + v].index;
+
 					result.side = 0;
-					for (int i = 1; i < 3; i++) {
-						if (std::min(boundaries[0][i], boundaries[1][i]) > std::min(boundaries[0][result.side], boundaries[1][result.side]))
-							result.side = i;
+					for (int j = 1; j < 3; j++) {
+						if (std::min(boundaries[0][j], boundaries[1][j]) > std::min(boundaries[0][result.side], boundaries[1][result.side]))
+							result.side = j;
 					}
+					result.it = GetLeafIterator(nodeIndex + v);
 				}
-				else {
+				up = false;
+			}
+			else {
+				up = false;
+				for (; branchIndices[layerIndex] < numChildren; branchIndices[layerIndex]++) {
+					if (!(descriptors[layerIndex] & (1U << (branchIndices[layerIndex] * 2))))
+						continue;
+					PositionBranch branch = branches[0][layerOffset + nodeIndex + branchIndices[layerIndex]];
+
+					branch.boundaries[0] -= origin;
+					branch.boundaries[1] -= origin;
+
+					branch.boundaries[0] *= invRay;
+					branch.boundaries[1] *= invRay;
+
+					float curMax = std::min(std::max(branch.boundaries[0].x(), branch.boundaries[1].x()),
+						std::min(std::max(branch.boundaries[0].y(), branch.boundaries[1].y()),
+							std::max(branch.boundaries[0].z(), branch.boundaries[1].z())));
+					if (curMax <= 0.0f)
+						continue;
+					float curMin = std::max(std::min(branch.boundaries[0].x(), branch.boundaries[1].x()),
+						std::max(std::min(branch.boundaries[0].y(), branch.boundaries[1].y()),
+							std::min(branch.boundaries[0].z(), branch.boundaries[1].z())));
+
+					if (curMax < curMin || curMin >= minScale)
+						continue;
+
 					nodeIndex += branchIndices[layerIndex];
-					descriptors[layerIndex + 1] = branches[0][layerOffset + nodeIndex + branchIndices[layerIndex]].descriptor._Getword(0);
+					descriptors[layerIndex + 1] = branch.descriptor._Getword(0);
 					branchIndices[layerIndex]++;
 					branchIndices[layerIndex + 1] = 0;
 					up = true;
 					break;
 				}
 			}
+
 			if (up) {
 				layerIndex++;
 				layerOffset += layerSize;
@@ -225,10 +264,17 @@ namespace Peio::Vxl {
 		}
 		if (result.side != -1) {
 			result.collision = origin + (ray * minScale);
-			result.normal[result.side] = -result.normal[result.side];
+			result.normal = ray;
+			if (result.side == 0)
+				result.normal.x() = -result.normal.x();
+			else if (result.side == 1)
+				result.normal.y() = -result.normal.y();
+			else
+				result.normal.z() = -result.normal.z();
 		}
 		return result;
 	}
+
 
 	//PositionTree::Iterator PositionTree::TraceRay(const Float3& origin, const Float3& ray, UINT skip)
 	//{
