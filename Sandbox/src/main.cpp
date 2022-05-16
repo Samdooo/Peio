@@ -13,6 +13,7 @@
 #include <Peio/Voxels/DenoiseRenderer.h>
 #include <Peio/Graphics/MultiPassGraphics.h>
 #include <Peio/Voxels/PositionTree.h>
+#include <functional>
 
 #include <unordered_map>
 
@@ -23,58 +24,12 @@ bool Keydown(int key) {
 	return GetKeyState(key) & 0x8000;
 }
 
-struct Handler : public Peio::EventHandler<Peio::Win::RawMouseMoveEvent> {
-
-	Peio::Float2* rotation = nullptr;
-
-	void Handle(Peio::Win::RawMouseMoveEvent& event) override {
-		if (!Keydown(VK_ESCAPE)) {
-			*rotation -= (Peio::Float2)event.movement / 1000.0f;
-			SetCursorPos(200, 200);
-		}
-	}
-
-};
-
-struct Material {
-
-	Peio::Float4 colorEmission;
-	Peio::Float3 lightEmission;
-
-};
-
 struct Camera {
 	Peio::Float3 position = {};
 	Peio::Float2 rotation = {};
 	float fov = 0.0f;
 	Peio::Float3 velocity = {};
 };
-
-#define GOLDEN_ANGLE 2.399963229728653f
-
-void PrintDepth(int depth) {
-	for (int i = 0; i < depth; i++)
-		std::cout << "  ";
-}
-
-void Print(const Peio::Vxl::PositionTree& tree) {
-	UINT layerSize = tree.GetNumChildren();
-	for (size_t i = 0; i < tree.GetNumLayers() - 1; i++) {
-		std::cout << "{  ";
-		for (size_t j = 0; j < layerSize; j++) {
-			if (j > 16)
-				break;
-			std::cout << "[ " << tree.GetBranches()[i][j].descriptor << " ]" << "  ";
-			//std::cout << "[ " << tree.GetBranches()[i][j].boundaries[0].ToString() << " - " << tree.GetBranches()[i][j].boundaries[1].ToString() << " ] ";
-		}
-		std::cout << "}" << std::endl;
-		layerSize *= tree.GetNumChildren();
-	}
-	for (size_t i = 0; i < layerSize; i++) {
-		std::cout << tree.GetLeaves()[i].index << "  ";
-	}
-	std::cout << std::endl;
-}
 
 struct PositionTree : public Peio::Vxl::PositionTree {
 
@@ -104,6 +59,75 @@ struct PrimaryRay {
 	Peio::Float3 collision;
 	Peio::Float3 light;
 };
+
+struct Handler : public Peio::EventHandler<Peio::Win::RawMouseMoveEvent, Peio::Win::RawMouseButtonDownEvent, Peio::Win::KeydownEvent> {
+
+	Peio::Float2* rotation = nullptr;
+
+	void Handle(Peio::Win::RawMouseMoveEvent& event) override {
+		if (!Keydown(VK_ESCAPE)) {
+			*rotation -= (Peio::Float2)event.movement / 1000.0f;
+			SetCursorPos(200, 200);
+		}
+	}
+
+	std::function<void()> destroy = nullptr;
+	std::function<void()> build = nullptr;
+
+	void Handle(Peio::Win::RawMouseButtonDownEvent& event) override {
+		if (!Keydown(VK_ESCAPE)) {
+			if (event.button == Peio::Win::MouseButton::LEFT) {
+				destroy();
+			}
+			else {
+				build();
+			}
+		}
+	}
+
+	std::function<void(UINT)> setMaterial = nullptr;
+
+	void Handle(Peio::Win::KeydownEvent& event) override {
+		if (!Keydown(VK_ESCAPE) && !event.prev) {
+			if (event.key >= '1' && event.key <= '9')
+				setMaterial(event.key - '1');
+		}
+	}
+
+};
+
+struct Material {
+
+	Peio::Float4 colorEmission;
+	Peio::Float3 lightEmission;
+
+};
+
+#define GOLDEN_ANGLE 2.399963229728653f
+
+void PrintDepth(int depth) {
+	for (int i = 0; i < depth; i++)
+		std::cout << "  ";
+}
+
+void Print(const Peio::Vxl::PositionTree& tree) {
+	UINT layerSize = tree.GetNumChildren();
+	for (size_t i = 0; i < tree.GetNumLayers() - 1; i++) {
+		std::cout << "{  ";
+		for (size_t j = 0; j < layerSize; j++) {
+			if (j > 16)
+				break;
+			std::cout << "[ " << tree.GetBranches()[i][j].descriptor << " ]" << "  ";
+			//std::cout << "[ " << tree.GetBranches()[i][j].boundaries[0].ToString() << " - " << tree.GetBranches()[i][j].boundaries[1].ToString() << " ] ";
+		}
+		std::cout << "}" << std::endl;
+		layerSize *= tree.GetNumChildren();
+	}
+	for (size_t i = 0; i < layerSize; i++) {
+		std::cout << tree.GetLeaves()[i].index << "  ";
+	}
+	std::cout << std::endl;
+}
 
 int main() {
 
@@ -260,7 +284,7 @@ int main() {
 		//Peio::Vxl::VoxelRenderer renderer;
 		//renderer.Init(graphics.GetCommandList(), &rootSignature, {}, {}, PI / 2, 360.0f / 640.0f);
 
-		UINT rad = 3;
+		UINT rad = 1;
 
 		Peio::Gfx::SubresourceBuffer<Peio::Vxl::VoxelScene> sceneBuffer;
 		sceneBuffer.Allocate(1);
@@ -269,12 +293,24 @@ int main() {
 		};
 		
 		Peio::Gfx::SubresourceBuffer<Material> materialBuffer;
-		materialBuffer.Allocate(2);
+		materialBuffer.Allocate(9);
 		materialBuffer.GetSubresourceBuffer()[0] = {
 			{ 0.1f, 0.7f, 0.9f, 1.0f }, { 0.0f, 0.0f, 0.0f }
 		};
 		materialBuffer.GetSubresourceBuffer()[1] = {
 			{ 0.0f, 0.0f, 0.0f, 1.0f }, { 9.0f, 2.0f, 8.0f }
+		};
+		materialBuffer.GetSubresourceBuffer()[2] = {
+			{ 71.0f / 255.0f, 27.0f / 255.0f, 27.0f / 255.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }
+		};
+		materialBuffer.GetSubresourceBuffer()[3] = {
+			{ 20.0f / 255.0f, 196.0f / 255.0f, 64.0f / 255.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }
+		};
+		materialBuffer.GetSubresourceBuffer()[4] = {
+			{ 0.0f, 0.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }
+		};
+		materialBuffer.GetSubresourceBuffer()[5] = {
+			{ 1.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }
 		};
 
 		Peio::Gfx::SubresourceBuffer<Peio::Float3> voxelPositionBuffer;
@@ -369,11 +405,48 @@ int main() {
 		listener.Register(window.GetHWND());
 		Peio::Win::Input::AddListener(&listener);
 
-		Handler handler;
-		Peio::Win::Input::AddEventHandler(&handler);
+		Peio::Win::KeyboardListener keyListener;
+		Peio::Win::Input::AddListener(&keyListener);
 
 		Camera camera = {};
+		UINT voxelIndex = rad * rad * rad;
+
+		Handler handler;
 		handler.rotation = &camera.rotation;
+		handler.build = [&camera, &positionTree, &voxelPositionBuffer, &voxelIndex]() {
+			Peio::Float3 ray = { 0.0f, 0.0f, 1.0f };
+			ray = RotateX(ray, camera.rotation.y());
+			ray = RotateY(ray, camera.rotation.x());
+			PositionTree::Ray traced = positionTree.TraceRay(camera.position, ray, -1);
+			if (traced.side != -1) {
+				Peio::Float3 pos = voxelPositionBuffer.GetSubresourceBuffer()[traced.collisionVoxel];
+				pos[traced.side] += (traced.normal[traced.side] < 0.0f) ? -1.0f : 1.0f;
+				voxelPositionBuffer.GetSubresourceBuffer()[voxelIndex] = pos;
+				positionTree.Insert({ voxelIndex++ });
+				std::cout << traced.collisionVoxel << " added " << (voxelIndex - 1) << " at " << pos.ToString() << std::endl;
+			}
+		};
+		handler.destroy = [&camera, &positionTree]() {
+			Peio::Float3 ray = { 0.0f, 0.0f, 1.0f };
+			ray = RotateX(ray, camera.rotation.y());
+			ray = RotateY(ray, camera.rotation.x());
+			PositionTree::Ray traced = positionTree.TraceRay(camera.position, ray, -1);
+			if (traced.side != -1) {
+				positionTree.Remove(traced.it);
+			}
+		};
+
+		handler.setMaterial = [&camera, &positionTree, &voxelMaterialBuffer](UINT i) {
+			Peio::Float3 ray = { 0.0f, 0.0f, 1.0f };
+			ray = RotateX(ray, camera.rotation.y());
+			ray = RotateY(ray, camera.rotation.x());
+			PositionTree::Ray traced = positionTree.TraceRay(camera.position, ray, -1);
+			if (traced.side != -1) {
+				voxelMaterialBuffer.GetSubresourceBuffer()[traced.collisionVoxel] = i;
+			}
+		};
+
+		Peio::Win::Input::AddEventHandler(&handler);
 
 		Peio::Gfx::RootSignature denoiseRs;
 		denoiseRs.uavs.push_back(rootSignature.uavs[0]);
@@ -395,8 +468,6 @@ int main() {
 		
 		float acceleration = 1.0f;
 		float retardation = 0.5f;
-	
-		UINT voxelIndex = rad * rad * rad;
 
 		while (true) {
 			window.HandleMessages();
@@ -451,37 +522,38 @@ int main() {
 				voxelPositionBuffer.GetSubresourceBuffer()[0].y() -= 0.1f;
 			}
 
-			if (Keydown('I')) {
-				Peio::Float3 ray = { 0.0f, 0.0f, 1.0f };
-				ray = RotateX(ray, camera.rotation.y());
-				ray = RotateY(ray, camera.rotation.x());
-				PositionTree::Ray traced = positionTree.TraceRay(camera.position, ray, -1);
-				if (traced.side != -1) {
-					Peio::Float3 pos = voxelPositionBuffer.GetSubresourceBuffer()[traced.collisionVoxel];
-					pos[traced.side] += (traced.normal[traced.side] < 0.0f) ? -1.0f : 1.0f;
-					voxelPositionBuffer.GetSubresourceBuffer()[voxelIndex] = pos;
-					positionTree.Insert({ voxelIndex++ });
-					//std::cout << traced.collisionVoxel << " added " << (voxelIndex - 1) << " at " << pos.ToString() << std::endl;
-				}
-			}
-			if (Keydown('U')) {
-				Peio::Float3 ray = { 0.0f, 0.0f, 1.0f };
-				ray = RotateX(ray, camera.rotation.y());
-				ray = RotateY(ray, camera.rotation.x());
-				PositionTree::Ray traced = positionTree.TraceRay(camera.position, ray, -1);
-				if (traced.side != -1) {
-					positionTree.Remove(traced.it);
-					//Peio::Float3 pos = voxelPositionBuffer.GetSubresourceBuffer()[traced.collisionVoxel];
-					//pos[traced.side] += (traced.normal[traced.side] < 0.0f) ? -1.0f : 1.0f;
-					//voxelPositionBuffer.GetSubresourceBuffer()[voxelIndex] = pos;
-					//positionTree.Insert({ voxelIndex++ });
-					//std::cout << traced.collisionVoxel << " added " << (voxelIndex - 1) << " at " << pos.ToString() << std::endl;
-				}
-			}
+			//if (Keydown('I')) {
+			//	Peio::Float3 ray = { 0.0f, 0.0f, 1.0f };
+			//	ray = RotateX(ray, camera.rotation.y());
+			//	ray = RotateY(ray, camera.rotation.x());
+			//	PositionTree::Ray traced = positionTree.TraceRay(camera.position, ray, -1);
+			//	if (traced.side != -1) {
+			//		Peio::Float3 pos = voxelPositionBuffer.GetSubresourceBuffer()[traced.collisionVoxel];
+			//		pos[traced.side] += (traced.normal[traced.side] < 0.0f) ? -1.0f : 1.0f;
+			//		voxelPositionBuffer.GetSubresourceBuffer()[voxelIndex] = pos;
+			//		positionTree.Insert({ voxelIndex++ });
+			//		//std::cout << traced.collisionVoxel << " added " << (voxelIndex - 1) << " at " << pos.ToString() << std::endl;
+			//	}
+			//}
+			//if (Keydown('U')) {
+			//	Peio::Float3 ray = { 0.0f, 0.0f, 1.0f };
+			//	ray = RotateX(ray, camera.rotation.y());
+			//	ray = RotateY(ray, camera.rotation.x());
+			//	PositionTree::Ray traced = positionTree.TraceRay(camera.position, ray, -1);
+			//	if (traced.side != -1) {
+			//		positionTree.Remove(traced.it);
+			//		//Peio::Float3 pos = voxelPositionBuffer.GetSubresourceBuffer()[traced.collisionVoxel];
+			//		//pos[traced.side] += (traced.normal[traced.side] < 0.0f) ? -1.0f : 1.0f;
+			//		//voxelPositionBuffer.GetSubresourceBuffer()[voxelIndex] = pos;
+			//		//positionTree.Insert({ voxelIndex++ });
+			//		//std::cout << traced.collisionVoxel << " added " << (voxelIndex - 1) << " at " << pos.ToString() << std::endl;
+			//	}
+			//}
 
 			positionTree.UpdateBoundaries(positionTree.GetLeafIterator(0).GetParent());
 			positionTree.UpdateBoundaries(positionTree.GetLeafIterator(voxelIndex - 1).GetParent());
 			rootSignature.srvs[0].GetResources()[2]->Upload(voxelPositionBuffer.GetResourceData(), graphics.GetCommandList());
+			rootSignature.srvs[0].GetResources()[3]->Upload(voxelMaterialBuffer.GetResourceData(), graphics.GetCommandList());
 			rootSignature.srvs[0].GetResources()[4]->Upload(positionBranchBuffer.GetResourceData(), graphics.GetCommandList());
 			rootSignature.srvs[0].GetResources()[5]->Upload(positionLeafBuffer.GetResourceData(), graphics.GetCommandList());
 

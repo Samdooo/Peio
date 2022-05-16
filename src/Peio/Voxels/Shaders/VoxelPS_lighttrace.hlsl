@@ -10,7 +10,7 @@ float3 LightTrace(float3 origin, float3 startRay, float4 pixelPosition) {
 	const float2 screenSize = (float2)scene[0].screenSize;
 
 	VoxelRay primary = VoxelTrace(origin, startRay, -1);
-	PrimaryRay pr = { primary.collisionVoxel, primary.side, primary.collision, float3(0.0f, 0.0f, 0.0f) };
+	PrimaryRay pr = { primary.materialIndex, primary.side, primary.collision, float3(0.0f, 0.0f, 0.0f) };
 	primaryRays[(uint)pixelPosition.y * scene[0].screenSize.x + (uint)pixelPosition.x] = pr;
 	
 	if (primary.side == -1)
@@ -23,7 +23,7 @@ float3 LightTrace(float3 origin, float3 startRay, float4 pixelPosition) {
 		ray.y = frac(PHI * seed);
 		if (primary.normal[primary.side] < 0.0f)
 			ray.y = -ray.y;
-		float angle = GOLDEN_ANGLE * seed;
+		float angle = GOLDEN_ANGLE * seed * 2;
 		float rad = sqrt(1.0f - (ray.y * ray.y));
 		ray.x = cos(angle) * rad;
 		ray.z = sin(angle) * rad;

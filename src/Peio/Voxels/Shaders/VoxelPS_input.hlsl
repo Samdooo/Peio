@@ -53,7 +53,7 @@ Material GetMaterial(uint voxelIndex){
 // UAVs
 
 struct PrimaryRay {
-    uint collisionVoxel;
+    uint materialIndex;
     int side; // -1 indicates no collision
     float3 collision;
     float3 light;

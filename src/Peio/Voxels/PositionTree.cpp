@@ -147,10 +147,6 @@ namespace Peio::Vxl {
 		const uint numLayers = 10;
 		const uint numChildren = 3;
 		const Float3 invRay = Float3(1.0f, 1.0f, 1.0f) / ray;
-		Float3 invRad = (invRay * 0.5f);
-		invRad.x() = abs(invRad.x());
-		invRad.y() = abs(invRad.y());
-		invRad.z() = abs(invRad.z());
 
 		Ray result(GetRootIterator());
 		result.side = -1;

@@ -5,7 +5,7 @@ struct VS_OUTPUT {
 };
 
 struct PrimaryRay {
-	uint collisionVoxel;
+	uint materialIndex;
 	int side; // -1 indicates no collision
 	float3 collision;
 	float3 light;
@@ -40,7 +40,11 @@ float4 main(VS_OUTPUT input) : SV_TARGET
 	for (int i = max(pos.y - rad, 0); i <= min(pos.y + rad, size.y - 1); i++) {
 		for (int j = max(pos.x - rad, 0); j <= min(pos.x + rad, size.x - 1); j++) {
 			PrimaryRay ray = primaryRays[i * size.x + j];
-			if (ray.side == primaryRay.side && ray.collisionVoxel == primaryRay.collisionVoxel) {
+			//if (ray.side == primaryRay.side && ray.collisionVoxel == primaryRay.collisionVoxel) {
+			//	light += ray.light;
+			//	numPixels++;
+			//}
+			if (ray.side == primaryRay.side && abs(ray.collision[ray.side] - primaryRay.collision[ray.side]) < 0.01f && ray.materialIndex == primaryRay.materialIndex) {
 				light += ray.light;
 				numPixels++;
 			}

@@ -8,6 +8,7 @@ struct VoxelRay {
     int side; // -1 indicates no collision
 	float3 collision;
 	float3 normal;
+    uint materialIndex;
     Material material;
 };
 
@@ -130,7 +131,8 @@ VoxelRay VoxelTrace(const float3 origin, const float3 ray, uint skip){
             result.normal.y = -result.normal.y;
         else
             result.normal.z = -result.normal.z;
-        result.material = materials[voxelMaterials[result.collisionVoxel]];
+        result.materialIndex = voxelMaterials[result.collisionVoxel];
+        result.material = materials[result.materialIndex];
     }
     return result;
 }
