@@ -7,10 +7,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
+    <ClInclude Include="..\src\Peio\Media\MediaHeader.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\main2.cpp">
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Media\Scaler.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\Peio\Media\Scaler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -289,7 +289,7 @@ int main() {
 		Peio::Gfx::SubresourceBuffer<Peio::Vxl::VoxelScene> sceneBuffer;
 		sceneBuffer.Allocate(1);
 		sceneBuffer.GetSubresourceBuffer()[0] = {
-			(Peio::Uint2)windowSize, 10, 1, 0.5f, 5
+			(Peio::Uint2)windowSize, 10, 1, 0.5f, 10
 		};
 		
 		Peio::Gfx::SubresourceBuffer<Material> materialBuffer;
