@@ -101,12 +101,14 @@
     <ClInclude Include="..\src\Peio\Networking\IOSocket.h" />
     <ClInclude Include="..\src\Peio\Networking\ListenSocket.h" />
     <ClInclude Include="..\src\Peio\Networking\NetworkingHeader.h" />
+    <ClInclude Include="..\src\Peio\Networking\Server.h" />
     <ClInclude Include="..\src\Peio\Networking\Socket.h" />
     <ClInclude Include="..\src\Peio\Networking\Sockets.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Networking\Hint.cpp" />
     <ClCompile Include="..\src\Peio\Networking\Init.cpp" />
+    <ClCompile Include="..\src\Peio\Networking\Server.cpp" />
     <ClCompile Include="..\src\Peio\Networking\Sockets.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

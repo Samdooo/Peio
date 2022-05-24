@@ -8,6 +8,9 @@
     <Filter Include="Source Files\Sockets">
       <UniqueIdentifier>{5372d9b9-741e-45a1-984b-d34122f773ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Servers">
+      <UniqueIdentifier>{ad02837d-08d5-4c6e-9dff-995f46eb738c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\Networking\NetworkingHeader.h">
@@ -49,6 +52,9 @@
     <ClInclude Include="..\src\Peio\Networking\Sockets.h">
       <Filter>Source Files\Sockets</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Networking\Server.h">
+      <Filter>Source Files\Servers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Networking\Init.cpp">
@@ -59,6 +65,9 @@
     </ClCompile>
     <ClCompile Include="..\src\Peio\Networking\Sockets.cpp">
       <Filter>Source Files\Sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Networking\Server.cpp">
+      <Filter>Source Files\Servers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
