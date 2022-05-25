@@ -5,6 +5,12 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Source Files\Decoding">
+      <UniqueIdentifier>{fdd78b65-5edf-455f-9334-a21713735f55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Encoding">
+      <UniqueIdentifier>{68303cc2-2c3b-4558-bda1-6e67a205e944}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\Media\MediaHeader.h">
@@ -13,9 +19,24 @@
     <ClInclude Include="..\src\Peio\Media\Scaler.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Media\Exception.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Media\FileDecoder.h">
+      <Filter>Source Files\Decoding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Media\Frame.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Media\Scaler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Media\FileDecoder.cpp">
+      <Filter>Source Files\Decoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Media\Frame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
