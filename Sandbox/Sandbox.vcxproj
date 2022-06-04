@@ -85,6 +85,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)bin\</AdditionalLibraryDirectories>
     </Link>
+    <FxCompile>
+      <ObjectFileOutput>$(ProjectDir)%(Filename).cso</ObjectFileOutput>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -104,12 +108,19 @@
     <ProjectReference Include="..\Networking\Networking.vcxproj">
       <Project>{d769c4ac-7ac5-452a-aca8-96a73281c949}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Voxels\Voxels.vcxproj">
-      <Project>{cee25723-2e4b-468d-943a-a96da258a44b}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\Windows\Windows.vcxproj">
       <Project>{19a3160d-a6d1-4654-bb9d-224526fa4d5d}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="src\TestPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="src\TestVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
