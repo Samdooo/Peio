@@ -45,6 +45,11 @@ namespace Peio::Med {
 		return bytes_pp;
 	}
 
+	size_t Frame::GetLength() const
+	{
+		return (size_t)size.x() * (size_t)size.y() * (size_t)bytes_pp;
+	}
+
 	byte* const Frame::GetPixel(int row, int col) const
 	{
 		return &data[(row * size.x() + col) * bytes_pp];

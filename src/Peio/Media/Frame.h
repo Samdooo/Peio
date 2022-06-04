@@ -16,6 +16,7 @@ namespace Peio::Med {
 		_NODISCARD Int2 GetSize() const;
 		_NODISCARD AVPixelFormat GetFormat() const;
 		_NODISCARD int GetBytesPP() const;
+		_NODISCARD size_t GetLength() const;
 
 		_NODISCARD byte* const GetPixel(int row, int col) const;
 

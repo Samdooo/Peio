@@ -99,7 +99,9 @@ namespace Peio::Med {
 		}
 
 		if (createFrame) {
-			dstFrame->Init({ avFrame->width, avFrame->height }, (AVPixelFormat)avFrame->format);
+			dstFrame->Init({ dstFrame->GetSize().x() ? dstFrame->GetSize().x() : avFrame->width, 
+							 dstFrame->GetSize().y() ? dstFrame->GetSize().y() : avFrame->height }, 
+							 dstFrame->GetFormat() != AV_PIX_FMT_NONE ? dstFrame->GetFormat() : (AVPixelFormat)avFrame->format);
 		}
 
 		scaler.Init({ avFrame->width, avFrame->height }, dstFrame->GetSize(), (AVPixelFormat)avFrame->format, dstFrame->GetFormat(), algorithm);
