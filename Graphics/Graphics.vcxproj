@@ -90,11 +90,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Peio\Graphics\ConstantBufferView.h" />
     <ClInclude Include="..\src\Peio\Graphics\d3dx12.h" />
     <ClInclude Include="..\src\Peio\Graphics\CommandAllocator.h" />
     <ClInclude Include="..\src\Peio\Graphics\CommandList.h" />
     <ClInclude Include="..\src\Peio\Graphics\CommandQueue.h" />
-    <ClInclude Include="..\src\Peio\Graphics\ConstantBufferView.h" />
     <ClInclude Include="..\src\Peio\Graphics\D3DBPP.h" />
     <ClInclude Include="..\src\Peio\Graphics\DescriptorHeap.h" />
     <ClInclude Include="..\src\Peio\Graphics\DescriptorTable.h" />
@@ -110,11 +110,13 @@
     <ClInclude Include="..\src\Peio\Graphics\RenderTargetHeap.h" />
     <ClInclude Include="..\src\Peio\Graphics\RenderTexture.h" />
     <ClInclude Include="..\src\Peio\Graphics\Resource.h" />
+    <ClInclude Include="..\src\Peio\Graphics\ResourceArray.h" />
+    <ClInclude Include="..\src\Peio\Graphics\RootSignature.h" />
+    <ClInclude Include="..\src\Peio\Graphics\Sampler.h" />
+    <ClInclude Include="..\src\Peio\Graphics\ShaderResourceView.h" />
     <ClInclude Include="..\src\Peio\Graphics\SubresourceArray.h" />
     <ClInclude Include="..\src\Peio\Graphics\RootParameter.h" />
-    <ClInclude Include="..\src\Peio\Graphics\RootSignature.h" />
     <ClInclude Include="..\src\Peio\Graphics\Shader.h" />
-    <ClInclude Include="..\src\Peio\Graphics\ShaderResourceView.h" />
     <ClInclude Include="..\src\Peio\Graphics\SubresourceBuffer.h" />
     <ClInclude Include="..\src\Peio\Graphics\SwapChain.h" />
     <ClInclude Include="..\src\Peio\Graphics\TextureGraphics.h" />
@@ -138,8 +140,10 @@
     <ClCompile Include="..\src\Peio\Graphics\RenderTargetHeap.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\RenderTexture.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\Resource.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\ResourceArray.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\RootParameter.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\RootSignature.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\Sampler.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\Shader.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\ShaderResourceView.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\SwapChain.cpp" />

@@ -30,6 +30,13 @@ namespace Peio::Gfx {
 			resourceData.SlicePitch = numElements * sizeof(T_element);
 		}
 
+		void SetBuffer(T_element* elements, size_t elementsPerRow, size_t numRows) {
+			buffer = elements;
+			resourceData.pData = buffer;
+			resourceData.RowPitch = elementsPerRow * sizeof(T_element);
+			resourceData.SlicePitch = elementsPerRow * sizeof(T_element) * numRows;
+		}
+
 		void Allocate(size_t numElements) {
 			SetBuffer(new T_element[numElements], numElements);
 		}

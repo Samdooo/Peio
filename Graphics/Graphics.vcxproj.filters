@@ -70,9 +70,6 @@
     <ClInclude Include="..\src\Peio\Graphics\SwapChain.h">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Peio\Graphics\RootSignature.h">
-      <Filter>Source Files\Utils\Pipeline State\Root Signature</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Peio\Graphics\RootParameter.h">
       <Filter>Source Files\Utils\Pipeline State\Root Signature</Filter>
     </ClInclude>
@@ -94,15 +91,6 @@
     <ClInclude Include="..\src\Peio\Graphics\PipelineStateHeader.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Peio\Graphics\ConstantBufferView.h">
-      <Filter>Source Files\Utils\Heaps\Views</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Peio\Graphics\ShaderResourceView.h">
-      <Filter>Source Files\Utils\Heaps\Views</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Peio\Graphics\UnorderedAccessView.h">
-      <Filter>Source Files\Utils\Heaps\Views</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Peio\Graphics\SubresourceArray.h">
       <Filter>Source Files\Utils\Heaps</Filter>
     </ClInclude>
@@ -123,6 +111,24 @@
     </ClInclude>
     <ClInclude Include="..\src\Peio\Graphics\VertexBuffer.h">
       <Filter>Source Files\Utils\Heaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\ShaderResourceView.h">
+      <Filter>Source Files\Utils\Heaps\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\ResourceArray.h">
+      <Filter>Source Files\Utils\Heaps\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\RootSignature.h">
+      <Filter>Source Files\Utils\Pipeline State\Root Signature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\UnorderedAccessView.h">
+      <Filter>Source Files\Utils\Heaps\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\ConstantBufferView.h">
+      <Filter>Source Files\Utils\Heaps\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\Sampler.h">
+      <Filter>Source Files\Utils\Pipeline State\Root Signature</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -159,9 +165,6 @@
     <ClCompile Include="..\src\Peio\Graphics\SwapChain.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Peio\Graphics\RootSignature.cpp">
-      <Filter>Source Files\Utils\Pipeline State\Root Signature</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Peio\Graphics\RootParameter.cpp">
       <Filter>Source Files\Utils\Pipeline State\Root Signature</Filter>
     </ClCompile>
@@ -177,15 +180,6 @@
     <ClCompile Include="..\src\Peio\Graphics\Shader.cpp">
       <Filter>Source Files\Utils\Pipeline State</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Peio\Graphics\ConstantBufferView.cpp">
-      <Filter>Source Files\Utils\Heaps\Views</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Peio\Graphics\ShaderResourceView.cpp">
-      <Filter>Source Files\Utils\Heaps\Views</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Peio\Graphics\UnorderedAccessView.cpp">
-      <Filter>Source Files\Utils\Heaps\Views</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Peio\Graphics\TextureGraphics.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
@@ -194,6 +188,24 @@
     </ClCompile>
     <ClCompile Include="..\src\Peio\Graphics\MultiPassGraphics.cpp">
       <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\ShaderResourceView.cpp">
+      <Filter>Source Files\Utils\Heaps\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\ResourceArray.cpp">
+      <Filter>Source Files\Utils\Heaps\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\RootSignature.cpp">
+      <Filter>Source Files\Utils\Pipeline State\Root Signature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\UnorderedAccessView.cpp">
+      <Filter>Source Files\Utils\Heaps\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\ConstantBufferView.cpp">
+      <Filter>Source Files\Utils\Heaps\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\Sampler.cpp">
+      <Filter>Source Files\Utils\Pipeline State\Root Signature</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
