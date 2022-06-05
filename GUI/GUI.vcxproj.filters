@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Texturing">
+      <UniqueIdentifier>{5e0e5481-b1ed-478a-baa4-c018928c3f9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Formats">
+      <UniqueIdentifier>{1acded71-1b1c-46dc-8325-ba338fdbf902}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Rectangle">
+      <UniqueIdentifier>{67afa6b4-84ec-4930-a342-98fac74b468f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\Peio\GUI\GUIHeader.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\GUI\Texture.h">
+      <Filter>Source Files\Texturing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\GUI\Rectangle.h">
+      <Filter>Source Files\Rectangle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\GUI\Uploadable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\GUI\Drawable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\Peio\GUI\Texture.cpp">
+      <Filter>Source Files\Texturing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\GUI\Rectangle.cpp">
+      <Filter>Source Files\Rectangle</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\src\Peio\GUI\RectVS.hlsl">
+      <Filter>Source Files\Rectangle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\src\Peio\GUI\RectPS.hlsl">
+      <Filter>Source Files\Rectangle</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
