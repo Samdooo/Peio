@@ -11,6 +11,10 @@ namespace Peio::Gfx {
 			return buffer;
 		}
 
+		_NODISCARD T_element& operator[](size_t ind) const noexcept {
+			return buffer[ind];
+		}
+
 		_NODISCARD size_t GetBufferSize() const noexcept {
 			return resourceData.RowPitch;
 		}
@@ -20,6 +24,10 @@ namespace Peio::Gfx {
 		}
 
 		_NODISCARD D3D12_SUBRESOURCE_DATA GetResourceData() const noexcept {
+			return resourceData;
+		}
+
+		_NODISCARD operator D3D12_SUBRESOURCE_DATA() const noexcept {
 			return resourceData;
 		}
 

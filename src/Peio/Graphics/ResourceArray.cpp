@@ -36,6 +36,11 @@ namespace Peio::Gfx {
 		return descriptorHeap;
 	}
 
+	const DescriptorHeap& ResourceArray::GetDescriptorHeap() const noexcept
+	{
+		return descriptorHeap;
+	}
+
 	Resource** ResourceArray::GetResources() noexcept
 	{
 		return &resources[0];

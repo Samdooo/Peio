@@ -6,3 +6,4 @@
 #include "DescriptorTable.h"
 #include "InputLayout.h"
 #include "Shader.h"
+#include "Sampler.h"

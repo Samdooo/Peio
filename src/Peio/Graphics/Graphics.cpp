@@ -1,22 +1,31 @@
 #define PEIO_GFX_EXPORTING
 #include "Graphics.h"
 
-ID3D12CommandQueue* Peio::Gfx::Graphics::GetCommandQueue() const noexcept
-{
-	return cmdQueue.GetQueue();
-}
+namespace Peio::Gfx {
 
-ID3D12GraphicsCommandList* Peio::Gfx::Graphics::GetCommandList() const noexcept
-{
-	return cmdList.GetCommandList();
-}
+	ID3D12CommandQueue* Graphics::GetCommandQueue() const noexcept
+	{
+		return cmdQueue.GetQueue();
+	}
 
-UINT Peio::Gfx::Graphics::GetFrameIndex() const noexcept
-{
-	return renderTargets.GetFrameIndex();
-}
+	ID3D12GraphicsCommandList* Graphics::GetCommandList() const noexcept
+	{
+		return cmdList.GetCommandList();
+	}
 
-const Peio::Gfx::RenderTargetHeap& Peio::Gfx::Graphics::GetRenderTargets() const noexcept
-{
-	return renderTargets;
+	UINT Graphics::GetFrameIndex() const noexcept
+	{
+		return renderTargets.GetFrameIndex();
+	}
+
+	const RenderTargetHeap& Graphics::GetRenderTargets() const noexcept
+	{
+		return renderTargets;
+	}
+
+	Long2 Graphics::GetSize() const noexcept
+	{
+		return size;
+	}
+
 }

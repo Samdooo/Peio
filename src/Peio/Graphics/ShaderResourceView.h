@@ -40,6 +40,5 @@ namespace Peio::Gfx {
 		D3D12_STATIC_SAMPLER_DESC sampler = {};
 
 	};
-	using Texture = Texture2DSRV;
 
 }

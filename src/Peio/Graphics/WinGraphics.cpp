@@ -5,6 +5,7 @@ void Peio::Gfx::WinGraphics::Init(HWND hwnd, Long2 size, UINT numBuffers, bool f
 {
 	Release();
 
+	this->size = size;
 	cmdQueue.Init();
 	cmdList.Init(cmdQueue.GetQueue(), numBuffers, 2);
 
@@ -15,6 +16,7 @@ void Peio::Gfx::WinGraphics::Init(HWND hwnd, Long2 size, UINT numBuffers, bool f
 
 void Peio::Gfx::WinGraphics::Resize(HWND hwnd, Long2 size, UINT numBuffers, bool fullscreen)
 {
+	this->size = size;
 	swapChain.Resize(cmdQueue.GetQueue(), hwnd, size, numBuffers, fullscreen);
 
 	renderTargets.Init(numBuffers);

@@ -36,6 +36,7 @@ namespace Peio::Gfx {
 		////renderTargets.SetFrameIndex(0);
 		//frontBuffer = &renderTargets.GetRenderTargets()[0];
 	
+		this->size = size;
 		cmdQueue.Init();
 		cmdList.Init(cmdQueue.GetQueue(), 1, 2);
 
