@@ -11,6 +11,9 @@
     <Filter Include="Source Files\Encoding">
       <UniqueIdentifier>{68303cc2-2c3b-4558-bda1-6e67a205e944}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Images">
+      <UniqueIdentifier>{18c17c80-72cb-42bf-ab8b-c116ae9f6217}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\Media\MediaHeader.h">
@@ -28,6 +31,9 @@
     <ClInclude Include="..\src\Peio\Media\Frame.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Media\Images.h">
+      <Filter>Source Files\Images</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Media\Scaler.cpp">
@@ -38,6 +44,9 @@
     </ClCompile>
     <ClCompile Include="..\src\Peio\Media\Frame.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Media\Images.cpp">
+      <Filter>Source Files\Images</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
