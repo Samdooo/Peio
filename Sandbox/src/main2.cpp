@@ -70,19 +70,39 @@ int main() {
 		rect.Upload();
 
 		Peio::GUI::Font font;
-		font.Init(&graphics, "Joan-Regular.ttf", 40);
+		font.Init(&graphics, "Roboto-Light.ttf", 40);
 		font.LoadLetters();
 		font.LoadTextures();
 
 		Peio::GUI::Text text;
-		text.Init(&graphics, { 100, 100 }, { 500, 150 });
+		text.Init(&graphics, { 100, 100 }, { 500, 300 });
 		text.SetFont(&font);
 		text.SetColor({ 0.0f, 0.0f, 1.0f, 1.0f });
 		text.SetSpaceWidth(15.0f);
 		text.SetLineOffset(50.0f);
-		text.SetString("Hello there\nThis is a new line");
 		
 		text.Upload();
+
+		Peio::Win::TextListener textListener;
+		Peio::Win::Input::AddListener(&textListener);
+
+		Peio::FunctionHandler<Peio::Win::TextEvent> textHandler(
+			[&text](Peio::Win::TextEvent& event) {
+				if (event.character == VK_BACK) {
+					if (text.GetString().size()) {
+						text.SetString(text.GetString().substr(0, text.GetString().size() - 1));
+					}
+					return;
+				}
+				if (event.character == VK_RETURN) {
+					text.SetString(text.GetString() + '\n');
+					return;
+				}
+				text.SetString(text.GetString() + event.character);
+			}
+		);
+
+		Peio::Win::Input::AddEventHandler(&textHandler);
 
 		while (true) {
 			window.HandleMessages();
