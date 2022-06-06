@@ -16,8 +16,11 @@
 #include <Peio/Graphics/DescriptorTable.h>
 #include <Peio/Graphics/ShaderResourceView.h>
 #include <Peio/GUI/Rectangle.h>
+#include <Peio/GUI/Text.h>
+#include <Peio/Windows/TextListener.h>
 
 #include <Peio/Media/Images.h>
+#include <Peio/Clock.h>
 
 struct Rect {
 	Peio::Uint2 offset;
@@ -35,43 +38,77 @@ struct VSInput {
 
 int main() {
 
+	//HWND discord = FindWindowA(nullptr, "Discord");
+	//LONG style = GetWindowLong(discord, GWL_);
+	//for (UINT i = 0; i < 32; i++) {
+	//	if (style & (1U << i))
+	//		std::cout << std::hex << (1U << i) << std::endl;
+	//}
+	//return 0;
+
 	try {
 
 		Peio::Gfx::Init();
+		Peio::GUI::Rectangle::Init();
 
 		Peio::Uint2 windowSize = { 1280, 720 };
 		Peio::Win::Window window;
 		window.CreateClass("Sandbox class2", 0);
 		window.RegisterClass();
-		window.CreateWindow("Peio Sandbox", WS_OVERLAPPEDWINDOW, 0, { CW_USEDEFAULT, CW_USEDEFAULT }, windowSize);
-		window.Show();
+		window.CreateWindow("Peio Sandbox", WS_POPUP | WS_VISIBLE, 0, {CW_USEDEFAULT, CW_USEDEFAULT}, windowSize);
 
 		Peio::Gfx::WinGraphics graphics;
 		graphics.Init(window.GetHWND(), windowSize, 3, false);
 
-		Peio::GUI::Rectangle rect;
-		rect.Init(&graphics, { 50, 50 }, { 600, 600 });
-
 		Peio::GUI::Texture texture;
-		texture.Init(&graphics, Peio::Med::Images::Load("pic.png", AV_PIX_FMT_RGBA, { 600, 600 }, SWS_SPLINE), DXGI_FORMAT_R8G8B8A8_UNORM);
+		texture.Init(&graphics, Peio::Med::Images::Load("pic.png", AV_PIX_FMT_RGBA, { 600, 600 }, SWS_X), DXGI_FORMAT_R8G8B8A8_UNORM);
 		texture.Upload();
 
+		Peio::GUI::Rectangle rect;
+		rect.Init(&graphics, { 0, 0 }, { 600, 600 });
 		rect.SetTexture(&texture);
-
-		Peio::GUI::Texture texture2;
-		texture2.Init(&graphics, Peio::Med::Images::Load("s.png", AV_PIX_FMT_RGBA), DXGI_FORMAT_R8G8B8A8_UNORM);
-		texture2.Upload();
-
-		rect.SetAlphaTexture(&texture2);
-
 		rect.Upload();
 
+		Peio::GUI::Font font;
+		font.Init(&graphics, "Joan-Regular.ttf", 40);
+		font.LoadLetters();
+		font.LoadTextures();
+		
+		Peio::GUI::Text text;
+		text.Init(&graphics, { 100, 100 }, { 500, 100 });
+		text.SetFont(&font);
+		text.SetSpaceWidth(20);
+		text.SetText("Hi");
+		text.Upload();
+
+		Peio::Win::TextListener textListener;
+		Peio::Win::Input::AddListener(&textListener);
+
+		Peio::FunctionHandler<Peio::Win::TextEvent> textHandler(
+			[&text](Peio::Win::TextEvent& event) {
+				if (event.character == VK_BACK) {
+					if (text.GetLetters().size())
+						text.PopText(1);
+				}
+				else {
+					text.AddLetter(event.character);
+				}
+			}
+		);
+
+		Peio::Win::Input::AddEventHandler(&textHandler);
+
+		Peio::Clock<double> clock;		
+		int frameCount = 0;
 		while (true) {
 			window.HandleMessages();
 
-			graphics.Clear({});
+			text.Upload();
 
+			graphics.Clear({});
+			 
 			rect.Draw();
+			text.Draw();
 
 			graphics.Render();
 		}
