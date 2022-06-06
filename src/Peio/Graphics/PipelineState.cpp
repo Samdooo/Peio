@@ -67,13 +67,13 @@ namespace Peio::Gfx {
 		desc.SampleMask = 0xffffffff;
 		desc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 		desc.NumRenderTargets = 1;
-
+		
 		D3D12_BLEND_DESC blendDesc = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 		blendDesc.RenderTarget[0].BlendEnable = useBlend;
 		blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
 		blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
 		desc.BlendState = blendDesc;
-
+		
 		D3D12_DEPTH_STENCIL_DESC dsDesc = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 		dsDesc.DepthEnable = useDepth;
 		dsDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
@@ -81,13 +81,17 @@ namespace Peio::Gfx {
 		dsDesc.StencilEnable = false;
 		desc.DepthStencilState = dsDesc;
 		desc.DSVFormat = useDepth ? DXGI_FORMAT_D32_FLOAT : DXGI_FORMAT_UNKNOWN;
-
+		
 		HRESULT ret;
 		
 		ret = device->CreateGraphicsPipelineState(&desc, __uuidof(ID3D12PipelineState), &pipelineState);
 		if (ret != 0) {
 			throw PEIO_GFX_EXCEPTION("Failed to create pipeline state object.", ret);
 		}
+
+		delete vertexShader.pShaderBytecode;
+		delete pixelShader.pShaderBytecode;
+		delete[] inputLayout.pInputElementDescs;
 	}
 
 	void PipelineState::Set(ID3D12GraphicsCommandList* cmdList)

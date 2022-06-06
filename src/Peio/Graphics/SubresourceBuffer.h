@@ -51,7 +51,10 @@ namespace Peio::Gfx {
 
 		void Release() {
 			resourceData = {};
-			PEIO_SAFE_DELETEALL(buffer);
+			if (buffer) {
+				delete[] buffer;
+				buffer = nullptr;
+			}
 		}
 
 		~SubresourceBuffer() {

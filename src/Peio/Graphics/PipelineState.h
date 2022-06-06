@@ -23,7 +23,7 @@ namespace Peio::Gfx {
 	protected:
 
 		Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState = nullptr;
-		Microsoft::WRL::ComPtr< ID3D12RootSignature> rootSignature = nullptr;
+		Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature = nullptr;
 
 	};
 
