@@ -93,13 +93,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\GUI\Drawable.h" />
+    <ClInclude Include="..\src\Peio\GUI\Font.h" />
     <ClInclude Include="..\src\Peio\GUI\GUIHeader.h" />
     <ClInclude Include="..\src\Peio\GUI\Rectangle.h" />
+    <ClInclude Include="..\src\Peio\GUI\Text.h" />
     <ClInclude Include="..\src\Peio\GUI\Texture.h" />
     <ClInclude Include="..\src\Peio\GUI\Uploadable.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Peio\GUI\Font.cpp" />
     <ClCompile Include="..\src\Peio\GUI\Rectangle.cpp" />
+    <ClCompile Include="..\src\Peio\GUI\Text.cpp" />
     <ClCompile Include="..\src\Peio\GUI\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>

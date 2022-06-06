@@ -22,7 +22,10 @@ namespace Peio::Med {
 
 	void Frame::Release()
 	{
-		PEIO_SAFE_DELETE(data);
+		if (data) {
+			delete[] data;
+			data = nullptr;
+		}
 	}
 
 	byte* const& Frame::GetData() const

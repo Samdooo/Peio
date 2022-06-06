@@ -3,26 +3,32 @@ struct VSOutput {
 	float4 color : PS_COLOR;
 	float2 texCoord : PS_TEXCOORD;
 	float2 alphaCoord : PS_ALPHACOORD;
-	bool useColor : USE_COLOR, useTexture : USE_TEXTURE, useAlpha : USE_ALPHA;
 };
 
-Texture2D tex : register(t0);
+struct Rectangle {
+	bool useColor, useTexture, useAlpha;
+};
+cbuffer RectangleBuffer : register(b0) {
+	Rectangle rectangle;
+}
+
+Texture2D<float4> tex : register(t0);
 SamplerState texSampler : register(s0);
 
-Texture2D alpha : register(t1);
+Texture2D<float> alpha : register(t1);
 SamplerState alphaSampler : register(s1);
 
 float4 main(VSOutput input) : SV_TARGET
 {
 	float4 output = float4(1.0f, 1.0f, 1.0f, 1.0f);
-	if (input.useColor) {
+	if (rectangle.useColor) {
 		output *= input.color;
 	}
-	if (input.useTexture) {
+	if (rectangle.useTexture) {
 		output *= tex.Sample(texSampler, input.texCoord);
 	}
-	if (input.useAlpha) {
-		output.a *= alpha.Sample(alphaSampler, input.alphaCoord).a;
+	if (rectangle.useAlpha) {
+		output.a *= alpha.Sample(alphaSampler, input.alphaCoord);
 	}
 	return output;
 }
