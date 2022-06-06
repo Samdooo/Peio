@@ -18,14 +18,8 @@ namespace Peio::GUI {
 		Float2 alphaCoord = {};
 	};
 
-	struct PEIO_GUI_EXPORT RectWindow {
-		Uint2 size = {};
-	};
-
-	struct PEIO_GUI_EXPORT Rect {
-		Uint2 position = {};
-		Uint2 size = {};
-		BOOL useColor = false, useTexture = false, useAlpha = false, useOffset = false;
+	struct PEIO_GUI_EXPORT RectangleInfo {
+		BOOL useColor = false, useTexture = false, useAlpha = false;
 	};
 
 	struct PEIO_GUI_EXPORT Rectangle : public Uploadable, public Drawable {
@@ -33,7 +27,7 @@ namespace Peio::GUI {
 		static Gfx::PipelineState pipelineState;
 		static void Init();
 
-		void Init(Gfx::Graphics* graphics, Uint2 position, Uint2 size);
+		void Init(Gfx::Graphics* graphics, Float2 position, Float2 size);
 
 		void SetColor(Float4 color);
 		void SetTexture(const Texture* texture);
@@ -42,47 +36,25 @@ namespace Peio::GUI {
 		void Upload() override;
 		void Draw() override;
 
-		_NODISCARD Rect& GetRect() const noexcept;
+		_NODISCARD Float2& GetPosition() noexcept;
+		_NODISCARD Float2& GetSize() noexcept;
+		_NODISCARD RectangleInfo& GetInfo() const noexcept;
 
 	protected:
 
 		Gfx::Graphics* graphics = nullptr;
 
 		Gfx::VertexBuffer<RectVertex> vertices = {};
-		Gfx::SubresourceBuffer<Rect> rect = {};
-		Gfx::SubresourceBuffer<RectWindow> rectWindow = {};
+		Gfx::SubresourceBuffer<RectangleInfo> info = {};
 
-		Gfx::ConstantBufferView rectBuffer = {};
-		Gfx::ConstantBufferView rectWindowBuffer = {};
+		Gfx::ConstantBufferView infoBuffer = {};
+
+		D3D12_VIEWPORT viewPort = {};
 
 		const Texture* texture = nullptr;
 		const Texture* alphaTexture = nullptr;
-
-		D3D12_VIEWPORT viewPort = {};
+		
 		RECT scissorRect = {};
-
-	};
-
-	struct PEIO_GUI_EXPORT RectOffset {
-		Uint2 offset = {};
-		Uint2 size = {};
-	};
-
-	struct PEIO_GUI_EXPORT RectangleOffset : public Uploadable, public Drawable {
-
-		void Init(Gfx::Graphics* graphics, Uint2 offset, Uint2 size);
-
-		void Upload() override;
-		void Draw() override;
-
-		_NODISCARD RectOffset& GetOffset() const noexcept;
-
-	protected:
-
-		Gfx::Graphics* graphics = nullptr;
-
-		Gfx::SubresourceBuffer<RectOffset> offset = {};
-		Gfx::ConstantBufferView offsetBuffer = {};
 
 	};
 

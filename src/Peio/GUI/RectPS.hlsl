@@ -5,11 +5,11 @@ struct VSOutput {
 	float2 alphaCoord : PS_ALPHACOORD;
 };
 
-struct Rectangle {
+struct RectangleInfo {
 	bool useColor, useTexture, useAlpha;
 };
 cbuffer RectangleBuffer : register(b0) {
-	Rectangle rectangle;
+	RectangleInfo rectangle;
 }
 
 Texture2D<float4> tex : register(t0);

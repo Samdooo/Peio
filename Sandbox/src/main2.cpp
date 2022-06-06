@@ -53,7 +53,7 @@ int main() {
 
 		Peio::Uint2 windowSize = { 1280, 720 };
 		Peio::Win::Window window;
-		window.CreateClass("Sandbox class2", 0);
+		window.CreateClass("Sandbox class1", 0);
 		window.RegisterClass();
 		window.CreateWindow("Peio Sandbox", WS_POPUP | WS_VISIBLE, 0, {CW_USEDEFAULT, CW_USEDEFAULT}, windowSize);
 
@@ -61,7 +61,7 @@ int main() {
 		graphics.Init(window.GetHWND(), windowSize, 3, false);
 
 		Peio::GUI::Texture texture;
-		texture.Init(&graphics, Peio::Med::Images::Load("pic.png", AV_PIX_FMT_RGBA, { 600, 600 }, SWS_X), DXGI_FORMAT_R8G8B8A8_UNORM);
+		texture.Init(&graphics, Peio::Med::Images::Load("pic.png", AV_PIX_FMT_RGBA, { 600, 600 }, SWS_SPLINE), DXGI_FORMAT_R8G8B8A8_UNORM);
 		texture.Upload();
 
 		Peio::GUI::Rectangle rect;
@@ -73,37 +73,19 @@ int main() {
 		font.Init(&graphics, "Joan-Regular.ttf", 40);
 		font.LoadLetters();
 		font.LoadTextures();
-		
+
 		Peio::GUI::Text text;
-		text.Init(&graphics, { 100, 100 }, { 500, 100 });
+		text.Init(&graphics, { 100, 100 }, { 500, 150 });
 		text.SetFont(&font);
-		text.SetSpaceWidth(20);
-		text.SetText("Hi");
+		text.SetColor({ 0.0f, 0.0f, 1.0f, 1.0f });
+		text.SetSpaceWidth(15.0f);
+		text.SetLineOffset(50.0f);
+		text.SetString("Hello there\nThis is a new line");
+		
 		text.Upload();
 
-		Peio::Win::TextListener textListener;
-		Peio::Win::Input::AddListener(&textListener);
-
-		Peio::FunctionHandler<Peio::Win::TextEvent> textHandler(
-			[&text](Peio::Win::TextEvent& event) {
-				if (event.character == VK_BACK) {
-					if (text.GetLetters().size())
-						text.PopText(1);
-				}
-				else {
-					text.AddLetter(event.character);
-				}
-			}
-		);
-
-		Peio::Win::Input::AddEventHandler(&textHandler);
-
-		Peio::Clock<double> clock;		
-		int frameCount = 0;
 		while (true) {
 			window.HandleMessages();
-
-			text.Upload();
 
 			graphics.Clear({});
 			 
@@ -112,8 +94,6 @@ int main() {
 
 			graphics.Render();
 		}
-
-
 	}
 	catch (Peio::Gfx::Exception e) {
 		std::cout << "GfxException: " << e.msg << " at " << e.file << " line " << e.line << std::endl;
