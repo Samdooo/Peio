@@ -8,6 +8,7 @@
 #include "..\Graphics\Graphics.h"
 #include "Uploadable.h"
 #include "Drawable.h"
+#include "..\Offset.h"
 
 namespace Peio::GUI {
 
@@ -27,7 +28,7 @@ namespace Peio::GUI {
 		static Gfx::PipelineState pipelineState;
 		static void Init();
 
-		void Init(Gfx::Graphics* graphics, Float2 position, Float2 size);
+		void Init(Gfx::Graphics* graphics, Offset<float, 2> position, Float2 size);
 
 		void SetColor(Float4 color);
 		void SetTexture(const Texture* texture);
@@ -36,9 +37,12 @@ namespace Peio::GUI {
 		void Upload() override;
 		void Draw() override;
 
-		_NODISCARD Float2& GetPosition() noexcept;
-		_NODISCARD Float2& GetSize() noexcept;
+		//_NODISCARD Float2& GetPosition() noexcept;
+		//_NODISCARD Float2& GetSize() noexcept;
 		_NODISCARD RectangleInfo& GetInfo() const noexcept;
+
+		Offset<float, 2> position = {};
+		Float2& size = *reinterpret_cast<Float2*>(&viewPort.Width);
 
 	protected:
 

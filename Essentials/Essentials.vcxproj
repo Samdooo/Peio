@@ -92,6 +92,7 @@
     <ClInclude Include="..\src\Peio\Clock.h" />
     <ClInclude Include="..\src\Peio\Exception.h" />
     <ClInclude Include="..\src\Peio\Files.h" />
+    <ClInclude Include="..\src\Peio\Offset.h" />
     <ClInclude Include="..\src\Peio\PeioHeader.h" />
     <ClInclude Include="..\src\Peio\EventHandler.h" />
     <ClInclude Include="..\src\Peio\Tree.h" />

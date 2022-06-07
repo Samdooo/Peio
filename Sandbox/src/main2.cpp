@@ -18,6 +18,8 @@
 #include <Peio/GUI/Rectangle.h>
 #include <Peio/GUI/Text.h>
 #include <Peio/Windows/TextListener.h>
+#include <Peio/Offset.h>
+#include <Peio/Windows/MouseListener.h>
 
 #include <Peio/Media/Images.h>
 #include <Peio/Clock.h>
@@ -37,14 +39,6 @@ struct VSInput {
 };
 
 int main() {
-
-	//HWND discord = FindWindowA(nullptr, "Discord");
-	//LONG style = GetWindowLong(discord, GWL_);
-	//for (UINT i = 0; i < 32; i++) {
-	//	if (style & (1U << i))
-	//		std::cout << std::hex << (1U << i) << std::endl;
-	//}
-	//return 0;
 
 	try {
 
@@ -74,17 +68,23 @@ int main() {
 		font.LoadLetters();
 		font.LoadTextures();
 
+		Peio::Offset<float, 2> mousePos = {};
+
 		Peio::GUI::Text text;
-		text.Init(&graphics, { 100, 100 }, { 500, 300 });
+		text.Init(&graphics, { 100, 100 }, {500, 300});
+		text.position.parent = &mousePos;
 		text.SetFont(&font);
 		text.SetColor({ 0.0f, 0.0f, 1.0f, 1.0f });
 		text.SetSpaceWidth(15.0f);
 		text.SetLineOffset(50.0f);
-		
+
 		text.Upload();
 
 		Peio::Win::TextListener textListener;
 		Peio::Win::Input::AddListener(&textListener);
+
+		Peio::Win::MouseListener mouseListener;
+		Peio::Win::Input::AddListener(&mouseListener);
 
 		Peio::FunctionHandler<Peio::Win::TextEvent> textHandler(
 			[&text](Peio::Win::TextEvent& event) {
@@ -103,6 +103,14 @@ int main() {
 		);
 
 		Peio::Win::Input::AddEventHandler(&textHandler);
+
+		Peio::FunctionHandler<Peio::Win::MouseMoveEvent> mouseHandler(
+			[&mousePos](Peio::Win::MouseMoveEvent& event) {
+				mousePos = (Peio::Float2)event.position;
+			}
+		);
+
+		Peio::Win::Input::AddEventHandler(&mouseHandler);
 
 		while (true) {
 			window.HandleMessages();

@@ -5,7 +5,7 @@
 
 namespace Peio::GUI {
 
-	void Text::Init(Gfx::Graphics* graphics, Float2 position, Float2 size)
+	void Text::Init(Gfx::Graphics* graphics, Offset<float, 2> position, Float2 size)
 	{
 		Rectangle::Init(graphics, position, size);
 		info[0].useAlpha = true;
@@ -37,6 +37,10 @@ namespace Peio::GUI {
 	{
 		if (!str.size())
 			return;
+
+		Float2 translated = position.GetTranslated();
+		viewPort.TopLeftX = translated.x();
+		viewPort.TopLeftY = translated.y();
 
 		scissorRect = { (LONG)viewPort.TopLeftX, (LONG)viewPort.TopLeftY,
 			(LONG)(viewPort.TopLeftX + viewPort.Width), (LONG)(viewPort.TopLeftY + viewPort.Height) };

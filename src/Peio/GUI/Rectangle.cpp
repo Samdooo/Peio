@@ -25,7 +25,7 @@ namespace Peio::GUI {
 				D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS), Gfx::Shader::Load("../bin/GUIShaders/RectVS.cso"), Gfx::Shader::Load("../bin/GUIShaders/RectPS.cso"));
 	}
 
-	void Rectangle::Init(Gfx::Graphics* graphics, Float2 position, Float2 size)
+	void Rectangle::Init(Gfx::Graphics* graphics, Offset<float, 2> position, Float2 size)
 	{
 		this->graphics = graphics;
 
@@ -39,7 +39,9 @@ namespace Peio::GUI {
 			};
 		}
 		
-		viewPort = { position.x(), position.y(), size.x(), size.y(), 0.0f, 1.0f };
+		this->position = position;
+		this->size = size;
+		//viewPort = { position.x(), position.y(), size.x(), size.y(), 0.0f, 1.0f };
 
 		info.Allocate(1);
 		infoBuffer.Init(sizeof(info), D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
@@ -74,6 +76,10 @@ namespace Peio::GUI {
 
 	void Rectangle::Draw()
 	{
+		Float2 translated = position.GetTranslated();
+		viewPort.TopLeftX = translated.x();
+		viewPort.TopLeftY = translated.y();
+
 		Rectangle::pipelineState.Set(graphics->GetCommandList());
 		
 		graphics->GetCommandList()->RSSetScissorRects(1, &scissorRect);
@@ -95,15 +101,15 @@ namespace Peio::GUI {
 		graphics->GetCommandList()->DrawInstanced(6, 1, 0, 0);
 	}
 
-	Float2& Rectangle::GetPosition() noexcept
-	{
-		return *reinterpret_cast<Float2*>(&viewPort.TopLeftX);
-	}
-
-	Float2& Rectangle::GetSize() noexcept
-	{
-		return *reinterpret_cast<Float2*>(&viewPort.Width);
-	}
+	//Float2& Rectangle::GetPosition() noexcept
+	//{
+	//	return *reinterpret_cast<Float2*>(&viewPort.TopLeftX);
+	//}
+	//
+	//Float2& Rectangle::GetSize() noexcept
+	//{
+	//	return *reinterpret_cast<Float2*>(&viewPort.Width);
+	//}
 
 	RectangleInfo& Rectangle::GetInfo() const noexcept
 	{

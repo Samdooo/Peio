@@ -7,7 +7,7 @@ namespace Peio::GUI {
 
 	struct PEIO_GUI_EXPORT Text : public Rectangle {
 
-		void Init(Gfx::Graphics* graphics, Float2 position, Float2 size);
+		void Init(Gfx::Graphics* graphics, Offset<float, 2> position, Float2 size);
 
 		void SetFont(Font* font);
 		void SetString(std::string str);
