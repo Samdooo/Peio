@@ -3,6 +3,7 @@
 #include "WindowsHeader.h"
 #include "..\EventHandler.h"
 
+#include <unordered_set>
 #include <unordered_map>
 #include <typeinfo>
 
@@ -19,15 +20,21 @@ namespace Peio::Win {
 
 		template <typename... T_events>
 		static void AddEventHandler(EventHandler<T_events...>* eventHandler) {
-			(eventHandlers.insert(std::pair(typeid(T_events).hash_code(), static_cast<EventHandler<>*>(eventHandler))), ...);
+			(eventHandlers[typeid(T_events).hash_code()].insert(static_cast<EventHandler<>*>(eventHandler)), ...);
+		}
+
+		template <typename... T_events>
+		static void RemoveEventHandler(EventHandler<T_events...>* eventHandler) {
+			(eventHandlers.at(typeid(T_events).hash_code()).erase(static_cast<EventHandler<>*>(eventHandler)), ...);
 		}
 
 		template <typename T_event>
 		static void Handle(T_event& event) {
-			auto its = eventHandlers.equal_range(typeid(T_event).hash_code());
-			for (auto it = its.first; it != its.second; it++) {
-				it->second->Handle(event);
-			}
+			if (!eventHandlers.count(typeid(T_event).hash_code()))
+				return;
+			std::unordered_set<EventHandler<>*>& handlers = eventHandlers.at(typeid(T_event).hash_code());
+			for (EventHandler<>* handler : handlers)
+				handler->Handle(event);
 		}
 
 		template <typename T_event>
@@ -40,7 +47,7 @@ namespace Peio::Win {
 	private:
 
 		static std::vector<EventHandler<Message>*> listeners;
-		static std::unordered_multimap<size_t, EventHandler<>*> eventHandlers;
+		static std::unordered_map<size_t, std::unordered_set<EventHandler<>*>> eventHandlers;
 
 	};
 

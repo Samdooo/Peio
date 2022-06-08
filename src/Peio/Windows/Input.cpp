@@ -4,7 +4,7 @@
 namespace Peio::Win {
 
 	std::vector<EventHandler<Input::Message>*> Input::listeners;
-	std::unordered_multimap<size_t, EventHandler<>*> Input::eventHandlers;
+	std::unordered_map<size_t, std::unordered_set<EventHandler<>*>> Input::eventHandlers;
 
 	void Input::AddListener(EventHandler<Message>* listener)
 	{
