@@ -18,11 +18,11 @@ namespace Peio {
 			_NODISCARD T_rep Seconds() const { return std::chrono::duration_cast<std::chrono::duration<T_rep>>(*this).count(); }
 		};
 
-		_NODISCARD Duration Elapsed() noexcept {
+		_NODISCARD Duration Elapsed() const noexcept {
 			return Duration(sysclock::now() - start);
 		}
 
-		_NODISCARD Duration Restart() noexcept {
+		Duration Restart() noexcept {
 			Duration result((sysclock::duration)(sysclock::now() - start));
 			start += result;
 			return result;

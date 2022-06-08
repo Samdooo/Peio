@@ -12,8 +12,6 @@ namespace Peio::GUI {
 		Button();
 		~Button();
 
-		bool IsHovered();
-
 	protected:
 
 		virtual void OnMouseMove(Win::MouseMoveEvent&) {}

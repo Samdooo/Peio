@@ -92,20 +92,25 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Peio\GUI\Animatable.h" />
     <ClInclude Include="..\src\Peio\GUI\Animation.h" />
     <ClInclude Include="..\src\Peio\GUI\Button.h" />
     <ClInclude Include="..\src\Peio\GUI\Drawable.h" />
     <ClInclude Include="..\src\Peio\GUI\Font.h" />
     <ClInclude Include="..\src\Peio\GUI\GUIHeader.h" />
+    <ClInclude Include="..\src\Peio\GUI\PolyAnimation.h" />
     <ClInclude Include="..\src\Peio\GUI\Rectangle.h" />
     <ClInclude Include="..\src\Peio\GUI\Text.h" />
     <ClInclude Include="..\src\Peio\GUI\Texture.h" />
     <ClInclude Include="..\src\Peio\GUI\Uploadable.h" />
+    <ClInclude Include="..\src\Peio\GUI\ValueAnimation.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Peio\GUI\Animatable.cpp" />
     <ClCompile Include="..\src\Peio\GUI\Animation.cpp" />
     <ClCompile Include="..\src\Peio\GUI\Button.cpp" />
     <ClCompile Include="..\src\Peio\GUI\Font.cpp" />
+    <ClCompile Include="..\src\Peio\GUI\PolyAnimation.cpp" />
     <ClCompile Include="..\src\Peio\GUI\Rectangle.cpp" />
     <ClCompile Include="..\src\Peio\GUI\Text.cpp" />
     <ClCompile Include="..\src\Peio\GUI\Texture.cpp" />

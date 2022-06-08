@@ -7,61 +7,23 @@
 
 namespace Peio::GUI {
 
-	template <typename T, size_t length>
-	struct Animation {
+	struct PEIO_GUI_EXPORT Animation {
 
-		void Reset() {
-			clock.Restart();
-		}
+		virtual void Reset(double offset = 0.0);
+		virtual double Update();
+		virtual void Cancel();
+		virtual void End();
 
-		_NODISCARD double GetProgress() const noexcept {
-			return std::min(clock.Elapsed().Seconds() / duration, 1.0);
-		}
+		virtual _NODISCARD double GetProgress() const noexcept;
 
-		void Update() {
-			Array<T, length> current = {};
-			double progress = Calc(GetProgress());
-			for (size_t i = 0; i < length; i++) {
-				current[i] = (T)((1.0 - progress) * (double)from[i] + progress * (double)to[i]);
-			}
-			update(current);
-		}
-
-		Array<T, length> from = {}, to = {};
 		double duration = 0.0;
-		std::function<void(Array<T, length>)> update = nullptr;
+		double offset = 0.0;
 
 	protected:
 
-		virtual double Calc(double) = 0;
-
+		bool running = false;
+		double curOffset = 0.0;
 		Clock<double> clock = {};
-
-	};
-
-	template <typename T, size_t length>
-	struct J_Animation : public virtual Animation<T, length> {
-
-		double multiplier = 1.0;
-
-	protected:
-
-		double Calc(double x) {
-			return 1.0 - std::pow(1.0 - x, multiplier);
-		}
-
-	};
-
-	template <typename T, size_t length>
-	struct S_Animation : public virtual Animation<T, length> {
-
-		double multiplier = 1.0;
-
-	protected:
-
-		double Calc(double x) {
-			return 1.0 / (1.0 + std::pow(x / (1.0 - x), -multiplier));
-		}
 
 	};
 

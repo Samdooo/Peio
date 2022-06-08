@@ -55,6 +55,15 @@
     <ClInclude Include="..\src\Peio\GUI\Button.h">
       <Filter>Source Files\Button</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\GUI\PolyAnimation.h">
+      <Filter>Source Files\Animating</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\GUI\ValueAnimation.h">
+      <Filter>Source Files\Animating</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\GUI\Animatable.h">
+      <Filter>Source Files\Animating</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\GUI\Texture.cpp">
@@ -74,6 +83,12 @@
     </ClCompile>
     <ClCompile Include="..\src\Peio\GUI\Button.cpp">
       <Filter>Source Files\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\GUI\PolyAnimation.cpp">
+      <Filter>Source Files\Animating</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\GUI\Animatable.cpp">
+      <Filter>Source Files\Animating</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

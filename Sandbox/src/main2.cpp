@@ -22,6 +22,9 @@
 #include <Peio/Windows/MouseListener.h>
 #include <Peio/GUI/Button.h>
 #include <Peio/Windows/RawMouseListener.h>
+#include <Peio/GUI/ValueAnimation.h>
+#include <Peio/GUI/Animatable.h>
+#include <Peio/GUI/PolyAnimation.h>
 
 #include <Peio/Media/Images.h>
 #include <Peio/Clock.h>
@@ -39,6 +42,8 @@ struct VSInput {
 	Peio::Float2 texCoord;
 	Peio::Float2 alphaCoord;
 };
+
+struct AnimatedButton : public virtual Peio::GUI::Button, public virtual Peio::GUI::Animatable {};
 
 struct Titlebar : public Peio::GUI::Button {
 
@@ -80,25 +85,60 @@ protected:
 
 };
 
-struct CloseButton : public Peio::GUI::Button {
+struct CloseButton : public AnimatedButton {
 
 	CloseButton(Peio::Win::Window& window, Peio::Gfx::Graphics* graphics) : window(window) {
 		texture.Init(graphics, Peio::Med::Images::Load("closeButton.png", AV_PIX_FMT_RGBA, { 50, 25 }), DXGI_FORMAT_R8G8B8A8_UNORM);
 		texture.Upload();
 
 		Init(graphics, { (float)graphics->GetSize().x() - 50.0f, 0.0f }, { 50.0f, 25.0f });
+		SetColor({ 1.0f, 1.0f, 1.0f, 0.2f });
 		SetTexture(&texture);
 		Upload();
+
+		//Peio::GUI::J_Animation<float, 4> enterAnimation = {};
+
+		enterAnimation.duration = 0.4;
+		enterAnimation.from = { 1.0f, 1.0f, 1.0f, 0.2f };
+		enterAnimation.to = { 1.0f, 1.0f, 1.0f, 1.0f };
+		enterAnimation.multiplier = 2.0;
+		enterAnimation.UpdateValue = [this](Peio::Float4 color) {
+			this->SetColor(color);
+		};
+
+		leaveAnimation.duration = 0.4;
+		leaveAnimation.from = { 1.0f, 1.0f, 1.0f, 1.0f };
+		leaveAnimation.to = { 1.0f, 1.0f, 1.0f, 0.2f };
+		leaveAnimation.multiplier = 2.0;
+		leaveAnimation.UpdateValue = [this](Peio::Float4 color) {
+			this->SetColor(color);
+		};
+
+		AddAnimation("enter", &enterAnimation);
+		AddAnimation("leave", &leaveAnimation);
 	}
 
 protected:
 
 	Peio::Win::Window& window;
 	Peio::GUI::Texture texture = {};
+	
+	Peio::GUI::J_Animation<float, 4> enterAnimation = {};
+	Peio::GUI::J_Animation<float, 4> leaveAnimation = {};
 
-	void OnMouseUp(Peio::Win::MouseButtonUpEvent& event) {
+	void OnMouseUp(Peio::Win::MouseButtonUpEvent& event) override {
 		window.Close();
 		exit(0);
+	}
+
+	void OnMouseEnter(Peio::Win::MouseMoveEvent& event) override {
+		GetAnimation("leave")->Cancel();
+		GetAnimation("enter")->Reset(1.0 - GetAnimation("leave")->GetProgress());
+	}
+
+	void OnMouseLeave(Peio::Win::MouseMoveEvent& event) override {
+		GetAnimation("enter")->Cancel();
+		GetAnimation("leave")->Reset(1.0 - GetAnimation("enter")->GetProgress());
 	}
 
 };
@@ -122,6 +162,52 @@ protected:
 	void OnMouseUp(Peio::Win::MouseButtonUpEvent& event) {
 		window.Minimize();
 	}
+
+};
+
+struct TestButton : public AnimatedButton {
+
+	TestButton(Peio::Win::Window& window, Peio::Gfx::Graphics* graphics) : window(window) {
+		Init(graphics, { 400.0f, 300.0f }, { 100.0f, 100.0f });
+		SetColor({ 0.0f, 0.5f, 1.0f, 1.0f });
+		Upload();
+
+		enterAnimation.duration = 1.0;
+		enterAnimation.multiplier = 3.0;
+		enterAnimation.from = { 100.0f, 100.0f };
+		enterAnimation.to = { 500.0f, 100.0f };
+		enterAnimation.UpdateValue = [this](Peio::Float2 size) {
+			this->size = size;
+		};
+
+		leaveAnimation.duration = 1.0;
+		leaveAnimation.multiplier = 3.0;
+		leaveAnimation.from = { 500.0f, 100.0f };
+		leaveAnimation.to = { 100.0f, 100.0f };
+		leaveAnimation.UpdateValue = [this](Peio::Float2 size) {
+			this->size = size;
+		};
+
+		AddAnimation("enter", &enterAnimation);
+		AddAnimation("leave", &leaveAnimation);
+	}
+
+protected:
+
+	void OnMouseEnter(Peio::Win::MouseMoveEvent& event) override {
+		leaveAnimation.Cancel();
+		enterAnimation.Reset(1.0 - leaveAnimation.Calc(leaveAnimation.GetProgress()));
+	}
+
+	void OnMouseLeave(Peio::Win::MouseMoveEvent& event) override {
+		enterAnimation.Cancel();
+		leaveAnimation.Reset(1.0 - enterAnimation.Calc(enterAnimation.GetProgress()));
+	}
+
+	Peio::Win::Window& window;
+
+	Peio::GUI::J_Animation<float, 2> enterAnimation;
+	Peio::GUI::J_Animation<float, 2> leaveAnimation;
 
 };
 
@@ -150,16 +236,26 @@ int main() {
 		CloseButton closeButton(window, &graphics);
 		MinButton minButton(window, &graphics);
 
+		TestButton testButton(window, &graphics);
+
+		Peio::Clock<double> clock;
+
 		while (true) {
 			window.HandleMessages();
+
+			closeButton.Update();
+			closeButton.Upload();
+
+			testButton.Update();
+			testButton.Upload();
 
 			graphics.Clear({ 0.21f, 0.22f, 0.25f, 1.0f });
 			
 			titleBar.Draw();
 			closeButton.Draw();
 			minButton.Draw();
-			//rect.Draw();
-			//text.Draw();
+
+			testButton.Draw();
 
 			graphics.Render();
 		}
