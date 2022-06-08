@@ -20,6 +20,8 @@
 #include <Peio/Windows/TextListener.h>
 #include <Peio/Offset.h>
 #include <Peio/Windows/MouseListener.h>
+#include <Peio/GUI/Button.h>
+#include <Peio/Windows/RawMouseListener.h>
 
 #include <Peio/Media/Images.h>
 #include <Peio/Clock.h>
@@ -38,6 +40,91 @@ struct VSInput {
 	Peio::Float2 alphaCoord;
 };
 
+struct Titlebar : public Peio::GUI::Button {
+
+	Titlebar(Peio::Win::Window& window, Peio::Gfx::Graphics* graphics) : window(window) {
+		texture.Init(graphics, Peio::Med::Images::Load("titleBar.png", AV_PIX_FMT_RGBA, { 1920, 25 }), DXGI_FORMAT_R8G8B8A8_UNORM);
+		texture.Upload();
+		Init(graphics, {}, { 1920.0f, 25.0f });
+		SetTexture(&texture);
+		Upload();
+	}
+
+protected:
+
+	Peio::Win::Window& window;
+	Peio::GUI::Texture texture = {};
+
+	Peio::Int2 prev = {};
+	//bool wait = false;
+
+	void OnMouseMove(Peio::Win::MouseMoveEvent& event) override {
+		//if (wait) {
+		//	wait = false;
+		//	return;
+		//}
+		if (event.wParam & (UINT64)Peio::Win::MouseKey::LEFT_MOUSE) {
+			if (wasHovered) {
+				Peio::Int2 delta = event.position - prev;
+				RECT rect = window.GetRect();
+				Peio::Int2 pos = { rect.left, rect.top };
+				Peio::Int2 size = { rect.right - rect.left, rect.bottom - rect.top };
+				window.Remap(pos + delta, size);
+				//wait = true;
+			}
+		}
+		else {
+			prev = event.position;
+		}
+	}
+
+};
+
+struct CloseButton : public Peio::GUI::Button {
+
+	CloseButton(Peio::Win::Window& window, Peio::Gfx::Graphics* graphics) : window(window) {
+		texture.Init(graphics, Peio::Med::Images::Load("closeButton.png", AV_PIX_FMT_RGBA, { 50, 25 }), DXGI_FORMAT_R8G8B8A8_UNORM);
+		texture.Upload();
+
+		Init(graphics, { (float)graphics->GetSize().x() - 50.0f, 0.0f }, { 50.0f, 25.0f });
+		SetTexture(&texture);
+		Upload();
+	}
+
+protected:
+
+	Peio::Win::Window& window;
+	Peio::GUI::Texture texture = {};
+
+	void OnMouseUp(Peio::Win::MouseButtonUpEvent& event) {
+		window.Close();
+		exit(0);
+	}
+
+};
+
+struct MinButton : public Peio::GUI::Button {
+
+	MinButton(Peio::Win::Window& window, Peio::Gfx::Graphics* graphics) : window(window) {
+		texture.Init(graphics, Peio::Med::Images::Load("minButton.png", AV_PIX_FMT_RGBA, { 50, 25 }), DXGI_FORMAT_R8G8B8A8_UNORM);
+		texture.Upload();
+
+		Init(graphics, { (float)graphics->GetSize().x() - 100.0f, 0.0f }, { 50.0f, 25.0f });
+		SetTexture(&texture);
+		Upload();
+	}
+
+protected:
+
+	Peio::Win::Window& window;
+	Peio::GUI::Texture texture = {};
+
+	void OnMouseUp(Peio::Win::MouseButtonUpEvent& event) {
+		window.Minimize();
+	}
+
+};
+
 int main() {
 
 	try {
@@ -54,77 +141,34 @@ int main() {
 		Peio::Gfx::WinGraphics graphics;
 		graphics.Init(window.GetHWND(), windowSize, 3, false);
 
-		Peio::GUI::Texture texture;
-		texture.Init(&graphics, Peio::Med::Images::Load("pic.png", AV_PIX_FMT_RGBA, { 600, 600 }, SWS_SPLINE), DXGI_FORMAT_R8G8B8A8_UNORM);
-		texture.Upload();
-
-		Peio::GUI::Rectangle rect;
-		rect.Init(&graphics, { 0, 0 }, { 600, 600 });
-		rect.SetTexture(&texture);
-		rect.Upload();
-
-		Peio::GUI::Font font;
-		font.Init(&graphics, "Roboto-Light.ttf", 40);
-		font.LoadLetters();
-		font.LoadTextures();
-
-		Peio::Offset<float, 2> mousePos = {};
-
-		Peio::GUI::Text text;
-		text.Init(&graphics, { 100, 100 }, {500, 300});
-		text.position.parent = &mousePos;
-		text.SetFont(&font);
-		text.SetColor({ 0.0f, 0.0f, 1.0f, 1.0f });
-		text.SetSpaceWidth(15.0f);
-		text.SetLineOffset(50.0f);
-
-		text.Upload();
-
-		Peio::Win::TextListener textListener;
-		Peio::Win::Input::AddListener(&textListener);
+		SetCursor(LoadCursor(nullptr, IDC_ARROW));
 
 		Peio::Win::MouseListener mouseListener;
 		Peio::Win::Input::AddListener(&mouseListener);
 
-		Peio::FunctionHandler<Peio::Win::TextEvent> textHandler(
-			[&text](Peio::Win::TextEvent& event) {
-				if (event.character == VK_BACK) {
-					if (text.GetString().size()) {
-						text.SetString(text.GetString().substr(0, text.GetString().size() - 1));
-					}
-					return;
-				}
-				if (event.character == VK_RETURN) {
-					text.SetString(text.GetString() + '\n');
-					return;
-				}
-				text.SetString(text.GetString() + event.character);
-			}
-		);
-
-		Peio::Win::Input::AddEventHandler(&textHandler);
-
-		Peio::FunctionHandler<Peio::Win::MouseMoveEvent> mouseHandler(
-			[&mousePos](Peio::Win::MouseMoveEvent& event) {
-				mousePos = (Peio::Float2)event.position;
-			}
-		);
-
-		Peio::Win::Input::AddEventHandler(&mouseHandler);
+		Titlebar titleBar(window, &graphics);
+		CloseButton closeButton(window, &graphics);
+		MinButton minButton(window, &graphics);
 
 		while (true) {
 			window.HandleMessages();
 
-			graphics.Clear({});
-			 
-			rect.Draw();
-			text.Draw();
+			graphics.Clear({ 0.21f, 0.22f, 0.25f, 1.0f });
+			
+			titleBar.Draw();
+			closeButton.Draw();
+			minButton.Draw();
+			//rect.Draw();
+			//text.Draw();
 
 			graphics.Render();
 		}
 	}
+	catch (Peio::Win::Exception e) {
+		std::cout << "GfxException: " << e.msg << " at " << e.file << " line " << e.line << " code " << e.winError << std::endl;
+	}
 	catch (Peio::Gfx::Exception e) {
-		std::cout << "GfxException: " << e.msg << " at " << e.file << " line " << e.line << std::endl;
+		std::cout << "GfxException: " << e.msg << " at " << e.file << " line " << e.line << " ret " << e.ret << std::endl;
 	}
 	catch (Peio::Exception e) {
 		std::cout << "Exception: " << e.msg << " at " << e.file << " line " << e.line << std::endl;

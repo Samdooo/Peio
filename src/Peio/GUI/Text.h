@@ -5,7 +5,7 @@
 
 namespace Peio::GUI {
 
-	struct PEIO_GUI_EXPORT Text : public Rectangle {
+	struct PEIO_GUI_EXPORT Text : public virtual Rectangle {
 
 		void Init(Gfx::Graphics* graphics, Offset<float, 2> position, Float2 size);
 

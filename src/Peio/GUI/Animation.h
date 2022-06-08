@@ -10,26 +10,26 @@ namespace Peio::GUI {
 	template <typename T, size_t length>
 	struct Animation {
 
-		void Init(Array<T, length> from, Array<T, length> to, double duration, std::function<void(Array<T, length>)> update) {
-			this->from = from;
-			this->to = to;
-			this->duration = duration;
-			this->update = update;
-		}
-
 		void Reset() {
 			clock.Restart();
 		}
 
+		_NODISCARD double GetProgress() const noexcept {
+			return std::min(clock.Elapsed().Seconds() / duration, 1.0);
+		}
+
 		void Update() {
 			Array<T, length> current = {};
-			double progress = min(clock.Elapsed() / duration, 1.0);
-			progress = Calc(progress);
+			double progress = Calc(GetProgress());
 			for (size_t i = 0; i < length; i++) {
 				current[i] = (T)((1.0 - progress) * (double)from[i] + progress * (double)to[i]);
 			}
 			update(current);
 		}
+
+		Array<T, length> from = {}, to = {};
+		double duration = 0.0;
+		std::function<void(Array<T, length>)> update = nullptr;
 
 	protected:
 
@@ -37,14 +37,10 @@ namespace Peio::GUI {
 
 		Clock<double> clock = {};
 
-		Array<T, length> from = {}, to = {};
-		double duration = 0.0;
-		std::function<void(Array<T, length>)> update = nullptr;
-
 	};
 
 	template <typename T, size_t length>
-	struct J_Animation : public Animation<T, length> {
+	struct J_Animation : public virtual Animation<T, length> {
 
 		double multiplier = 1.0;
 
@@ -57,7 +53,7 @@ namespace Peio::GUI {
 	};
 
 	template <typename T, size_t length>
-	struct S_Animation : public Animation<T, length> {
+	struct S_Animation : public virtual Animation<T, length> {
 
 		double multiplier = 1.0;
 

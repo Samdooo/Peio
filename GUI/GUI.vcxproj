@@ -93,6 +93,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\GUI\Animation.h" />
+    <ClInclude Include="..\src\Peio\GUI\Button.h" />
     <ClInclude Include="..\src\Peio\GUI\Drawable.h" />
     <ClInclude Include="..\src\Peio\GUI\Font.h" />
     <ClInclude Include="..\src\Peio\GUI\GUIHeader.h" />
@@ -103,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\GUI\Animation.cpp" />
+    <ClCompile Include="..\src\Peio\GUI\Button.cpp" />
     <ClCompile Include="..\src\Peio\GUI\Font.cpp" />
     <ClCompile Include="..\src\Peio\GUI\Rectangle.cpp" />
     <ClCompile Include="..\src\Peio\GUI\Text.cpp" />

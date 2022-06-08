@@ -23,6 +23,9 @@
     <Filter Include="Source Files\Animating">
       <UniqueIdentifier>{02034a63-c079-4390-ae7d-a016969158c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Button">
+      <UniqueIdentifier>{6f6da41e-3ac3-4d15-959d-7b8b70c9d764}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\GUI\GUIHeader.h">
@@ -49,6 +52,9 @@
     <ClInclude Include="..\src\Peio\GUI\Animation.h">
       <Filter>Source Files\Animating</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\GUI\Button.h">
+      <Filter>Source Files\Button</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\GUI\Texture.cpp">
@@ -65,6 +71,9 @@
     </ClCompile>
     <ClCompile Include="..\src\Peio\GUI\Animation.cpp">
       <Filter>Source Files\Animating</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\GUI\Button.cpp">
+      <Filter>Source Files\Button</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
