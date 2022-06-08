@@ -20,6 +20,9 @@
     <Filter Include="Source Files\Text\Font">
       <UniqueIdentifier>{ed3f90af-4d4a-4d4c-ad32-9d358fc65da7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Animating">
+      <UniqueIdentifier>{02034a63-c079-4390-ae7d-a016969158c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\GUI\GUIHeader.h">
@@ -43,6 +46,9 @@
     <ClInclude Include="..\src\Peio\GUI\Text.h">
       <Filter>Source Files\Text</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\GUI\Animation.h">
+      <Filter>Source Files\Animating</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\GUI\Texture.cpp">
@@ -56,6 +62,9 @@
     </ClCompile>
     <ClCompile Include="..\src\Peio\GUI\Text.cpp">
       <Filter>Source Files\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\GUI\Animation.cpp">
+      <Filter>Source Files\Animating</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
