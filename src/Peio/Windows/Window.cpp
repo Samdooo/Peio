@@ -5,7 +5,7 @@ namespace Peio::Win {
 
 	void Window::CreateClass(std::string name, UINT styles, WNDPROC proc)
 	{
-		std::wstring wName(CA2W(name.c_str()));
+		wName = std::wstring(CA2W(name.c_str()));
 
 		wndClass = { 0 };
 		wndClass.cbSize = sizeof(WNDCLASSEX);
@@ -35,6 +35,7 @@ namespace Peio::Win {
 
 		hwnd = CreateWindowEx(exStyles, wndClass.lpszClassName, wTitle.c_str(), styles
 			, position[0], position[1], size[0], size[1], parent, menu, nullptr, lpParam);
+
 		if (!hwnd) {
 			throw PEIO_WIN_EXCEPTION("Failed to create window.");
 		}

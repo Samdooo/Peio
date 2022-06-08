@@ -46,6 +46,7 @@ namespace Peio::Win {
 	protected:
 
 		HWND hwnd = nullptr;
+		std::wstring wName = {};
 		WNDCLASSEX wndClass = {};
 
 	};
