@@ -31,5 +31,8 @@
     <ClInclude Include="..\src\Peio\Offset.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\TypeMap.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

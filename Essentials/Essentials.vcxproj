@@ -96,6 +96,7 @@
     <ClInclude Include="..\src\Peio\PeioHeader.h" />
     <ClInclude Include="..\src\Peio\EventHandler.h" />
     <ClInclude Include="..\src\Peio\Tree.h" />
+    <ClInclude Include="..\src\Peio\TypeMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
