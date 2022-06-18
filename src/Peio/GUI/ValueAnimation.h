@@ -4,66 +4,74 @@
 
 namespace Peio::GUI {
 
-	template <typename T, size_t length>
+	struct PEIO_GUI_EXPORT AnimationFunction {
+		
+		virtual ~AnimationFunction() {}
+
+		_NODISCARD virtual double Calc(double x) const noexcept = 0;
+		_NODISCARD virtual double CalcInv(double y) const noexcept = 0;
+
+	};
+	
+	/// <summary>
+	/// Uses the function (1 - (1 - x)^m)
+	/// </summary>
+	struct PEIO_GUI_EXPORT J_Function : public virtual AnimationFunction {
+
+		_NODISCARD double Calc(double x) const noexcept override;
+		_NODISCARD double CalcInv(double y) const noexcept override;
+
+		double multiplier = 1.0;
+
+	};
+
+	/// <summary>
+	/// Uses the function (1 / (1 + (x / (1 - x))^(-m)))
+	/// </summary>
+	struct PEIO_GUI_EXPORT S_Function : public virtual AnimationFunction {
+
+		_NODISCARD double Calc(double x) const noexcept override;
+		_NODISCARD double CalcInv(double y) const noexcept override;
+
+		double multiplier = 1.0;
+
+	};
+
+	template <typename T>
 	struct ValueAnimation : public virtual Animation {
 
-		void Reset(double offset = 0.0) override {
-			Animation::Reset(CalcInv(offset));
-		}
+		//void Reset(double offset = 0.0) override {
+		//	Animation::Reset(function->CalcInv(offset));
+		//}
 
 		double Update() override {
 			double progress = Animation::Update();
 			if (!running)
 				return progress;
-			Array<T, length> current = {};
-			double val = Calc(progress);
-			for (size_t i = 0; i < length; i++) {
+			current.resize(numValues);
+			double val = function->Calc(progress);
+			for (size_t i = 0; i < numValues; i++) {
 				current[i] = (T)((1.0 - val) * (double)from[i] + val * (double)to[i]);
 			}
-			UpdateValue(current);
+			UpdateValues(&current[0]);
 			return progress;
 		}
 
 		void End() override {
 			if (running)
-				UpdateValue(to);
+				UpdateValues(&to[0]);
 			Animation::End();
 		}
 
-		virtual double Calc(double) = 0;
-		virtual double CalcInv(double) = 0;
+		AnimationFunction* function = nullptr;
 
-		Array<T, length> from = {}, to = {};
-		std::function<void(Array<T, length>)> UpdateValue = nullptr;
-	};
+		std::vector<T> from = {}, to = {};
+		size_t numValues = 0;
+		std::function<void(const T*)> UpdateValues = nullptr;
 
-	template <typename T, size_t length>
-	struct J_Animation : public virtual ValueAnimation<T, length> {
+	protected:
 
-		double multiplier = 1.0;
-
-		double Calc(double x) override {
-			return 1.0 - std::pow(1.0 - x, multiplier);
-		}
-
-		double CalcInv(double y) override {
-			return 1.0 - std::pow(1.0 - y, 1.0 / multiplier);
-		}
-
-	};
-
-	template <typename T, size_t length>
-	struct S_Animation : public virtual ValueAnimation<T, length> {
-
-		double multiplier = 1.0;
-
-		double Calc(double x) override {
-			return 1.0 / (1.0 + std::pow(x / (1.0 - x), -multiplier));
-		}
-
-		double CalcInv(double y) override {
-			return Calc(y);
-		}
+		std::vector<T> current = {};
 
 	};
 

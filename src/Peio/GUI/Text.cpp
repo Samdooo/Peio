@@ -1,8 +1,6 @@
 #define PEIO_GUI_EXPORTING
 #include "Text.h"
 
-#include <iostream>
-
 namespace Peio::GUI {
 
 	void Text::Init(Gfx::Graphics* graphics, Offset<float, 2> position, Float2 size)

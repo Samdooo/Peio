@@ -15,7 +15,7 @@ namespace Peio::GUI {
 		}
 	}
 
-	Animation* Animatable::GetAnimation(std::string name) const noexcept
+	Animation* Animatable::GetAnimation(std::string name) const
 	{
 		if (!animations.count(name)) {
 			throw PEIO_EXCEPTION("No animation with the specified name was found.");

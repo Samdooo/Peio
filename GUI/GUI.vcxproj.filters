@@ -26,6 +26,15 @@
     <Filter Include="Source Files\Button">
       <UniqueIdentifier>{6f6da41e-3ac3-4d15-959d-7b8b70c9d764}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Loading">
+      <UniqueIdentifier>{8c0e36ed-42b0-48d4-9ef4-d7b86f0ac4f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Animating\Loading">
+      <UniqueIdentifier>{b8285911-a75b-48b3-862d-e8a54ae298b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Layering">
+      <UniqueIdentifier>{819df6d9-ed2a-43a3-a600-fa3d41b58e57}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\GUI\GUIHeader.h">
@@ -64,6 +73,27 @@
     <ClInclude Include="..\src\Peio\GUI\Animatable.h">
       <Filter>Source Files\Animating</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\GUI\Loadable.h">
+      <Filter>Source Files\Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\GUI\LoadAnimation.h">
+      <Filter>Source Files\Animating\Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\GUI\LoadValueAnimation.h">
+      <Filter>Source Files\Animating\Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\GUI\LoadMap.h">
+      <Filter>Source Files\Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\GUI\LoadPolyAnimation.h">
+      <Filter>Source Files\Animating\Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\GUI\LoadTexture.h">
+      <Filter>Source Files\Texturing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\GUI\Layered.h">
+      <Filter>Source Files\Layering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\GUI\Texture.cpp">
@@ -89,6 +119,21 @@
     </ClCompile>
     <ClCompile Include="..\src\Peio\GUI\Animatable.cpp">
       <Filter>Source Files\Animating</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\GUI\ValueAnimation.cpp">
+      <Filter>Source Files\Animating</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\GUI\LoadAnimation.cpp">
+      <Filter>Source Files\Animating\Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\GUI\LoadValueAnimation.cpp">
+      <Filter>Source Files\Animating\Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\GUI\LoadTexture.cpp">
+      <Filter>Source Files\Texturing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\GUI\Layered.cpp">
+      <Filter>Source Files\Layering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -12,7 +12,7 @@ namespace Peio::GUI {
 
 		void Update();
 
-		_NODISCARD Animation* GetAnimation(std::string name) const noexcept;
+		_NODISCARD Animation* GetAnimation(std::string name) const;
 
 	protected:
 

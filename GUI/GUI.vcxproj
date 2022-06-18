@@ -98,6 +98,13 @@
     <ClInclude Include="..\src\Peio\GUI\Drawable.h" />
     <ClInclude Include="..\src\Peio\GUI\Font.h" />
     <ClInclude Include="..\src\Peio\GUI\GUIHeader.h" />
+    <ClInclude Include="..\src\Peio\GUI\Layered.h" />
+    <ClInclude Include="..\src\Peio\GUI\Loadable.h" />
+    <ClInclude Include="..\src\Peio\GUI\LoadAnimation.h" />
+    <ClInclude Include="..\src\Peio\GUI\LoadMap.h" />
+    <ClInclude Include="..\src\Peio\GUI\LoadPolyAnimation.h" />
+    <ClInclude Include="..\src\Peio\GUI\LoadTexture.h" />
+    <ClInclude Include="..\src\Peio\GUI\LoadValueAnimation.h" />
     <ClInclude Include="..\src\Peio\GUI\PolyAnimation.h" />
     <ClInclude Include="..\src\Peio\GUI\Rectangle.h" />
     <ClInclude Include="..\src\Peio\GUI\Text.h" />
@@ -110,10 +117,15 @@
     <ClCompile Include="..\src\Peio\GUI\Animation.cpp" />
     <ClCompile Include="..\src\Peio\GUI\Button.cpp" />
     <ClCompile Include="..\src\Peio\GUI\Font.cpp" />
+    <ClCompile Include="..\src\Peio\GUI\Layered.cpp" />
+    <ClCompile Include="..\src\Peio\GUI\LoadAnimation.cpp" />
+    <ClCompile Include="..\src\Peio\GUI\LoadTexture.cpp" />
+    <ClCompile Include="..\src\Peio\GUI\LoadValueAnimation.cpp" />
     <ClCompile Include="..\src\Peio\GUI\PolyAnimation.cpp" />
     <ClCompile Include="..\src\Peio\GUI\Rectangle.cpp" />
     <ClCompile Include="..\src\Peio\GUI\Text.cpp" />
     <ClCompile Include="..\src\Peio\GUI\Texture.cpp" />
+    <ClCompile Include="..\src\Peio\GUI\ValueAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Graphics\Graphics.vcxproj">

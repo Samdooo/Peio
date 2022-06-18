@@ -9,7 +9,9 @@ namespace Peio::GUI {
 
 	struct PEIO_GUI_EXPORT Animation {
 
-		virtual void Reset(double offset = 0.0);
+		virtual ~Animation() {}
+
+		virtual void Reset(bool reversed = false, double offset = 0.0);
 		virtual double Update();
 		virtual void Cancel();
 		virtual void End();
@@ -20,8 +22,9 @@ namespace Peio::GUI {
 		double offset = 0.0;
 
 	protected:
-
+		
 		bool running = false;
+		bool reversed = false;
 		double curOffset = 0.0;
 		Clock<double> clock = {};
 

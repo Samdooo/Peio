@@ -3,9 +3,9 @@
 
 namespace Peio::GUI {
 
-	void PolyAnimation::Reset(double offset)
+	void PolyAnimation::Reset(bool reversed, double offset)
 	{
-		Animation::Reset(offset);
+		Animation::Reset(reversed, offset);
 		for (size_t i = 0; i < animations.size(); i++)
 			animations[i]->Reset(offset);
 	}

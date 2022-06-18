@@ -108,9 +108,6 @@
     <ProjectReference Include="..\Media\Media.vcxproj">
       <Project>{ecf3ac61-0f83-4734-96e7-295ff7ba9536}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Networking\Networking.vcxproj">
-      <Project>{d769c4ac-7ac5-452a-aca8-96a73281c949}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\Windows\Windows.vcxproj">
       <Project>{19a3160d-a6d1-4654-bb9d-224526fa4d5d}</Project>
     </ProjectReference>

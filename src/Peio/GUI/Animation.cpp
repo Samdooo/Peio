@@ -3,9 +3,12 @@
 
 namespace Peio::GUI {
 
-	void Animation::Reset(double offset)
+	void Animation::Reset(bool reversed, double offset)
 	{
+		this->reversed = reversed;
 		this->curOffset = offset;
+		if (reversed)
+			this->curOffset = 1.0 - this->curOffset;
 		clock.Restart();
 		running = true;
 	}
@@ -33,7 +36,8 @@ namespace Peio::GUI {
 
 	double Animation::GetProgress() const noexcept
 	{
-		return std::max(std::min((clock.Elapsed().Seconds() - offset + curOffset) / duration, 1.0), 0.0);
+		double progress = std::max(std::min((clock.Elapsed().Seconds() - offset + curOffset) / duration, 1.0), 0.0);
+		return (reversed ? (1.0 - progress) : progress);
 	}
 
 }
