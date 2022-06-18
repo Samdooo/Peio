@@ -2,6 +2,8 @@
 
 #include "PeioHeader.h"
 
+#include <vector>
+
 namespace Peio {
 
 	template <typename... Ts>
@@ -52,19 +54,33 @@ namespace Peio {
 	};
 
 	/// <summary>
-	/// A static class for static and dynamic conversions between indices and types. <para/>
+	/// A class for static and dynamic conversions between indices and types. <para/>
 	/// Example: <para/> TypeMap&lt;Base, Child1, Child2&gt;::New[1]() <para/>
 	/// Generates a new Child2 object and returns it as a Base pointer, assuming Child2 inherits Base.
 	/// </summary>
 	template <typename T_base, typename... Ts>
-	struct TypeMap : public TypeIndex<Ts...> {
+	struct TypeMap : public TypeIndex<Ts...>, public TypeMap<T_base> {
 
 		/// <summary>
 		/// Dynamic index-to-type conversion.
 		/// </summary>
 		static constexpr T_base* (*New[])() = {
-		([]() { return static_cast<T_base*>(new Ts); })...
+			([]() { return static_cast<T_base*>(new Ts); })...
 		};
+
+		/// <summary>
+		/// Dynamic index-to-type conversion as a virtual member function.
+		/// </summary>
+		_NODISCARD T_base* GetNew(size_t index) const override {
+			return New[index]();
+		}
+
+	};
+
+	template <typename T_base>
+	struct TypeMap<T_base> {
+
+		virtual T_base* GetNew(size_t index) const = 0;
 
 	};
 

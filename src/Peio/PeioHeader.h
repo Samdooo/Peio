@@ -3,6 +3,12 @@
 #include <type_traits>
 #include <stdint.h>
 
+#ifdef PEIO_EXPORTING
+#define PEIO_EXPORT __declspec(dllexport)
+#else
+#define PEIO_EXPORT __declspec(dllimport)
+#endif
+
 #pragma warning(disable : 4250) /* Disables warnings for when functions are being inherited via dominance. */
 #pragma warning(disable : 4251) /* Disables warnings for when using STL stuff in dll's, requires the same debugger level throughout projects. */
 

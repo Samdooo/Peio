@@ -6,8 +6,6 @@
 #include <initializer_list>
 #include <string>
 
-#include <iostream>
-
 namespace Peio {
 
 	template <typename T, size_t length>

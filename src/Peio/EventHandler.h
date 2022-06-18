@@ -2,23 +2,39 @@
 
 #include "Exception.h"
 #include <functional>
+#include <unordered_map>
 
 namespace Peio {
 
+	template <typename T_base>
+	using BaseHandler = std::function<bool(T_base*)>;
+
 	template <typename... T_events>
-	struct EventHandler : public EventHandler<T_events>... {};
+	struct EventHandler : public virtual EventHandler<T_events>... {
+
+		template <typename T_base>
+		constexpr bool HandleBase(T_base* base) {
+			return (this->EventHandler<T_events>::HandleBase<T_base>(base) || ...);
+		}
+
+		template <typename T_base>
+		_NODISCARD constexpr BaseHandler<T_base> GetBaseHandler() {
+			return [this](T_base* base) -> bool {
+				return this->HandleBase<T_base>(base);
+			};
+		}
+
+	};
 
 	template <>
-	struct EventHandler<> {
+	struct PEIO_EXPORT EventHandler<> {
 
 		template <typename T_event>
-		void Handle(T_event& e) {
+		bool Handle(T_event* event) {
 			EventHandler<T_event>* handler = dynamic_cast<EventHandler<T_event>*>(this);
-			if (!handler) {
-				return;
-				//throw PEIO_EXCEPTION("Invalid event type or non-virtual EventHandler inheritance in an EventPipeline.");
+			if (handler) {
+				handler->Handle(event);
 			}
-			handler->Handle(e);
 		}
 
 		virtual ~EventHandler() {}
@@ -28,7 +44,28 @@ namespace Peio {
 	template <typename T_event>
 	struct EventHandler<T_event> : public virtual EventHandler<> {
 
-		virtual void Handle(T_event&) = 0;
+		virtual bool Handle(T_event*) = 0;
+
+		template <typename T_base>
+		constexpr bool HandleBase(T_base* base) {
+			if constexpr (std::is_convertible<T_base*, T_event*>::value) {
+				return Handle(base);
+			}
+			if constexpr (std::has_virtual_destructor<T_base>::value) { // Assuming base != nullptr
+				T_event* event = dynamic_cast<T_event*>(base);
+				if (event) {
+					return Handle(event);
+				}
+			}
+			return false;
+		}
+
+		template <typename T_base>
+		_NODISCARD constexpr BaseHandler<T_base> GetBaseHandler() {
+			return [this](T_base* base) -> bool {
+				return this->HandleBase<T_base>(base);
+			};
+		}
 
 	protected:
 
@@ -37,38 +74,56 @@ namespace Peio {
 	};
 
 	template <typename... T_events>
-	struct EventHandler<EventHandler<T_events...>> : public EventHandler<T_events>... {};
+	struct FunctionHandler : public virtual EventHandler<T_events...>, public virtual FunctionHandler<T_events>... {
 
-	template <typename T_event, typename... T_handlers>
-	struct EventPipeline : public T_handlers... {
-		static_assert((std::is_base_of<EventHandler<T_event>, T_handlers>::value && ...), "All T_handlers must virtually inherit EventHandler<T_event>.");
-
-		void Handle(T_event& event) override {
-			(T_handlers::Handle(event), ...);
-		}
-	};
-
-	template <typename... T_events>
-	struct FunctionHandler : public FunctionHandler<T_events>... {
-		
-		FunctionHandler(std::function<void(T_events&)>... functions) : FunctionHandler<T_events>(functions)... {}
+		FunctionHandler(BaseHandler<T_events>... functions) : FunctionHandler<T_events>(functions)... {}
 
 		using FunctionHandler<T_events>::Handle...;
 
 	};
 
 	template <typename T_event>
-	struct FunctionHandler<T_event> : public EventHandler<T_event> {
+	struct FunctionHandler<T_event> : public virtual EventHandler<T_event> {
 
-		FunctionHandler(std::function<void(T_event&)> function) : function(function) {}
+		BaseHandler<T_event> function;
 
-		void Handle(T_event& event) override {
-			function(event);
+		FunctionHandler(BaseHandler<T_event> function) : function(function) {}
+
+		bool Handle(T_event* event) override {
+			return function(event);
+		}
+
+	};
+
+	template <typename T_base>
+	struct BaseHandlerSet : public virtual EventHandler<T_base> {
+
+		bool Handle(T_base* base) override {
+			for (auto& handler : map) {
+				handler.second(base);
+			}
+			return false;
+		}
+
+		template <typename T_event>
+		bool HandleNew(T_event event) {
+			return Handle(&event);
+		}
+
+		void Insert(EventHandler<>* handler, BaseHandler<T_base> baseHandler) {
+			map.insert({ handler, baseHandler });
+		}
+
+		void Remove(EventHandler<>* handler, BaseHandler<T_base> baseHandler) {
+			if (!map.count(handler)) {
+				throw PEIO_EXCEPTION("EventHandler doesn't belong to BaseHandlerSet.");
+			}
+			map.erase(handler);
 		}
 
 	protected:
 
-		std::function<void(T_event&)> function = nullptr;
+		std::unordered_map<EventHandler<>*, BaseHandler<T_base>> map = {};
 
 	};
 
