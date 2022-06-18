@@ -7,6 +7,8 @@
 #endif
 
 #include "..\PeioHeader.h"
+#pragma comment(lib, "Peio-Essentials.lib")
+
 #include "..\Array.h"
 #include "..\Exception.h"
 #include <d3d12.h>
