@@ -7,8 +7,8 @@ namespace Peio::Med {
 
 	struct PEIO_MED_EXPORT Frame {
 
-		void Init(Int2 size, AVPixelFormat format, bool createData = true);
-		void Init(byte* data, Int2 size, AVPixelFormat format);
+		void Init(Int2 size, AVPixelFormat format, bool createData = true, std::string filePath = "");
+		void Init(byte* data, Int2 size, AVPixelFormat format, std::string filePath = "");
 
 		void Release();
 
@@ -19,6 +19,8 @@ namespace Peio::Med {
 		_NODISCARD size_t GetLength() const;
 
 		_NODISCARD byte* const GetPixel(int row, int col) const;
+
+		std::string filePath = {};
 
 	protected:
 

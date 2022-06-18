@@ -3,21 +3,23 @@
 
 namespace Peio::Med {
 
-	void Frame::Init(Int2 size, AVPixelFormat format, bool createData)
+	void Frame::Init(Int2 size, AVPixelFormat format, bool createData, std::string filePath)
 	{
 		this->size = size;
 		this->format = format;
 		this->bytes_pp = av_get_bits_per_pixel(av_pix_fmt_desc_get(format)) / 8;
+		this->filePath = filePath;
 		if (createData)
 			this->data = new byte[size.x() * size.y() * this->bytes_pp];
 	}
 
-	void Frame::Init(byte* data, Int2 size, AVPixelFormat format)
+	void Frame::Init(byte* data, Int2 size, AVPixelFormat format, std::string filePath)
 	{
 		this->data = data;
 		this->size = size;
 		this->format = format;
 		this->bytes_pp = av_get_bits_per_pixel(av_pix_fmt_desc_get(format)) / 8;
+		this->filePath = filePath;
 	}
 
 	void Frame::Release()

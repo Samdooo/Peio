@@ -3,16 +3,18 @@
 
 namespace Peio::Med {
 
-	void FileDecoder::Init(std::string path)
+	void FileDecoder::Init(std::string filePath)
 	{
 		int ret;
+
+		this->filePath = filePath;
 
 		formatContext = avformat_alloc_context();
 		if (!formatContext) {
 			throw PEIO_EXCEPTION("Failed to allocate format context.");
 		}
 
-		ret = avformat_open_input(&formatContext, path.c_str(), nullptr, nullptr);
+		ret = avformat_open_input(&formatContext, filePath.c_str(), nullptr, nullptr);
 		if (ret < 0) {
 			throw PEIO_MED_EXCEPTION("Failed to open file.", ret);
 		}
@@ -103,6 +105,8 @@ namespace Peio::Med {
 							 dstFrame->GetSize().y() ? dstFrame->GetSize().y() : avFrame->height }, 
 							 dstFrame->GetFormat() != AV_PIX_FMT_NONE ? dstFrame->GetFormat() : (AVPixelFormat)avFrame->format);
 		}
+
+		dstFrame->filePath = filePath;
 
 		scaler.Init({ avFrame->width, avFrame->height }, dstFrame->GetSize(), (AVPixelFormat)avFrame->format, dstFrame->GetFormat(), algorithm);
 		scaler.Scale(avFrame, dstFrame);

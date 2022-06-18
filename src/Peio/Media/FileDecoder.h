@@ -7,7 +7,7 @@ namespace Peio::Med {
 
 	struct PEIO_MED_EXPORT FileDecoder {
 
-		void Init(std::string path);
+		void Init(std::string filePath);
 		bool DecodeFrame(Frame* dstFrame, bool createFrame = false, int algorithm = SWS_BICUBIC);
 		void Release();
 
@@ -15,6 +15,7 @@ namespace Peio::Med {
 
 	protected:
 
+		std::string filePath = "";
 		const AVCodec* codec = nullptr;
 		AVCodecContext* codecContext = nullptr;
 		AVFormatContext* formatContext = nullptr;

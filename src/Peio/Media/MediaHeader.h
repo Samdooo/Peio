@@ -7,6 +7,7 @@
 #endif
 
 #include "..\PeioHeader.h"
+#pragma comment(lib, "Peio-Essentials.lib")
 
 extern "C" {
 #include "FFmpeg/libavcodec/avcodec.h"
