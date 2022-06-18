@@ -3,20 +3,24 @@
 
 namespace Peio::Win {
 
-	std::vector<EventHandler<Input::Message>*> Input::listeners;
-	std::unordered_map<size_t, std::unordered_set<EventHandler<>*>> Input::eventHandlers;
+	std::vector<EventHandler<WinMessageEvent>*> Input::listeners = {};
+	BaseHandlerSet<WinEvent> Input::eventHandlers = {};
+	//HandlerSet Input::eventHandlers.Handlers;
 
-	void Input::AddListener(EventHandler<Message>* listener)
+	void Input::AddListener(EventHandler<WinMessageEvent>* listener)
 	{
 		listeners.push_back(listener);
 	}
 
 	LRESULT Input::WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
-		Message message = { hwnd, msg, wParam, lParam, true, 0 };
+		WinMessageEvent message = {};
+		message.msg = { hwnd, msg, wParam, lParam };
+		message.returnDefaultProc = true;
+		message.returnValue = 0;
 
-		for (EventHandler<Message>* listener : listeners) {
-			listener->Handle(message);
+		for (EventHandler<WinMessageEvent>* listener : listeners) {
+			listener->Handle(&message);
 		}
 
 		if (message.returnDefaultProc)

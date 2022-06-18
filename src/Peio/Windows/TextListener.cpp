@@ -3,11 +3,12 @@
 
 namespace Peio::Win {
 
-	void TextListener::Handle(Input::Message& msg)
+	bool TextListener::Handle(WinMessageEvent* event)
 	{
-		if (msg.message == WM_CHAR) {
-			Input::HandleNew(TextEvent{ (char)msg.wParam, LOWORD(msg.lParam), bool(msg.lParam & (1 << 30)) });
+		if (event->msg.message == WM_CHAR) {
+			Input::eventHandlers.HandleNew(TextEvent{ event->msg, (char)event->msg.wParam, LOWORD(event->msg.lParam), bool(event->msg.lParam & (1 << 30)) });
 		}
+		return false;
 	}
 
 }

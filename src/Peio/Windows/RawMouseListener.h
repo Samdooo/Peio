@@ -4,21 +4,25 @@
 
 namespace Peio::Win {
 
-	struct RawMouseMoveEvent {
+	struct PEIO_WIN_EXPORT RawMouseMoveEvent : public WinEvent {
 		bool foreground;
 		Long2 movement;
+		RawMouseMoveEvent(MSG msg, bool foreground, Long2 movement) : WinEvent(msg), foreground(foreground), movement(movement) {}
 	};
-	struct RawMouseButtonDownEvent {
+	struct PEIO_WIN_EXPORT RawMouseButtonEvent : public WinEvent {
 		bool foreground;
 		MouseButton button;
+		RawMouseButtonEvent(MSG msg, bool foreground, MouseButton button) : WinEvent(msg), foreground(foreground), button(button) {}
 	};
-	struct RawMouseButtonUpEvent : public RawMouseButtonDownEvent {};
 
-	struct PEIO_WIN_EXPORT RawMouseListener : public virtual Listener {
+	struct PEIO_WIN_EXPORT RawMouseButtonDownEvent : public RawMouseButtonEvent { using RawMouseButtonEvent::RawMouseButtonEvent;  };
+	struct PEIO_WIN_EXPORT RawMouseButtonUpEvent : public RawMouseButtonEvent { using RawMouseButtonEvent::RawMouseButtonEvent; };
+
+	struct PEIO_WIN_EXPORT RawMouseListener : public Listener {
 
 		static void Register(HWND hwnd);
 
-		void Handle(Input::Message& msg) override;
+		bool Handle(WinMessageEvent* event) override;
 
 	};
 

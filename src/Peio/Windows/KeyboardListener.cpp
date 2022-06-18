@@ -3,18 +3,19 @@
 
 namespace Peio::Win {
 
-	void KeyboardListener::Handle(Input::Message& msg)
+	bool KeyboardListener::Handle(WinMessageEvent* event)
 	{
-		switch (msg.message) {
+		switch (event->msg.message) {
 		case WM_KEYDOWN:
-			Input::HandleNew(KeydownEvent{ (uchar)msg.wParam, LOWORD(msg.lParam), bool(msg.lParam & (1 << 30)) });
+			Input::eventHandlers.HandleNew(KeydownEvent{ event->msg, (uchar)event->msg.wParam, LOWORD(event->msg.lParam), bool(event->msg.lParam & (1 << 30)) });
 			break;
 		case WM_KEYUP:
-			Input::HandleNew(KeyupEvent{ (uchar)msg.wParam, LOWORD(msg.lParam), bool(msg.lParam & (1 << 30)) });
+			Input::eventHandlers.HandleNew(KeyupEvent{ event->msg, (uchar)event->msg.wParam, LOWORD(event->msg.lParam), bool(event->msg.lParam & (1 << 30)) });
 			break;
 		default:
 			break;
 		}
+		return false;
 	}
 
 }

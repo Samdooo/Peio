@@ -5,8 +5,8 @@
 
 namespace Peio::Win {
 
-	enum class MouseButton { LEFT, RIGHT, MIDDLE, X1, X2 };
-	enum class MouseKey {
+	enum class PEIO_WIN_EXPORT MouseButton { LEFT, RIGHT, MIDDLE, X1, X2 };
+	enum class PEIO_WIN_EXPORT MouseKey {
 		CONTROL = MK_CONTROL,
 		LEFT_MOUSE = MK_LBUTTON,
 		MIDDLE_MOUSE = MK_MBUTTON,
@@ -16,28 +16,29 @@ namespace Peio::Win {
 		X2_MOUSE = MK_XBUTTON2
 	};
 
-	struct PEIO_WIN_EXPORT MouseMoveEvent {
+	struct PEIO_WIN_EXPORT MouseMoveEvent : public WinEvent {
 		Int2 position;
-		WPARAM wParam;
+		MouseMoveEvent(MSG msg, Int2 position) : WinEvent(msg), position(position) {}
 	};
 
-	struct PEIO_WIN_EXPORT MouseButtonDownEvent {
+	struct PEIO_WIN_EXPORT MouseButtonEvent : public WinEvent {
 		MouseButton button;
 		Int2 position;
-		WPARAM wParam;
+		MouseButtonEvent(MSG msg, MouseButton button, Int2 position) : WinEvent(msg), button(button), position(position) {}
 	};
 
-	struct PEIO_WIN_EXPORT MouseButtonUpEvent : public MouseButtonDownEvent {};
+	struct PEIO_WIN_EXPORT MouseButtonDownEvent : public MouseButtonEvent { using MouseButtonEvent::MouseButtonEvent; };
+	struct PEIO_WIN_EXPORT MouseButtonUpEvent : public MouseButtonEvent { using MouseButtonEvent::MouseButtonEvent; };
 
-	struct PEIO_WIN_EXPORT MouseWheelEvent {
+	struct PEIO_WIN_EXPORT MouseWheelEvent : public WinEvent {
 		short delta;
 		Int2 position;
-		WPARAM wParam;
+		MouseWheelEvent(MSG msg, short delta, Int2 position) : WinEvent(msg), delta(delta), position(position) {}
 	};
 
-	struct PEIO_WIN_EXPORT MouseListener : public virtual Listener {
+	struct PEIO_WIN_EXPORT MouseListener : public Listener {
 
-		void Handle(Input::Message& msg);
+		bool Handle(WinMessageEvent* event) override;
 
 	};
 
