@@ -92,10 +92,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\main2.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -107,6 +107,9 @@
     </ProjectReference>
     <ProjectReference Include="..\Media\Media.vcxproj">
       <Project>{ecf3ac61-0f83-4734-96e7-295ff7ba9536}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Voxels\Voxels.vcxproj">
+      <Project>{cee25723-2e4b-468d-943a-a96da258a44b}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Windows\Windows.vcxproj">
       <Project>{19a3160d-a6d1-4654-bb9d-224526fa4d5d}</Project>

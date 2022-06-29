@@ -94,6 +94,29 @@ namespace Peio::GUI {
 		return str;
 	}
 
+	float Text::GetWidth() const noexcept
+	{
+		float curWidth = 0.0f;
+		float maxWidth = 0.0f;
+		for (size_t i = 0; i < str.size(); i++) {
+			if (str[i] == ' ') {
+				curWidth += spaceWidth;
+			}
+			else if (str[i] == '\n') {
+				curWidth = 0.0f;
+			}
+			else {
+				Font::Letter& letter = font->letters[(uchar)str[i]];
+				if (!letter.GetLength())
+					continue;
+				curWidth += (float)letter.GetSize().x() + (float)letter.offset.x();
+			}
+			if (curWidth > maxWidth)
+				maxWidth = curWidth;
+		}
+		return maxWidth;
+	}
+
 	//void Text::Init(Gfx::Graphics* graphics, Uint2 position, Uint2 size)
 	//{
 	//	Rectangle::Init(graphics, position, size);

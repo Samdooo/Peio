@@ -17,6 +17,7 @@ namespace Peio::GUI {
 		void Draw() override;
 
 		_NODISCARD std::string GetString() const noexcept;
+		_NODISCARD float GetWidth() const noexcept;
 
 	protected:
 

@@ -49,6 +49,44 @@ struct VSInput {
 
 struct AnimatedButton : public virtual Peio::GUI::Button, public virtual Peio::GUI::Animatable {};
 
+struct TitleBar : public Peio::GUI::Button {
+
+	TitleBar(Peio::Gfx::Graphics* graphics, Peio::Win::Window& window) : window(window) {
+		Init(graphics, { 0.0f, 0.0f }, { 1920.0f, 25.0f });
+
+		texture.Init(graphics, Peio::Med::Images::Load("titleBar.png", AV_PIX_FMT_RGBA), { DXGI_FORMAT_R8G8B8A8_UNORM });
+		texture.Upload();
+
+		SetTexture(&texture);
+		Upload();
+
+		titleFont.Init(graphics, "OpenSans-Medium.ttf", 16);
+		titleFont.LoadLetters();
+		titleFont.LoadTextures();
+		
+		title.Init(graphics, { 0.0f, 4.0f }, { 1920, 20.0f });
+		title.SetFont(&titleFont);
+		title.SetString("Peio Sandbox");
+		title.SetSpaceWidth(6.0f);
+		title.position.x() = (float)graphics->GetSize().x() / 2.0f - title.GetWidth() / 2.0f;
+		title.SetColor({ 1.0f, 1.0f, 1.0f, 0.6f });
+		title.Upload();
+	}
+
+	void Draw() override {
+		Peio::GUI::Button::Draw();
+		title.Draw();
+	}
+
+protected:
+
+	Peio::Win::Window& window;
+	Peio::GUI::Texture texture;
+	Peio::GUI::Font titleFont;
+	Peio::GUI::Text title;
+
+};
+
 struct CloseButton : public Peio::GUI::Button {
 
 	CloseButton(Peio::Gfx::Graphics* graphics, Peio::Win::Window& window) : window(window) {
@@ -56,13 +94,13 @@ struct CloseButton : public Peio::GUI::Button {
 		texture.Init(graphics, Peio::Med::Images::Load("closeButton.png", AV_PIX_FMT_RGBA), DXGI_FORMAT_R8G8B8A8_UNORM);
 		texture.Upload();
 		SetTexture(&texture);
-		SetColor({ 1.0f, 1.0f, 1.0f, 0.3f });
+		SetColor({ 1.0f, 1.0f, 1.0f, 0.5f });
 		Upload();
 
 		jFnc.multiplier = 2.0;
 
-		enterAnimation.duration = 0.3;
-		enterAnimation.from = { 1.0f, 1.0f, 1.0f, 0.3f };
+		enterAnimation.duration = 0.1;
+		enterAnimation.from = { 1.0f, 1.0f, 1.0f, 0.5f };
 		enterAnimation.to = { 1.0f, 1.0f, 1.0f, 1.0f };
 		enterAnimation.numValues = 4;
 		enterAnimation.function = &jFnc;
@@ -100,6 +138,18 @@ protected:
 
 };
 
+struct Border {
+
+	Border(Peio::Gfx::Graphics* graphics, Peio::Win::Window& window) : window(window) {
+		
+	}
+
+protected:
+
+	Peio::Win::Window& window;
+
+};
+
 struct Base {
 	virtual ~Base() {}
 };
@@ -132,7 +182,7 @@ int main() {
 		Peio::Win::Window window;
 		window.CreateClass("Sandbox class1", 0);
 		window.RegisterClass();
-		window.CreateWindow("Peio Sandbox", WS_POPUP | WS_VISIBLE, 0, {CW_USEDEFAULT, CW_USEDEFAULT}, windowSize);
+		window.CreateWindow("Peio Sandbox", WS_POPUP | WS_VISIBLE, 0, { 100, 100 }, windowSize);
 
 		Peio::Gfx::WinGraphics graphics;
 		graphics.Init(window.GetHWND(), windowSize, 3, false);
@@ -142,9 +192,23 @@ int main() {
 		Peio::Win::MouseListener mouseListener;
 		Peio::Win::Input::AddListener(&mouseListener);
 
+		TitleBar titleBar(&graphics, window);
+
 		CloseButton closeButton(&graphics, window);
 
 		Peio::Win::Input::eventHandlers.Insert(&closeButton, closeButton.GetBaseHandler<Peio::Win::WinEvent>());
+
+		Peio::GUI::Font font;
+		font.Init(&graphics, "Roboto-Light.ttf", 32);
+		font.LoadLetters();
+		font.LoadTextures();
+
+		Peio::GUI::Text text;
+		text.Init(&graphics, { 100, 100 }, { 500, 200 });
+		text.SetFont(&font);
+		text.SetString("Hello there");
+		text.SetSpaceWidth(10.0f);
+		text.Upload();
 
 		Peio::Clock<double> clock;
 
@@ -155,7 +219,9 @@ int main() {
 
 			graphics.Clear({ 0.21f, 0.22f, 0.25f, 1.0f });
 			
+			titleBar.Draw();
 			closeButton.Draw();
+			text.Draw();
 
 			graphics.Render();
 		}
