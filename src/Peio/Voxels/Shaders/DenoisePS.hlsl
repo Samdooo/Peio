@@ -17,7 +17,7 @@ float4 main(VS_OUTPUT input) : SV_TARGET
 {
 	//float2 pix = input.pixelPosition.xy / float2(640.0f, 360.0f) * 2.0f - float2(1.0f, 1.0f);
 	{
-		float2 diff = abs(input.pixelPosition.xy - float2(320.0f, 180.0f));
+		float2 diff = abs(input.pixelPosition.xy - float2(960.0f, 540.0f));
 		if ((diff.x <= 1.0f && diff.y <= 5.0f) || (diff.y <= 1.0f && diff.x <= 5.0f)) {
 			return 0.0f;
 		}

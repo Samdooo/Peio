@@ -11,9 +11,10 @@ namespace Peio::Vxl {
 
 	struct PEIO_VXL_EXPORT DenoiseRenderer {
 
-		void Init(ID3D12GraphicsCommandList* cmdList, Gfx::RootSignature* rootSignature, Float2 size);
+		void Init(ID3D12GraphicsCommandList* cmdList, UINT numSrvs, UINT numUavs, Float2 size);
 		void Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect);
 
+		Gfx::PipelineState pipelineState = {};
 	protected:
 
 		struct InputVertex {
@@ -22,9 +23,6 @@ namespace Peio::Vxl {
 			Float2 size = {};
 		};
 		Gfx::VertexBuffer<InputVertex> vertexBuffer = {};
-
-		Gfx::RootSignature* rootSignature = nullptr;
-		Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState = nullptr;
 
 	};
 

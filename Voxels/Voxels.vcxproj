@@ -95,7 +95,7 @@
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
       <ObjectFileOutput>$(OutDir)VoxelShaders\%(Filename).cso</ObjectFileOutput>
-      <DisableOptimizations>false</DisableOptimizations>
+      <DisableOptimizations>true</DisableOptimizations>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

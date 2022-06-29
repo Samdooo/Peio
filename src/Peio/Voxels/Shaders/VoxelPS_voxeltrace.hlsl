@@ -15,7 +15,7 @@ struct VoxelRay {
 VoxelRay VoxelTrace(const float3 origin, const float3 ray, uint skip){
     
     const uint numLayers = 10;
-    const uint numChildren = 3;
+    const uint numChildren = 4;
     const float3 invRay = 1.0f / ray;
     const float3 invRad = abs(invRay * scene[0].voxelRadius);
     
@@ -133,7 +133,10 @@ VoxelRay VoxelTrace(const float3 origin, const float3 ray, uint skip){
             result.normal.z = -result.normal.z;
         result.materialIndex = voxelMaterials[result.collisionVoxel];
         result.material = materials[result.materialIndex];
+        //result.material.colorEmission.r = (float)checks / 255.0f / 5.0f;
     }
+    //float m = (float)(maxLayer + (bool)(result.side != -1)) / (float)(numLayers + 1);
+    //result.material.colorEmission = float4(m, m, m, 1.0f);
     return result;
 }
 

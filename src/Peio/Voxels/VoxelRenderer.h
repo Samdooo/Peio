@@ -10,7 +10,7 @@ namespace Peio::Vxl {
 
 	struct PEIO_VXL_EXPORT VoxelRenderer {
 
-		void Init(ID3D12GraphicsCommandList* cmdList, Gfx::RootSignature* rootSignature, Float3 cameraPosition, Float2 cameraRotation, float fov, float aspectRatio);
+		void Init(ID3D12GraphicsCommandList* cmdList, UINT numSrvs, UINT numUavs, Float3 cameraPosition, Float2 cameraRotation, float fov, float aspectRatio);
 
 		void SetCameraPosition(Float3 position);
 		void SetCameraRotation(Float2 rotation);
@@ -20,6 +20,7 @@ namespace Peio::Vxl {
 
 		void Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect);
 
+		Gfx::PipelineState pipelineState = {};
 	protected:
 
 		struct InputVertex {
@@ -30,9 +31,6 @@ namespace Peio::Vxl {
 			float aspectRatio = 1.0f;
 		};
 		Gfx::VertexBuffer<InputVertex> vertexBuffer = {};
-
-		Gfx::RootSignature* rootSignature = nullptr;
-		Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState = nullptr;
 
 	};
 

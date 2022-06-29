@@ -3,7 +3,7 @@
 
 namespace Peio::Vxl {
 
-	void VoxelRenderer::Init(ID3D12GraphicsCommandList* cmdList, Gfx::RootSignature* rootSignature, Float3 cameraPosition, Float2 cameraRotation, float fov, float aspectRatio)
+	void VoxelRenderer::Init(ID3D12GraphicsCommandList* cmdList, UINT numSrvs, UINT numUavs, Float3 cameraPosition, Float2 cameraRotation, float fov, float aspectRatio)
 	{
 		vertexBuffer.Allocate(6);
 		for (UINT i = 0; i < 6; i++) {
@@ -13,34 +13,45 @@ namespace Peio::Vxl {
 		}
 		vertexBuffer.Upload(cmdList);
 
-		this->rootSignature = rootSignature;
+		std::vector<D3D12_ROOT_PARAMETER> rootParams(numSrvs + numUavs);
+		for (UINT i = 0; i < numSrvs; i++)
+			rootParams[i] = Gfx::RootParameter::CreateShaderResourceView(i, D3D12_SHADER_VISIBILITY_PIXEL);
+		for (UINT i = 0; i < numUavs; i++)
+			rootParams[numSrvs + i] = Gfx::RootParameter::CreateUnorderedAccessView(i + 1, D3D12_SHADER_VISIBILITY_PIXEL);
+		
+		ID3D12RootSignature* rootSignature = Gfx::RootSignature::Create(rootParams, {},
+			D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS);
 
-		//std::vector<D3D12_ROOT_PARAMETER> rootParams(srv->GetNumResources() + uav->GetNumResources());
-		//for (UINT i = 0; i < srv->GetNumResources(); i++)
-		//	rootParams[i] = Gfx::RootParameter::CreateShaderResourceView(i, D3D12_SHADER_VISIBILITY_PIXEL);
-		//for (UINT i = 0; i < uav->GetNumResources(); i++)
-		//	rootParams[srv->GetNumResources() + i] = Gfx::RootParameter::CreateUnorderedAccessView(i + 1, D3D12_SHADER_VISIBILITY_PIXEL);
-		//
-		//rootSignature = Gfx::RootSignature::Create(rootParams, {},
-		//	D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
-		//	D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
-		//	D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
-		//	D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS);
-
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc = Gfx::PipelineState::CreateDesc(
+		pipelineState.Init(
 			Gfx::InputLayout::Create({
 				Gfx::InputElement::Create("POSITION", DXGI_FORMAT_R32G32_FLOAT),
 				Gfx::InputElement::Create("CAMERA_POSITION", DXGI_FORMAT_R32G32B32_FLOAT),
 				Gfx::InputElement::Create("ROTATION", DXGI_FORMAT_R32G32_FLOAT),
 				Gfx::InputElement::Create("FOV", DXGI_FORMAT_R32_FLOAT),
 				Gfx::InputElement::Create("ASPECT_RATIO", DXGI_FORMAT_R32_FLOAT),
-				}),
-				rootSignature->GetRootSignature(), Gfx::Shader::Load("../bin/VoxelShaders/VoxelVS.cso"), Gfx::Shader::Load("../bin/VoxelShaders/VoxelPS.cso")
+				}), rootSignature, Gfx::Shader::Load("../bin/VoxelShaders/VoxelVS.cso"), 
+				Gfx::Shader::Load("../bin/VoxelShaders/VoxelPS.cso"), false
 				);
-		pipelineDesc.BlendState.IndependentBlendEnable = FALSE;
-		pipelineDesc.BlendState.RenderTarget[0].BlendEnable = FALSE;
 
-		pipelineState = Gfx::PipelineState::Create(pipelineDesc);
+		//D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc = Gfx::PipelineState::CreateDesc(
+		//	Gfx::InputLayout::Create({
+		//		Gfx::InputElement::Create("POSITION", DXGI_FORMAT_R32G32_FLOAT),
+		//		Gfx::InputElement::Create("CAMERA_POSITION", DXGI_FORMAT_R32G32B32_FLOAT),
+		//		Gfx::InputElement::Create("ROTATION", DXGI_FORMAT_R32G32_FLOAT),
+		//		Gfx::InputElement::Create("FOV", DXGI_FORMAT_R32_FLOAT),
+		//		Gfx::InputElement::Create("ASPECT_RATIO", DXGI_FORMAT_R32_FLOAT),
+		//		}),
+		//		rootSignature->GetRootSignature(), Gfx::Shader::Load("../bin/VoxelShaders/VoxelVS.cso"), Gfx::Shader::Load("../bin/VoxelShaders/VoxelPS.cso")
+		//		);
+		//pipelineDesc.BlendState.IndependentBlendEnable = FALSE;
+		//pipelineDesc.BlendState.RenderTarget[0].BlendEnable = FALSE;
+
+		//pipelineState = Gfx::PipelineState::Create(pipelineDesc);
+
+
 	}
 
 	void VoxelRenderer::SetCameraPosition(Float3 position)
@@ -74,8 +85,9 @@ namespace Peio::Vxl {
 
 	void VoxelRenderer::Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect)
 	{
-		rootSignature->SetRootSignature(cmdList);
-		cmdList->SetPipelineState(pipelineState.Get());
+		//rootSignature->SetRootSignature(cmdList);
+		//cmdList->SetPipelineState(pipelineState.Get());
+		//pipelineState.Set(cmdList);
 
 		cmdList->RSSetViewports(1, &viewPort);
 		cmdList->RSSetScissorRects(1, &scissorRect);
