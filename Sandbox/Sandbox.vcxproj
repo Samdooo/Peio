@@ -88,6 +88,7 @@
     <FxCompile>
       <ObjectFileOutput>$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ShaderModel>5.0</ShaderModel>
+      <DisableOptimizations>true</DisableOptimizations>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

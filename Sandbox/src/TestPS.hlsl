@@ -5,96 +5,145 @@ struct VSOutput {
 };
 
 struct MaterialGroup {
-    uint indices[1 << 3];
+    uint indices[2][2][2];
 };
 
 StructuredBuffer<MaterialGroup> tree : register(t0);
 
 float4 main(VSOutput input) : SV_TARGET
 {
-    //uint indices[2];
-    //indices[0] = 0;
-    //uint l = 0;
-    //
-    //[loop] while (true) {
-    //    if (indices[l] == 1)
-    //        return float4(1.0f, 0.0f, 0.0f, 1.0f);
-    //    indices[l + 1] = 1;
-    //    if (++l == 2)
-    //        break;
-    //}
-    //return float4(0.0f, 1.0f, 0.0f, 1.0f);
-
-    const float3 origin = input.cameraPosition;
-    const float3 ray = input.sightRay;
-    const float3 invRay = 1.0f / ray;
+    const double3 origin = input.cameraPosition;
+    const double3 ray = input.sightRay;
+    const double3 invRay = 1.0f / ray;
     
-    const uint numLayers = 8;
+    const uint numLayers = 24;
 
-    uint3 path = 0;
-    uint groups[numLayers];
-    uint curLayer = 0;
-    bool down = true;
-    uint nextGroup = 0;
-    uint indices[numLayers];
+    double curScale = 0.0f;
 
-    [loop] while (true) {
-        uint mask = 1 << (numLayers - curLayer);
-        if (down) {
-            down = false;
-
-            // Trace
-            float rad = (float)mask / 2.0f;
-            float3 mid = (float3)path + float3(rad, rad, rad) - origin;
-            float3 minDiv = mid * invRay - abs(invRay * rad);
-            float3 maxDiv = mid * invRay + abs(invRay * rad);
-
-            float minScale = max(max(minDiv.x, minDiv.y), minDiv.z);
-            float maxScale = min(min(maxDiv.x, maxDiv.y), maxDiv.z);
-
-            if (minScale > maxScale || maxScale < 0.0f) {
-                indices[curLayer] = (1 << 3);
-            }
-            else {
-                if (curLayer == numLayers) {
-                    return float4(0.0f, 1.0f, 1.0f, 1.0f);
-                }
-                else {
-                    indices[curLayer] = 0;
-                    groups[curLayer] = nextGroup;
-                }
-            }
-            
+    { // Trace to the root cube
+        double rad = (float)(1 << numLayers) / 2.0f;
+        double3  mid = double3 (rad, rad, rad) - origin;
+        double3  minDiv = mid * invRay - abs(invRay * rad);
+        double3  maxDiv = mid * invRay + abs(invRay * rad);
+        
+        double minScale = max(max(max(minDiv.x, minDiv.y), minDiv.z), 0.0f);
+        double maxScale = min(min(maxDiv.x, maxDiv.y), maxDiv.z);
+        
+        if (minScale > maxScale) {
+            return 0.0f;
         }
-        [unroll(1 << 3)] for (; indices[curLayer] < (1 << 3); indices[curLayer]++) {
-            nextGroup = tree[groups[curLayer]].indices[indices[curLayer]];
-            if (nextGroup != -1)
-                break;
-        }
-        if (indices[curLayer] == (1 << 3)) {
-            if (curLayer == 0)
-                break;
-            [unroll(3)] for (uint i = 0; i < 3; i++)
-                path[i] &= ~mask;
-            curLayer--;
-            continue;
-        }
-        [unroll(3)] for (uint i = 0; i < 3; i++) {
-            if (indices[curLayer] & (1 << (2 - i)))
-                path[i] |= mask;
-            else
-                path[i] &= ~mask;
-        }
-        down = true;
-        curLayer++;
+        curScale = minScale;
     }
 
-    return float4(0.0f, 0.0f, 0.0f, 1.0f);
+    uint3 path = 0;
+    uint curLayer = 0;
+    uint indices[numLayers];
+    uint nextIndex = 0;
+    bool down = true;
+
+    uint maxLayer = 0;
+    [loop] while (true) {
+        if (curLayer > maxLayer)
+            maxLayer = curLayer;
+        uint mask = 1U << (numLayers - curLayer - 1);
+        double rad = (float)(1U << (numLayers - curLayer)) / 2.0f;
+        double3 mid = (double3)(path & uint3(~mask, ~mask, ~mask)) + double3 (rad, rad, rad);
+
+        if (down) {
+            if (curLayer == numLayers) {
+                float f = (float)nextIndex / 1000000.0f;
+                return float4(0.0f, f, f, 1.0f);
+            }
+
+            //if (curLayer == 0) {
+                //double3  minDiv = (mid - origin) * invRay - abs(invRay * rad);
+                //double3  maxDiv = (mid - origin) * invRay + abs(invRay * rad);
+                //
+                //double minScale = max(max(max(minDiv.x, minDiv.y), minDiv.z), 0.0f);
+                //double maxScale = min(min(maxDiv.x, maxDiv.y), maxDiv.z);
+                //
+                //if (minScale > maxScale) {
+                //    if (curLayer == 0)
+                //        break;
+                //    curLayer--;
+                //    continue;
+                //}
+                //curScale = minScale;
+            //}
+
+            double3 curPos = origin + ray * curScale;
+            indices[curLayer] = nextIndex;
+            [unroll(3)] for (uint i = 0; i < 3; i++) {
+                if (curPos[i] >= mid[i])
+                    path[i] |= mask;
+                else
+                    path[i] &= ~mask;
+            }
+        }
+        else {
+            //return float4(0.0f, 0.0f, 1.0f, 1.0f);
+            //if (curLayer != numLayers - 1)
+            //    return float4(1.0f, 1.0f, 0.0f, 1.0f);
+
+            uint axis = -1;
+            double bestScale = 1.#INF;
+            [unroll(3)] for (uint i = 0; i < 3; i++) {
+                double s = (mid[i] - origin[i]) * invRay[i];
+                if (s <= curScale) // Might cause errors because of double inaccuracy (?)
+                    continue;
+                if (s < bestScale) {
+                    axis = i;
+                    bestScale = s;
+                }
+            }
+
+            //if (axis == 0)
+            //    return float4(1.0f, 0.0f, 0.0f, 1.0f);
+            //else if (axis == 1)
+            //    return float4(0.0f, 1.0f, 0.0f, 1.0f);
+            //else
+            //    return float4(0.0f, 0.0f, 1.0f, 1.0f);
+
+            // CHECK IF INSIDE !!
+            bool inside = true;
+            [unroll(3)] for (uint i = 0; i < 3; i++) {
+                if (abs((origin[i] + ray[i] * bestScale) - mid[i]) > rad) {
+                    inside = false;
+                    break;
+                }
+            }
+
+            if (axis == -1 || !inside) {
+                if (curLayer == 0)
+                    break;
+                [unroll(3)] for (uint i = 0; i < 3; i++)
+                    path &= ~mask;
+                curLayer--;
+                continue;
+            }
+            curScale = bestScale;
+            if (axis == 0)
+                path.x ^= mask;
+            else if (axis == 1)
+                path.y ^= mask;
+            else
+                path.z ^= mask;
+        }
+        nextIndex = tree[indices[curLayer]].indices[(bool)(path.x & mask)]
+            [(bool)(path.y & mask)][(bool)(path.z & mask)];
+        if (nextIndex == -1) {
+            down = false;
+            continue;
+        }
+        else {
+            down = true;
+            curLayer++;
+        }
+    }
+    //float f = (float)maxLayer / (float)numLayers;
+    //return float4(f, f, f, 1.0f);
+    return 0.0f;//float4(0.0f, 0.0f, 1.0f, 1.0f);
 }
-
-
-
-
 
     //const float3 origin = input.cameraPosition;
     //const float3 ray = input.sightRay;

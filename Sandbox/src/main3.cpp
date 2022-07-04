@@ -53,7 +53,7 @@ struct MaterialTree {
 	uint curFree = 1;
 
 	void Init(size_t maxSize, size_t numLayers) {
-		groups.resize(maxSize);
+		groups.resize(maxSize, Group());
 		this->numLayers = numLayers;
 	}
 
@@ -90,7 +90,7 @@ int main() {
 
 		Peio::Gfx::Init();
 
-		Peio::Int2 windowSize = { 1280, 720 };
+		Peio::Int2 windowSize = { 640, 360 };
 		D3D12_VIEWPORT viewPort = { 0.0f, 0.0f, (float)windowSize.x(), (float)windowSize.y(), 0.0f, 1.0f };
 		RECT scissorRect = { 0, 0, windowSize.x(), windowSize.y() };
 
@@ -142,26 +142,18 @@ int main() {
 				);
 
 		MaterialTree tree;
-		tree.Init((1 << 10), 8);
-
-		*tree.GetMaterial(0, 0, 5, true) = 0;
-		//*tree.GetMaterial(0, 0, 1, true) = 0;
-		//*tree.GetMaterial(0, 0, 3, true) = 0;
-		//*tree.GetMaterial(3, 2, 9, true) = 0;
-
-		for (UINT i = 0; i < 25; i++) {
-			for (UINT x = 0; x < 2; x++) {
-				for (UINT y = 0; y < 2; y++) {
-					for (UINT z = 0; z < 2; z++) {
-						if (tree.groups[i].indices[x][y][z] == -1)
-							std::cout << "[] ";
-						else
-							std::cout << tree.groups[i].indices[x][y][z] << " ";
-					}
+		tree.Init((1 << 24), 24);
+		uint rad = 100;
+		for (uint x = 0; x < rad; x++) {
+			for (uint y = 0; y < rad; y++) {
+				for (uint z = 0; z < rad; z++) {
+					*tree.GetMaterial(x * 2, y * 2, z * 2, true) = (x * rad * rad) + (y * rad) + z;
 				}
 			}
-			std::cout << std::endl;
 		}
+		//*tree.GetMaterial(15, 0, 0, true) = 0;
+		//*tree.GetMaterial(0, 0, 3, true) = 0;
+		//*tree.GetMaterial(3, 2, 9, true) = 0;
 
 		Peio::Gfx::BufferSRV treeSrv;
 		treeSrv.Init(sizeof(MaterialTree::Group) * tree.groups.size(), tree.groups.size(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
@@ -171,6 +163,19 @@ int main() {
 
 		float acceleration = 1.0f;
 		float retardation = 0.5f;
+
+		Peio::FunctionHandler<Peio::Win::RawMouseMoveEvent> mouseMoveHandler(
+			[&camera](Peio::Win::RawMouseMoveEvent* event) -> bool {
+				camera.rotation.x() -= (float)event->movement.x() / 500.0f;
+				camera.rotation.y() -= (float)event->movement.y() / 500.0f;
+				return false;
+			}
+		);
+		Peio::Win::RawMouseListener rawMouseListener;
+		Peio::Win::RawMouseListener::Register(window.GetHWND());
+		Peio::Win::Input::AddListener(&rawMouseListener);
+
+		Peio::Win::Input::eventHandlers.Insert(&mouseMoveHandler, mouseMoveHandler.GetBaseHandler<Peio::Win::WinEvent>());
 
 		Peio::Clock<double> deltaClock;
 
@@ -213,8 +218,10 @@ int main() {
 			camera.position += camera.velocity;
 			camera.velocity -= camera.velocity * retardation;
 
-			for (UINT i = 0; i < 6; i++)
+			for (UINT i = 0; i < 6; i++) {
 				vertexBuffer.GetSubresourceBuffer()[i].cameraPosition = camera.position;
+				vertexBuffer.GetSubresourceBuffer()[i].rotation = camera.rotation;
+			}
 			vertexBuffer.Upload(graphics.GetCommandList());
 
 			graphics.Clear({ 0.0f, 0.0f, 0.0f, 1.0f });
