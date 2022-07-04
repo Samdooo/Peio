@@ -1,49 +1,36 @@
 struct VSInput {
-	float2 position : POSITION;
-	float4 color : COLOR;
-	float2 texCoord : TEXCOORD;
-	float2 alphaCoord : ALPHACOORD;
+    float2 position : POSITION;
+    float3 cameraPosition : CAMERA_POSITION;
+    float2 rotation : ROTATION;
+    float fov : FOV;
+    float aspectRatio : ASPECT_RATIO;
 };
 
 struct VSOutput {
-	float4 position : SV_POSITION;
-	float4 color : PS_COLOR;
-	float2 texCoord : PS_TEXCOORD;
-	float2 alphaCoord : PS_ALPHACOORD;
-	bool useColor : USE_COLOR, useTexture : USE_TEXTURE, useAlpha : USE_ALPHA;
+    float4 pixelPosition : SV_POSITION;
+    float3 cameraPosition : CAMERA_POSITION;
+    float3 sightRay : SIGHT_RAY;
 };
 
-struct Window {
-	uint2 size;
-};
-cbuffer WindowBuffer : register(b0) {
-	Window window;
+float3 RotateX(float3 p, float angle) {
+    float c = cos(angle);
+    float s = sin(angle);
+    return float3(p.x, c * p.y + s * p.z, -s * p.y + c * p.z);
 }
 
-struct Rectangle {
-	uint2 offset;
-	uint2 position;
-	uint2 size;
-	bool useColor, useTexture, useAlpha;
-};
-cbuffer RectangleBuffer : register(b1) {
-	Rectangle rectangle;
+float3 RotateY(float3 p, float angle) {
+    float c = cos(angle);
+    float s = sin(angle);
+    return float3(c * p.x - s * p.z, p.y, s * p.x + c * p.z);
 }
 
 VSOutput main(VSInput input)
 {
-	VSOutput output;
-	float2 position = (float2)(rectangle.offset + rectangle.position) + ((float2)rectangle.size * input.position);
-	position /= (float2)window.size;
-	position *= 2.0f;
-	position.x = position.x - 1.0f;
-	position.y = 1.0f - position.y;
-	output.position = float4(position, 0.0f, 1.0f);
-	output.color = input.color;
-	output.texCoord = input.texCoord;
-	output.alphaCoord = input.alphaCoord;
-	output.useColor = rectangle.useColor;
-	output.useTexture = rectangle.useTexture;
-	output.useAlpha = rectangle.useAlpha;
-	return output;
+    VSOutput output;
+    output.pixelPosition = float4(input.position, 1.0f, 1.0f);
+    output.cameraPosition = input.cameraPosition;
+    output.sightRay = float3(input.position.x, input.position.y * input.aspectRatio, 1.0f / tan(input.fov / 2.0f));
+    output.sightRay = RotateX(output.sightRay, input.rotation.y);
+    output.sightRay = RotateY(output.sightRay, input.rotation.x);
+    return output;
 }
