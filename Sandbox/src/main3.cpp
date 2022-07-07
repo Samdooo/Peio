@@ -17,6 +17,7 @@
 #include <functional>
 #include <Peio/Media/Images.h>
 #include <Peio/Voxels/VoxelRenderer.h>
+#include <Peio/Voxels/DenoiseRenderer.h>
 
 #include <unordered_map>
 
@@ -52,6 +53,10 @@ Peio::Double3 GetRay(Peio::Double2 rotation) {
 	return result;
 }
 
+//void LoadBlock(std::string path, Peio::Uint3 pos, Peio::Vxl::MaterialMap& map, std::vector<Material>& materials) {
+//
+//}
+
 int main() {
 
 	try {
@@ -82,42 +87,90 @@ int main() {
 		renderer.camera.fov = 1.5f;
 		renderer.camera.position = { 5.0f, 5.0f, -5.0f };
 
-		renderer.scene.numRays = 2;
+		renderer.scene.numRays = 3;
 		renderer.scene.windowSize = (Peio::Float2)windowSize;
+
+		renderer.materialMap.Init((1 << 20), 10);
 
 		UINT rad = 16;
 		
-		Peio::Med::Frame img = Peio::Med::Images::Load("D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/ancient_debris_side.png"
-			, AV_PIX_FMT_RGBA);
 		std::vector<Material> materials = {};
-		for (UINT y = 0; y < rad; y++) {
-			for (UINT x = 0; x < rad; x++) {
-				materials.push_back({ { 
-						(float)img.GetPixel(y, x)[0] / 255.0f,
-						(float)img.GetPixel(y, x)[1] / 255.0f,
-						(float)img.GetPixel(y, x)[2] / 255.0f,
-						1.0f
-					}, {}, 0.0f});
-			}
-		}
 
-		renderer.materialMap.Init((1 << 20), 24);
-		for (UINT x = 0; x < rad; x++) {
-			for (UINT y = 0; y < rad; y++) {
-				for (UINT z = 0; z < rad; z++) {
-					renderer.materialMap.SetMaterial({ x, y, z }, (x * rad) + z);
+		{
+			std::unordered_map<UINT, std::string> blockPaths = {
+				{ 13, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/podzol_top.png" },
+				{ 11, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/coarse_dirt.png" },
+				{ 1, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/stone.png" },
+				{ 109, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/gravel.png" },
+				{ 121, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/spruce_log.png" },
+				{ 237, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/spruce_leaves.png" },
+				{ 10, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/dirt.png" }
+			};
+
+			std::unordered_map<UINT, UINT> matList = {};
+
+			for (auto& blockPath : blockPaths) {
+				Peio::Med::Frame img = Peio::Med::Images::Load(blockPath.second, AV_PIX_FMT_RGBA);
+				for (UINT y = 0; y < 16; y++) {
+					for (UINT x = 0; x < 16; x++) {
+						if (matList.contains(*(UINT*)img.GetPixel(y, x)))
+							continue;
+						materials.push_back({ { (float)img.GetPixel(y, x)[0] / 255.0f, (float)img.GetPixel(y, x)[1] / 255.0f, (float)img.GetPixel(y, x)[2] / 255.0f, 1.0f}, {}, 0.0f});
+						matList.insert({ *(UINT*)img.GetPixel(y, x), (UINT)materials.size() - 1 });
+					}
 				}
 			}
-		}
-		for (UINT y = 0; y < rad; y++) {
-			for (UINT x = 0; x < rad; x++) {
-				renderer.materialMap.SetMaterial({ 0, y, x }, (y * rad) + x);
-				renderer.materialMap.SetMaterial({ rad - 1, y, x }, (y * rad) + x);
-				renderer.materialMap.SetMaterial({ x, y, 0 }, (y * rad) + x);
-				renderer.materialMap.SetMaterial({ x, y, rad - 1 }, (y * rad) + x);
+
+			std::ifstream ifile("world.txt");
+			if (!ifile.good()) {
+				std::cout << "No world.txt" << std::endl;
+				exit(0);
 			}
+			UINT sizeX, sizeY, sizeZ;
+			ifile >> sizeX >> sizeY >> sizeZ;
+
+			for (UINT x = 0; x < sizeX; x++) {
+				std::cout << "Loading x " << (x + 1) << " / " << sizeX << std::endl;
+				for (UINT y = 0; y < sizeY; y++) {
+					for (UINT z = 0; z < sizeZ; z++) {
+						UINT blockIndex;
+						ifile >> blockIndex;
+						if (!blockPaths.contains(blockIndex))
+							continue;
+						std::string path = blockPaths.at(blockIndex);
+						//std::cout << "Loading " << blockIndex << std::endl;
+
+						Peio::Med::Frame img = Peio::Med::Images::Load(path, AV_PIX_FMT_RGBA);
+						for (UINT x2 = 0; x2 < 16; x2++) {
+							for (UINT y2 = 0; y2 < 16; y2++) {
+								for (UINT z2 = 0; z2 < 16; z2++) {
+									if (!matList.contains(*(UINT*)img.GetPixel(z2, x2))) {
+										std::cout << "Matlist didn't contain " << ((Peio::Byte4*)img.GetPixel(z2, x2))->ToString() << std::endl;
+										exit(0);
+									}
+									renderer.materialMap.SetMaterial({ x * 16 + x2, y * 16 + y2, z * 16 + z2 },
+										matList.at(*(UINT*)img.GetPixel(z2, x2)));
+								}
+							}
+						}
+						for (UINT x2 = 0; x2 < 16; x2++) {
+							for (UINT y2 = 0; y2 < 16; y2++) {
+								renderer.materialMap.SetMaterial({ x * 16 + x2, y * 16 + y2, z * 16 + 0 },
+									matList.at(*(UINT*)img.GetPixel(y2, x2)));
+								renderer.materialMap.SetMaterial({ x * 16 + x2, y * 16 + y2, z * 16 + 15 },
+									matList.at(*(UINT*)img.GetPixel(y2, x2)));
+								renderer.materialMap.SetMaterial({ x * 16 + 0, y * 16 + y2, z * 16 + x2 },
+									matList.at(*(UINT*)img.GetPixel(y2, x2)));
+								renderer.materialMap.SetMaterial({ x * 16 + 15, y * 16 + y2, z * 16 + x2 },
+									matList.at(*(UINT*)img.GetPixel(y2, x2)));
+							}
+						}
+					}
+				}
+			}
+			ifile.close();
 		}
-		
+
 		renderer.Init(graphics.GetCommandList());
 
 		Peio::Gfx::SubresourceBuffer<Material> materialBuffer;
@@ -153,7 +206,11 @@ int main() {
 						std::cout << "Traced air" << std::endl;
 						return false;
 					}
-					result.voxel[result.side] += (result.normal[result.side] > 0.0) ? 1 : 0;
+					//result.voxel[result.side] += (result.normal[result.side] > 0.0) ? 1 : 0;
+					if (result.normal[result.side] > 0.0)
+						result.voxel[result.side]++;
+					else
+						result.voxel[result.side]--;
 					std::cout << "Placed at " << result.voxel.ToString() << std::endl;
 					renderer.materialMap.SetMaterial(result.voxel, 0);
 					renderer.UpdateMaterialMap(graphics.GetCommandList());
@@ -162,6 +219,12 @@ int main() {
 			}
 		);
 		Peio::Win::Input::eventHandlers.Insert(&mouseButtonDownHandler, mouseButtonDownHandler.GetBaseHandler<Peio::Win::WinEvent>());
+
+		Peio::Gfx::BufferUAV rayUav;
+		rayUav.Init(sizeof(Peio::Vxl::VoxelRenderer::Ray)* windowSize.x()* windowSize.y(), windowSize.x()* windowSize.y(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+
+		Peio::Vxl::DenoiseRenderer denoiser;
+		denoiser.Init(graphics.GetCommandList());
 
 		Peio::Clock<double> deltaClock;
 
@@ -208,7 +271,8 @@ int main() {
 
 			graphics.Clear({ 0.0f, 0.0f, 0.0f, 1.0f });
 
-			renderer.Render(graphics.GetCommandList(), viewPort, scissorRect, &materialSrv);
+			renderer.Render(graphics.GetCommandList(), viewPort, scissorRect, &materialSrv, &rayUav);
+			denoiser.Render(graphics.GetCommandList(), viewPort, scissorRect, renderer.GetSceneSrv(), &materialSrv, &rayUav);
 
 			graphics.Render();
 

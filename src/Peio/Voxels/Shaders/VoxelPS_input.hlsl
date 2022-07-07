@@ -17,7 +17,7 @@ struct VSOutput {
 
 struct Scene {
     uint numRays;
-    float2 windowSize;
+    uint2 windowSize;
 };
 
 StructuredBuffer<Scene> scene : register(t1);
@@ -35,5 +35,14 @@ struct Material {
 };
 
 StructuredBuffer<Material> materials : register(t3);
+
+struct Ray {
+    uint3 voxel;
+    uint material;
+    uint side;
+    float3 light;
+};
+
+RWStructuredBuffer<Ray> rays : register(u1);
 
 #endif

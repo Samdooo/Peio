@@ -104,9 +104,6 @@
     <ProjectReference Include="..\Graphics\Graphics.vcxproj">
       <Project>{6b7904eb-2ed1-4f3f-a434-3630e7531a87}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\GUI\GUI.vcxproj">
-      <Project>{202739bc-31a4-491d-b640-21b5eb627ee9}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\Media\Media.vcxproj">
       <Project>{ecf3ac61-0f83-4734-96e7-295ff7ba9536}</Project>
     </ProjectReference>

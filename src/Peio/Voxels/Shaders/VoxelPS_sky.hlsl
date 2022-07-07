@@ -8,7 +8,7 @@ float3 SkyTrace(float3 ray) {
     ray = normalize(ray);
 
     float3 diff = length(ray - sunRay);
-    return float3(0.5f, 0.8f, 0.9f) + float3(10.0f, 10.0f, 9.0f) * max((1.0f - diff), 0.0f);
+    return float3(0.5f, 0.8f, 0.9f) + float3(20.0f, 20.0f, 18.0f) * max((1.0f - diff), 0.0f);
 }
 
 #endif

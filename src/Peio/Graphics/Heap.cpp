@@ -85,7 +85,7 @@ D3D12_RESOURCE_STATES Peio::Gfx::Heap::GetResourceState() noexcept
 	return resourceState;
 }
 
-D3D12_GPU_VIRTUAL_ADDRESS Peio::Gfx::Heap::GetGPUAddress()
+D3D12_GPU_VIRTUAL_ADDRESS Peio::Gfx::Heap::GetGPUAddress() const
 {
 	CheckBuffer();
 	return buffer->GetGPUVirtualAddress();

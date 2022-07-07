@@ -13,7 +13,7 @@ struct VoxelRay {
 
 VoxelRay VoxelTrace(const double3 origin, const double3 ray, uint3 skip) {
 
-    const uint numLayers = 24;
+    const uint numLayers = 10;
     const double3 invRay = 1.0 / ray;
 
     VoxelRay result;
@@ -23,6 +23,7 @@ VoxelRay VoxelTrace(const double3 origin, const double3 ray, uint3 skip) {
     result.material = ~0;
     
     double curScale = 0.0;
+    const double minTotalScale = 0.1;
 
     { // Trace to the root cube
         double rad = (double)(1U << numLayers) / 2.0;
@@ -61,7 +62,12 @@ VoxelRay VoxelTrace(const double3 origin, const double3 ray, uint3 skip) {
 
         if (down) {
             if (curLayer == numLayers) {
-                if (path.x == skip.x && path.y == skip.y && path.z == skip.z) {
+                //if (path.x == skip.x && path.y == skip.y && path.z == skip.z) {
+                //    curLayer--;
+                //    down = false;
+                //    continue;
+                //}
+                if (curScale < minTotalScale) {
                     curLayer--;
                     down = false;
                     continue;

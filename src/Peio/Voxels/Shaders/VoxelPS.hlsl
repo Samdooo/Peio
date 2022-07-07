@@ -2,11 +2,13 @@
 
 float4 main(VSOutput input) : SV_TARGET
 {
-	const float2 offset = abs(scene[0].windowSize / 2.0f - input.pixelPosition);
-	if (min(offset.x, offset.y) <= 1.0f && max(offset.x, offset.y) <= 10.0f){
-		return 0.0f;
-	}
-	return float4(LightTrace(input.cameraPosition, input.sightRay, input.pixelPosition), 1.0f);
+	//const float2 offset = abs((float2)scene[0].windowSize / 2.0f - input.pixelPosition);
+	//if (min(offset.x, offset.y) <= 1.0f && max(offset.x, offset.y) <= 10.0f){
+	//	return 0.0f;
+	//}
+	LightTrace(input.cameraPosition, input.sightRay, input.pixelPosition.xy);
+	return 0.0f;
+	//return float4(LightTrace(input.cameraPosition, input.sightRay, input.pixelPosition), 1.0f);
 	//VoxelRay ray = VoxelTrace(input.cameraPosition, input.sightRay, uint3(~0, ~0, ~0));
 	//if (ray.material == ~0)
 	//	return float4(SkyTrace(input.sightRay), 1.0f);

@@ -18,6 +18,7 @@ void Peio::Vxl::VoxelRenderer::Init(ID3D12GraphicsCommandList* cmdList)
 		Gfx::RootParameter::CreateShaderResourceView(1, D3D12_SHADER_VISIBILITY_PIXEL), // Scene buffer
 		Gfx::RootParameter::CreateShaderResourceView(2, D3D12_SHADER_VISIBILITY_PIXEL), // MaterialMap buffer
 		Gfx::RootParameter::CreateShaderResourceView(3, D3D12_SHADER_VISIBILITY_PIXEL), // Material buffer
+		Gfx::RootParameter::CreateUnorderedAccessView(1, D3D12_SHADER_VISIBILITY_PIXEL), // Ray buffer
 	};
 
 	ID3D12RootSignature* rootSignature = Gfx::RootSignature::Create(rootParams, {},
@@ -44,6 +45,8 @@ void Peio::Vxl::VoxelRenderer::Init(ID3D12GraphicsCommandList* cmdList)
 	materialMapBuffer.SetBuffer(materialMap.GetGroups(), materialMap.GetNumGroups());
 	materialMapSrv.Init(sizeof(MaterialMap::Group) * materialMap.GetNumGroups(), materialMap.GetNumGroups(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 	materialMapSrv.Upload(materialMapBuffer.GetResourceData(), cmdList);
+
+	//rayUav.Init(sizeof(Ray) * (uint)scene.windowSize.x() * (uint)scene.windowSize.y(), (uint)scene.windowSize.x() * (uint)scene.windowSize.y(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 }
 
 void Peio::Vxl::VoxelRenderer::UpdateScene(ID3D12GraphicsCommandList* cmdList)
@@ -61,7 +64,7 @@ void Peio::Vxl::VoxelRenderer::UpdateMaterialMap(ID3D12GraphicsCommandList* cmdL
 	materialMapSrv.Upload(materialMapBuffer.GetResourceData(), cmdList);
 }
 
-void Peio::Vxl::VoxelRenderer::Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, Gfx::BufferSRV* materialSrv)
+void Peio::Vxl::VoxelRenderer::Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, Gfx::BufferSRV* materialSrv, Gfx::BufferUAV* rayUav)
 {
 	pipelineState.Set(cmdList);
 	cmdList->RSSetViewports(1, &viewPort);
@@ -71,8 +74,14 @@ void Peio::Vxl::VoxelRenderer::Render(ID3D12GraphicsCommandList* cmdList, D3D12_
 	cmdList->SetGraphicsRootShaderResourceView(1, sceneSrv.GetGPUAddress());
 	cmdList->SetGraphicsRootShaderResourceView(2, materialMapSrv.GetGPUAddress());
 	cmdList->SetGraphicsRootShaderResourceView(3, materialSrv->GetGPUAddress());
+	cmdList->SetGraphicsRootUnorderedAccessView(4, rayUav->GetGPUAddress());
 
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	cmdList->IASetVertexBuffers(0, 1, &vertexBuffer.GetBufferView());
 	cmdList->DrawInstanced(6, 1, 0, 0);
+}
+
+const Peio::Gfx::BufferSRV* Peio::Vxl::VoxelRenderer::GetSceneSrv() const
+{
+	return &sceneSrv;
 }

@@ -78,7 +78,7 @@ namespace Peio::Gfx {
 		/// Gets the buffer's GPU virtual address.
 		/// </summary>
 		/// <returns>The buffer's GPU virtual address.</returns>
-		_NODISCARD D3D12_GPU_VIRTUAL_ADDRESS GetGPUAddress();
+		_NODISCARD D3D12_GPU_VIRTUAL_ADDRESS GetGPUAddress() const;
 
 		/// <summary>
 		/// Releases the heap, called automatically at destruction.
