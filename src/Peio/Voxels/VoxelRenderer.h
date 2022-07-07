@@ -1,36 +1,53 @@
 #pragma once
 
-#include "VoxelsHeader.h"
+#include "MaterialMap.h"
 #include "..\Graphics\VertexBuffer.h"
-#include "..\Graphics\RootSignature.h"
-#include "..\Graphics\InputLayout.h"
 #include "..\Graphics\PipelineStateHeader.h"
+#include "..\Graphics\ConstantBufferView.h"
+#include "..\Graphics\ShaderResourceView.h"
 
 namespace Peio::Vxl {
 
 	struct PEIO_VXL_EXPORT VoxelRenderer {
 
-		void Init(ID3D12GraphicsCommandList* cmdList, UINT numSrvs, UINT numUavs, Float3 cameraPosition, Float2 cameraRotation, float fov, float aspectRatio);
+		struct Scene {
+			uint numRays = 1;
+			Float2 windowSize = {};
+		};
+		struct Camera {
+			Peio::Float3 position = {};
+			Peio::Float2 rotation = {};
+			float fov = 1.5f;
+			float aspectRatio = 1.0f;
+		};
+		Scene scene = {};
+		Camera camera = {};
+		MaterialMap materialMap = {};
 
-		void SetCameraPosition(Float3 position);
-		void SetCameraRotation(Float2 rotation);
-		void SetFOV(float fov);
-		void SetAspectRatio(float aspectRatio);
+		void Init(ID3D12GraphicsCommandList* cmdList);
+		
+		void UpdateScene(ID3D12GraphicsCommandList* cmdList);
 		void UpdateCamera(ID3D12GraphicsCommandList* cmdList);
+		void UpdateMaterialMap(ID3D12GraphicsCommandList* cmdList);
 
-		void Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect);
+		void Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, Gfx::BufferSRV* materialSrv);
 
-		Gfx::PipelineState pipelineState = {};
 	protected:
 
 		struct InputVertex {
 			Float2 position = {};
-			Float3 cameraPosition = {};
-			Float2 rotation = {};
-			float fov = 1.5f;
-			float aspectRatio = 1.0f;
 		};
 		Gfx::VertexBuffer<InputVertex> vertexBuffer = {};
+		Gfx::PipelineState pipelineState = {};
+
+		Gfx::SubresourceBuffer<Scene> sceneBuffer = {};
+		Gfx::BufferSRV sceneSrv = {};
+
+		Gfx::SubresourceBuffer<Camera> cameraBuffer = {};
+		Gfx::BufferSRV cameraSrv = {};
+
+		Gfx::SubresourceBuffer<MaterialMap::Group> materialMapBuffer = {};
+		Gfx::BufferSRV materialMapSrv = {};
 
 	};
 

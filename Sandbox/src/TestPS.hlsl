@@ -10,6 +10,22 @@ struct MaterialGroup {
 
 StructuredBuffer<MaterialGroup> tree : register(t0);
 
+struct Material {
+    float4 color;
+    float3 light;
+    float spread;
+};
+
+StructuredBuffer<Material> materials : register(t1);
+
+float3 SkyTrace(float3 ray) {
+    const float3 sunRay = float3(1.0f, 1.0f, 1.0f);
+    ray = normalize(ray);
+
+    float3 diff = length(ray - sunRay);
+    return float3(0.5f, 0.8f, 0.9f) + float3(10.0f, 10.0f, 9.0f) * max((1.0f - diff), 0.0f);
+}
+
 float4 main(VSOutput input) : SV_TARGET
 {
     const double3 origin = input.cameraPosition;
@@ -30,7 +46,7 @@ float4 main(VSOutput input) : SV_TARGET
         double maxScale = min(min(maxDiv.x, maxDiv.y), maxDiv.z);
         
         if (minScale > maxScale) {
-            return 0.0f;
+            return float4(SkyTrace(input.sightRay), 1.0f);
         }
         curScale = minScale;
     }
@@ -47,29 +63,12 @@ float4 main(VSOutput input) : SV_TARGET
             maxLayer = curLayer;
         uint mask = 1U << (numLayers - curLayer - 1);
         double rad = (float)(1U << (numLayers - curLayer)) / 2.0f;
-        double3 mid = (double3)(path & uint3(~mask, ~mask, ~mask)) + double3 (rad, rad, rad);
+        double3 mid = (double3)(path & uint3(~mask, ~mask, ~mask)) + double3(rad, rad, rad);
 
         if (down) {
             if (curLayer == numLayers) {
-                float f = (float)nextIndex / 1000000.0f;
-                return float4(0.0f, f, f, 1.0f);
+                return materials[nextIndex].color;
             }
-
-            //if (curLayer == 0) {
-                //double3  minDiv = (mid - origin) * invRay - abs(invRay * rad);
-                //double3  maxDiv = (mid - origin) * invRay + abs(invRay * rad);
-                //
-                //double minScale = max(max(max(minDiv.x, minDiv.y), minDiv.z), 0.0f);
-                //double maxScale = min(min(maxDiv.x, maxDiv.y), maxDiv.z);
-                //
-                //if (minScale > maxScale) {
-                //    if (curLayer == 0)
-                //        break;
-                //    curLayer--;
-                //    continue;
-                //}
-                //curScale = minScale;
-            //}
 
             double3 curPos = origin + ray * curScale;
             indices[curLayer] = nextIndex;
@@ -81,9 +80,6 @@ float4 main(VSOutput input) : SV_TARGET
             }
         }
         else {
-            //return float4(0.0f, 0.0f, 1.0f, 1.0f);
-            //if (curLayer != numLayers - 1)
-            //    return float4(1.0f, 1.0f, 0.0f, 1.0f);
 
             uint axis = -1;
             double bestScale = 1.#INF;
@@ -97,14 +93,6 @@ float4 main(VSOutput input) : SV_TARGET
                 }
             }
 
-            //if (axis == 0)
-            //    return float4(1.0f, 0.0f, 0.0f, 1.0f);
-            //else if (axis == 1)
-            //    return float4(0.0f, 1.0f, 0.0f, 1.0f);
-            //else
-            //    return float4(0.0f, 0.0f, 1.0f, 1.0f);
-
-            // CHECK IF INSIDE !!
             bool inside = true;
             [unroll(3)] for (uint i = 0; i < 3; i++) {
                 if (abs((origin[i] + ray[i] * bestScale) - mid[i]) > rad) {
@@ -142,7 +130,8 @@ float4 main(VSOutput input) : SV_TARGET
     }
     //float f = (float)maxLayer / (float)numLayers;
     //return float4(f, f, f, 1.0f);
-    return 0.0f;//float4(0.0f, 0.0f, 1.0f, 1.0f);
+    //return 0.0f;//float4(0.0f, 0.0f, 1.0f, 1.0f);
+    return float4(SkyTrace(input.sightRay), 1.0f);
 }
 
     //const float3 origin = input.cameraPosition;

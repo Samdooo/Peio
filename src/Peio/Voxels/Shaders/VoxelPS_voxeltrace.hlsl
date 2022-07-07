@@ -4,140 +4,133 @@
 #include "VoxelPS_input.hlsl"
 
 struct VoxelRay {
-    uint collisionVoxel;
-    int side; // -1 indicates no collision
-	float3 collision;
-	float3 normal;
-    uint materialIndex;
-    Material material;
+    uint3 voxel;
+    uint side;
+    float3 normal;
+    uint material;
+    float3 collision;
 };
 
-VoxelRay VoxelTrace(const float3 origin, const float3 ray, uint skip){
-    
-    const uint numLayers = 10;
-    const uint numChildren = 4;
-    const float3 invRay = 1.0f / ray;
-    const float3 invRad = abs(invRay * scene[0].voxelRadius);
-    
-    VoxelRay result;
-    result.side = -1;
-    result.normal = ray;
-    
-    float minScale = 1.#INF;
-    uint layerSize = numChildren; // In nodes
-    uint layerOffset = 0;
-    uint layerIndex = 0;
-    uint nodeIndex = 0;
-    
-    uint branchIndices[numLayers];
-    [unroll(numLayers)] for (uint i = 0; i < numLayers; i++)
-        branchIndices[i] = 0;
-    
-    uint descriptors[numLayers];
-    descriptors[0] = -1;
+VoxelRay VoxelTrace(const double3 origin, const double3 ray, uint3 skip) {
 
-    uint maxLayer = 0;
-    bool up = true;
-    uint checks = 0;
+    const uint numLayers = 24;
+    const double3 invRay = 1.0 / ray;
+
+    VoxelRay result;
+    result.voxel = 0;
+    result.side = ~0;
+    result.normal = 0.0;
+    result.material = ~0;
+    
+    double curScale = 0.0;
+
+    { // Trace to the root cube
+        double rad = (double)(1U << numLayers) / 2.0;
+        double3 mid = double3(rad, rad, rad) - origin;
+        double3 minDiv = mid * invRay - abs(invRay * rad);
+        double3 maxDiv = mid * invRay + abs(invRay * rad);
+
+        //double minScale = max(max(max(minDiv.x, minDiv.y), minDiv.z), 0.0);
+        double minScale = 0.0;
+        [unroll(3)] for (uint i = 0; i < 3; i++) {
+            if (minDiv[i] > minScale) {
+                minScale = minDiv[i];
+                result.side = i;
+            }
+        }
+
+        double maxScale = min(min(maxDiv.x, maxDiv.y), maxDiv.z);
+
+        if (minScale > maxScale) {
+            result.side = ~0;
+            return result;
+        }
+        curScale = minScale;
+    }
+    
+    uint3 path = 0;
+    uint curLayer = 0;
+    uint indices[numLayers];
+    uint nextIndex = 0;
+    bool down = true;
 
     [loop] while (true) {
-        checks++;
-        if (layerIndex > maxLayer)
-            maxLayer = layerIndex;
-        if (layerIndex == numLayers - 1) {
-            [unroll(numChildren)] for (uint v = 0; v < numChildren; v++) {
-                if (!(descriptors[layerIndex] & (1U << (v * 2))))
+        uint mask = 1U << (numLayers - curLayer - 1);
+        double rad = (double)(1U << (numLayers - curLayer)) / 2.0;
+        double3 mid = (double3)(path & uint3(~mask, ~mask, ~mask)) + double3(rad, rad, rad);
+
+        if (down) {
+            if (curLayer == numLayers) {
+                if (path.x == skip.x && path.y == skip.y && path.z == skip.z) {
+                    curLayer--;
+                    down = false;
                     continue;
-                float3 voxel = voxelPositions[positionLeaves[nodeIndex + v].voxelIndex];
-                voxel -= origin;
-                voxel *= invRay;
-                
-                float curMax = min(voxel.x + invRad.x, min(voxel.y + invRad.y, voxel.z + invRad.z));
-                if (curMax <= 0.0f)
+                }
+                result.voxel = path;
+                result.material = nextIndex;
+                break;
+            }
+
+            double3 curPos = origin + ray * curScale;
+            indices[curLayer] = nextIndex;
+            [unroll(3)] for (uint i = 0; i < 3; i++) {
+                if (curPos[i] >= mid[i])
+                    path[i] |= mask;
+                else
+                    path[i] &= ~mask;
+            }
+        }
+        else {
+            uint axis = -1;
+            double bestScale = 1.#INF;
+            [unroll(3)] for (uint i = 0; i < 3; i++) {
+                double s = (mid[i] - origin[i]) * invRay[i];
+                if (s <= curScale) // Might cause errors because of double inaccuracy (?)
                     continue;
-                float curMin = max(voxel.x - invRad.x, max(voxel.y - invRad.y, voxel.z - invRad.z));
-                
-                if (curMax < curMin || curMin >= minScale || curMin <= 0.0f)
-                    continue;
-                
-                minScale = curMin;
-                result.collisionVoxel = positionLeaves[nodeIndex + v].voxelIndex;
-                
-                result.side = 0;
-                [unroll(2)] for(int j = 1; j < 3; j++) {
-                    if ((voxel[j] - invRad[j]) > (voxel[result.side] - invRad[result.side]))
-                        result.side = j;
+                if (s < bestScale) {
+                    axis = i;
+                    bestScale = s;
                 }
             }
-            up = false;
-        }
-        else {
-            up = false;
-            [unroll(numChildren)] for (; branchIndices[layerIndex] < numChildren; branchIndices[layerIndex]++) {
-                if (!(descriptors[layerIndex] & (1U << (branchIndices[layerIndex] * 2))))
-                    continue;
-                PositionBranch branch = positionBranches[layerOffset + nodeIndex + branchIndices[layerIndex]];
-                
-                branch.lowerBound -= origin;
-                branch.higherBound -= origin;
-                
-                branch.lowerBound *= invRay;
-                branch.higherBound *= invRay;
-                
-                float curMax = min(max(branch.lowerBound.x, branch.higherBound.x), 
-                               min(max(branch.lowerBound.y, branch.higherBound.y), 
-                                   max(branch.lowerBound.z, branch.higherBound.z)));
-                if (curMax <= 0.0f)
-                    continue;
-                float curMin = max(min(branch.lowerBound.x, branch.higherBound.x), 
-                               max(min(branch.lowerBound.y, branch.higherBound.y), 
-                                   min(branch.lowerBound.z, branch.higherBound.z)));
-                
-                if (curMax < curMin || curMin >= minScale)
-                    continue;
-                
-                nodeIndex += branchIndices[layerIndex];
-                descriptors[layerIndex + 1] = branch.descriptor;
-                branchIndices[layerIndex]++;
-                branchIndices[layerIndex + 1] = 0;
-                up = true;
-                break;
-            }
-        }
-        
-        if (up){
-            layerIndex++;
-            layerOffset += layerSize;
-            layerSize *= numChildren;
-            nodeIndex *= numChildren;
-        }
-        else {
-            if (layerIndex == 0)
-                break;
-            layerIndex--;
-            layerSize /= numChildren;
-            layerOffset -= layerSize;
-            nodeIndex /= numChildren * numChildren;
-            nodeIndex *= numChildren;
-        }
-    }
 
-    if (result.side != -1){
-        result.collision = origin + (ray * minScale);
-        result.normal = ray;
-        if (result.side == 0)
-            result.normal.x = -result.normal.x;
-        else if (result.side == 1) 
-            result.normal.y = -result.normal.y;
-        else
-            result.normal.z = -result.normal.z;
-        result.materialIndex = voxelMaterials[result.collisionVoxel];
-        result.material = materials[result.materialIndex];
-        //result.material.colorEmission.r = (float)checks / 255.0f / 5.0f;
+            bool inside = true;
+            [unroll(3)] for (uint i = 0; i < 3; i++) {
+                if (abs((origin[i] + ray[i] * bestScale) - mid[i]) > rad) {
+                    inside = false;
+                    break;
+                }
+            }
+
+            if (axis == -1 || !inside) {
+                if (curLayer == 0)
+                    break;
+                [unroll(3)] for (uint i = 0; i < 3; i++)
+                    path &= ~mask;
+                curLayer--;
+                continue;
+            }
+            result.side = axis;
+            curScale = bestScale;
+            path[axis] ^= mask;
+        }
+        nextIndex = tree[indices[curLayer]].indices[(bool)(path.x & mask)]
+            [(bool)(path.y & mask)][(bool)(path.z & mask)];
+        if (nextIndex == -1) {
+            down = false;
+            continue;
+        }
+        else {
+            down = true;
+            curLayer++;
+        }
     }
-    //float m = (float)(maxLayer + (bool)(result.side != -1)) / (float)(numLayers + 1);
-    //result.material.colorEmission = float4(m, m, m, 1.0f);
+    if (result.material != ~0) {
+        result.normal = (float3)ray;
+        result.normal[result.side] = -result.normal[result.side];
+        result.collision = (float3)origin + (float3)(ray * curScale);
+    }
     return result;
 }
+
 
 #endif

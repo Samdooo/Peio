@@ -15,50 +15,25 @@ struct VSOutput {
     float3 sightRay : SIGHT_RAY;
 };
 
-// SRVs
-
 struct Scene {
-    uint2 screenSize;
-    uint numVoxels;
-    uint numMaterials;
-    float voxelRadius;
     uint numRays;
+    float2 windowSize;
 };
-StructuredBuffer<Scene> scene : register(t0);
+
+StructuredBuffer<Scene> scene : register(t1);
+
+struct MaterialGroup {
+    uint indices[2][2][2];
+};
+
+StructuredBuffer<MaterialGroup> tree : register(t2);
 
 struct Material {
-    float4 colorEmission;
-	float3 lightEmission;
-};
-StructuredBuffer<Material> materials : register(t1);
-
-StructuredBuffer<float3> voxelPositions : register(t2);
-StructuredBuffer<uint> voxelMaterials : register(t3);
-
-struct PositionBranch {
-    uint descriptor;
-    float3 lowerBound, higherBound;
-};
-struct PositionLeaf {
-    uint voxelIndex;
-};
-
-StructuredBuffer<PositionBranch> positionBranches : register(t4);
-StructuredBuffer<PositionLeaf> positionLeaves : register(t5);
-
-Material GetMaterial(uint voxelIndex){
-    return materials[voxelMaterials[voxelIndex]];
-}
-
-// UAVs
-
-struct PrimaryRay {
-    uint materialIndex;
-    int side; // -1 indicates no collision
-    float3 collision;
+    float4 color;
     float3 light;
+    float spread;
 };
 
-RWStructuredBuffer<PrimaryRay> primaryRays : register(u1);
+StructuredBuffer<Material> materials : register(t3);
 
 #endif

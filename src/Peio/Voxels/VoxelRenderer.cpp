@@ -1,105 +1,78 @@
 #define PEIO_VXL_EXPORTING
 #include "VoxelRenderer.h"
 
-namespace Peio::Vxl {
+#include <iostream>
 
-	void VoxelRenderer::Init(ID3D12GraphicsCommandList* cmdList, UINT numSrvs, UINT numUavs, Float3 cameraPosition, Float2 cameraRotation, float fov, float aspectRatio)
-	{
-		vertexBuffer.Allocate(6);
-		for (UINT i = 0; i < 6; i++) {
-			vertexBuffer.GetSubresourceBuffer()[i] = InputVertex{
-				{ (i >= 1 && i <= 3) ? 1.0f : -1.0f, (i >= 2 && i <= 4) ? -1.0f : 1.0f }, cameraPosition, cameraRotation, fov, aspectRatio
-			};
-		}
-		vertexBuffer.Upload(cmdList);
-
-		std::vector<D3D12_ROOT_PARAMETER> rootParams(numSrvs + numUavs);
-		for (UINT i = 0; i < numSrvs; i++)
-			rootParams[i] = Gfx::RootParameter::CreateShaderResourceView(i, D3D12_SHADER_VISIBILITY_PIXEL);
-		for (UINT i = 0; i < numUavs; i++)
-			rootParams[numSrvs + i] = Gfx::RootParameter::CreateUnorderedAccessView(i + 1, D3D12_SHADER_VISIBILITY_PIXEL);
-		
-		ID3D12RootSignature* rootSignature = Gfx::RootSignature::Create(rootParams, {},
-			D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
-			D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
-			D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
-			D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS);
-
-		pipelineState.Init(
-			Gfx::InputLayout::Create({
-				Gfx::InputElement::Create("POSITION", DXGI_FORMAT_R32G32_FLOAT),
-				Gfx::InputElement::Create("CAMERA_POSITION", DXGI_FORMAT_R32G32B32_FLOAT),
-				Gfx::InputElement::Create("ROTATION", DXGI_FORMAT_R32G32_FLOAT),
-				Gfx::InputElement::Create("FOV", DXGI_FORMAT_R32_FLOAT),
-				Gfx::InputElement::Create("ASPECT_RATIO", DXGI_FORMAT_R32_FLOAT),
-				}), rootSignature, Gfx::Shader::Load("../bin/VoxelShaders/VoxelVS.cso"), 
-				Gfx::Shader::Load("../bin/VoxelShaders/VoxelPS.cso"), false
-				);
-
-		//D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc = Gfx::PipelineState::CreateDesc(
-		//	Gfx::InputLayout::Create({
-		//		Gfx::InputElement::Create("POSITION", DXGI_FORMAT_R32G32_FLOAT),
-		//		Gfx::InputElement::Create("CAMERA_POSITION", DXGI_FORMAT_R32G32B32_FLOAT),
-		//		Gfx::InputElement::Create("ROTATION", DXGI_FORMAT_R32G32_FLOAT),
-		//		Gfx::InputElement::Create("FOV", DXGI_FORMAT_R32_FLOAT),
-		//		Gfx::InputElement::Create("ASPECT_RATIO", DXGI_FORMAT_R32_FLOAT),
-		//		}),
-		//		rootSignature->GetRootSignature(), Gfx::Shader::Load("../bin/VoxelShaders/VoxelVS.cso"), Gfx::Shader::Load("../bin/VoxelShaders/VoxelPS.cso")
-		//		);
-		//pipelineDesc.BlendState.IndependentBlendEnable = FALSE;
-		//pipelineDesc.BlendState.RenderTarget[0].BlendEnable = FALSE;
-
-		//pipelineState = Gfx::PipelineState::Create(pipelineDesc);
-
-
+void Peio::Vxl::VoxelRenderer::Init(ID3D12GraphicsCommandList* cmdList)
+{
+	vertexBuffer.Allocate(6);
+	for (uint i = 0; i < 6; i++) {
+		vertexBuffer.GetSubresourceBuffer()[i] = InputVertex{
+			{ (i >= 1 && i <= 3) ? 1.0f : -1.0f, (i >= 2 && i <= 4) ? -1.0f : 1.0f }
+		};
 	}
+	vertexBuffer.Upload(cmdList);
 
-	void VoxelRenderer::SetCameraPosition(Float3 position)
-	{
-		for (UINT i = 0; i < 6; i++)
-			vertexBuffer.GetSubresourceBuffer()[i].cameraPosition = position;
-	}
+	std::vector<D3D12_ROOT_PARAMETER> rootParams = {
+		Gfx::RootParameter::CreateShaderResourceView(0, D3D12_SHADER_VISIBILITY_VERTEX), // Camera buffer
+		Gfx::RootParameter::CreateShaderResourceView(1, D3D12_SHADER_VISIBILITY_PIXEL), // Scene buffer
+		Gfx::RootParameter::CreateShaderResourceView(2, D3D12_SHADER_VISIBILITY_PIXEL), // MaterialMap buffer
+		Gfx::RootParameter::CreateShaderResourceView(3, D3D12_SHADER_VISIBILITY_PIXEL), // Material buffer
+	};
 
-	void VoxelRenderer::SetCameraRotation(Float2 rotation)
-	{
-		for (UINT i = 0; i < 6; i++)
-			vertexBuffer.GetSubresourceBuffer()[i].rotation = rotation;
-	}
+	ID3D12RootSignature* rootSignature = Gfx::RootSignature::Create(rootParams, {},
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS);
 
-	void VoxelRenderer::SetFOV(float fov)
-	{
-		for (UINT i = 0; i < 6; i++)
-			vertexBuffer.GetSubresourceBuffer()[i].fov = fov;
-	}
+	pipelineState.Init(
+		Gfx::InputLayout::Create({
+			Gfx::InputElement::Create("POSITION", DXGI_FORMAT_R32G32_FLOAT)
+			}), rootSignature, Gfx::Shader::Load("../bin/VoxelShaders/VoxelVS.cso"),
+			Gfx::Shader::Load("../bin/VoxelShaders/VoxelPS.cso"), false
+			);
 
-	void VoxelRenderer::SetAspectRatio(float aspectRatio)
-	{
-		for (UINT i = 0; i < 6; i++)
-			vertexBuffer.GetSubresourceBuffer()[i].aspectRatio = aspectRatio;
-	}
+	sceneBuffer.SetBuffer(&scene, 1);
+	sceneSrv.Init(sizeof(Scene), 1, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	sceneSrv.Upload(sceneBuffer.GetResourceData(), cmdList);
 
-	void VoxelRenderer::UpdateCamera(ID3D12GraphicsCommandList* cmdList)
-	{
-		vertexBuffer.Upload(cmdList);
-	}
+	cameraBuffer.SetBuffer(&camera, 1);
+	cameraSrv.Init(sizeof(Camera), 1, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
+	cameraSrv.Upload(cameraBuffer.GetResourceData(), cmdList);
 
-	void VoxelRenderer::Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect)
-	{
-		//rootSignature->SetRootSignature(cmdList);
-		//cmdList->SetPipelineState(pipelineState.Get());
-		//pipelineState.Set(cmdList);
+	materialMapBuffer.SetBuffer(materialMap.GetGroups(), materialMap.GetNumGroups());
+	materialMapSrv.Init(sizeof(MaterialMap::Group) * materialMap.GetNumGroups(), materialMap.GetNumGroups(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	materialMapSrv.Upload(materialMapBuffer.GetResourceData(), cmdList);
+}
 
-		cmdList->RSSetViewports(1, &viewPort);
-		cmdList->RSSetScissorRects(1, &scissorRect);
+void Peio::Vxl::VoxelRenderer::UpdateScene(ID3D12GraphicsCommandList* cmdList)
+{
+	sceneSrv.Upload(sceneBuffer.GetResourceData(), cmdList);
+}
 
-		//for (UINT i = 0; i < srv->GetNumResources(); i++)
-		//	cmdList->SetGraphicsRootShaderResourceView(i, srv->GetResources()[i].GetGPUAddress());
-		//for (UINT i = 0; i < uav->GetNumResources(); i++)
-		//	cmdList->SetGraphicsRootUnorderedAccessView(srv->GetNumResources() + i, uav->GetResources()[i].GetGPUAddress());
+void Peio::Vxl::VoxelRenderer::UpdateCamera(ID3D12GraphicsCommandList* cmdList)
+{
+	cameraSrv.Upload(cameraBuffer.GetResourceData(), cmdList);
+}
 
-		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		cmdList->IASetVertexBuffers(0, 1, &vertexBuffer.GetBufferView());
-		cmdList->DrawInstanced(6, 1, 0, 0);
-	}
+void Peio::Vxl::VoxelRenderer::UpdateMaterialMap(ID3D12GraphicsCommandList* cmdList)
+{
+	materialMapSrv.Upload(materialMapBuffer.GetResourceData(), cmdList);
+}
 
+void Peio::Vxl::VoxelRenderer::Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, Gfx::BufferSRV* materialSrv)
+{
+	pipelineState.Set(cmdList);
+	cmdList->RSSetViewports(1, &viewPort);
+	cmdList->RSSetScissorRects(1, &scissorRect);
+
+	cmdList->SetGraphicsRootShaderResourceView(0, cameraSrv.GetGPUAddress());
+	cmdList->SetGraphicsRootShaderResourceView(1, sceneSrv.GetGPUAddress());
+	cmdList->SetGraphicsRootShaderResourceView(2, materialMapSrv.GetGPUAddress());
+	cmdList->SetGraphicsRootShaderResourceView(3, materialSrv->GetGPUAddress());
+
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	cmdList->IASetVertexBuffers(0, 1, &vertexBuffer.GetBufferView());
+	cmdList->DrawInstanced(6, 1, 0, 0);
 }
