@@ -19,6 +19,7 @@
 #include <Peio/Voxels/VoxelRenderer.h>
 #include <Peio/Voxels/DenoiseRenderer.h>
 
+#include <map>
 #include <unordered_map>
 
 #define PI 3.14159265358979f
@@ -84,27 +85,42 @@ int main() {
 
 		Peio::Vxl::VoxelRenderer renderer;
 		renderer.camera.aspectRatio = (float)windowSize.y() / (float)windowSize.x();
-		renderer.camera.fov = 1.5f;
+		renderer.camera.fov = 1.65806f;
 		renderer.camera.position = { 5.0f, 5.0f, -5.0f };
 
-		renderer.scene.numRays = 3;
+		renderer.scene.numRays = 1;
 		renderer.scene.windowSize = (Peio::Float2)windowSize;
 
-		renderer.materialMap.Init((1 << 20), 10);
+		renderer.materialMap.Init((1 << 14), 10);
 
 		UINT rad = 16;
 		
 		std::vector<Material> materials = {};
+		materials.push_back({
+			{}, { 5.0f, 5.0f, 5.0f }, 0.0f
+			});
 
 		{
 			std::unordered_map<UINT, std::string> blockPaths = {
-				{ 13, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/podzol_top.png" },
-				{ 11, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/coarse_dirt.png" },
+				//{ 13, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/podzol_top.png" },
+				//{ 11, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/coarse_dirt.png" },
+				//{ 1, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/stone.png" },
+				//{ 109, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/gravel.png" },
+				//{ 121, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/spruce_log.png" },
+				//{ 237, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/spruce_leaves.png" },
+				//{ 10, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/dirt.png" }
+				{ 9, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/grass_block_top.png" },
+				{ 10, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/dirt.png" },
 				{ 1, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/stone.png" },
 				{ 109, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/gravel.png" },
-				{ 121, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/spruce_log.png" },
-				{ 237, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/spruce_leaves.png" },
-				{ 10, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/dirt.png" }
+				{ 209, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/oak_leaves.png" },
+				{ 225, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/oak_leaves.png" },
+				{ 221, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/oak_leaves.png" },
+				{ 118, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/oak_log.png" },
+				{ 273, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/birch_leaves.png" },
+				{ 269, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/birch_leaves.png" },
+				{ 277, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/birch_leaves.png" },
+				{ 124, "D:/Users/Samdo/C++/Peio Sandbox Resources/1.19/assets/minecraft/textures/block/birch_log.png" },
 			};
 
 			std::unordered_map<UINT, UINT> matList = {};
@@ -119,6 +135,7 @@ int main() {
 						matList.insert({ *(UINT*)img.GetPixel(y, x), (UINT)materials.size() - 1 });
 					}
 				}
+				std::cout << "Loaded " << blockPath.second << std::endl;
 			}
 
 			std::ifstream ifile("world.txt");

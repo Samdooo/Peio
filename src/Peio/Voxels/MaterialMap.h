@@ -58,16 +58,4 @@ namespace Peio::Vxl {
 
 	};
 
-	//struct PEIO_VXL_EXPORT MaterialGroup {
-	//
-	//	uint indices[2][2][2] = {
-	//		{ { ~0U, ~0U }, { ~0U, ~0U } },
-	//		{ { ~0U, ~0U }, { ~0U, ~0U } }
-	//	};
-	//
-	//	_NODISCARD bool operator==(const MaterialGroup& that) const;
-	//	_NODISCARD size_t operator()(const MaterialGroup& that) const; // Hash
-	//
-	//};
-
 }

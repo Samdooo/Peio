@@ -23,7 +23,7 @@ VoxelRay VoxelTrace(const double3 origin, const double3 ray, uint3 skip) {
     result.material = ~0;
     
     double curScale = 0.0;
-    const double minTotalScale = 0.1;
+    const double minTotalScale = 0.001;
 
     { // Trace to the root cube
         double rad = (double)(1U << numLayers) / 2.0;
@@ -134,6 +134,9 @@ VoxelRay VoxelTrace(const double3 origin, const double3 ray, uint3 skip) {
         result.normal = (float3)ray;
         result.normal[result.side] = -result.normal[result.side];
         result.collision = (float3)origin + (float3)(ray * curScale);
+        result.collision[result.side] = (float)result.voxel[result.side];
+        if (ray[result.side] < 0.0)
+            result.collision[result.side] += 1.0f;
     }
     return result;
 }

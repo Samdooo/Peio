@@ -22,6 +22,7 @@ void LightTrace(float3 origin, float3 startRay, float2 pixelPosition) {
 			float seed = uint(pixelPosition.y * windowSize.x + pixelPosition.x + (float)i) % uMod;
 			float3 ray = 0.0f;
 			ray.y = frac(PHI * seed);
+			//ray.y = 1.0f;
 			if (primary.normal[primary.side] < 0.0f)
 				ray.y = -ray.y;
 			float angle = GOLDEN_ANGLE * seed * 2;
@@ -37,6 +38,14 @@ void LightTrace(float3 origin, float3 startRay, float2 pixelPosition) {
 				totalLight += SkyTrace(ray);// * materials[primary.material].color.rgb;
 			else
 				totalLight += materials[secondaryRay.material].light;// * materials[primary.material].color.rgb;
+
+			//if (primary.side == 0)
+			//	ray.xyz = ray.yxz;
+			//else if (primary.side == 2)
+			//	ray.xyz = ray.xzy;
+			//VoxelRay secondaryRay = VoxelTrace(primary.collision, ray, primary.voxel);
+			//if (secondaryRay.material != ~0)
+			//	totalLight += float3(1.0f, 1.0f, 1.0f);
 		}
 		totalLight /= (float)numRays;
 		totalLight += materials[primary.material].light;
