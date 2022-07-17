@@ -22,6 +22,9 @@
     <ClInclude Include="..\src\Peio\Voxels\DenoiseRenderer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Voxels\IndexMap.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Voxels\MaterialMap.cpp">

@@ -15,9 +15,14 @@ struct VSOutput {
     float3 sightRay : SIGHT_RAY;
 };
 
+struct Sky {
+    float2 sunRotation;
+};
+
 struct Scene {
     uint numRays;
     uint2 windowSize;
+    Sky sky;
 };
 
 StructuredBuffer<Scene> scene : register(t1);

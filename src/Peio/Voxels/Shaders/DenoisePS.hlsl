@@ -40,7 +40,7 @@ float4 main(VSOutput input) : SV_TARGET
     int2 size = (int2)scene[0].windowSize;
     int2 p = (int2)input.pixelPosition.xy;
     Ray primary = rays[p.y * size.x + p.x];
-    
+
     if (primary.material == ~0)
         return float4(primary.light, 1.0f);
 
@@ -52,7 +52,7 @@ float4 main(VSOutput input) : SV_TARGET
     for (int y = max(p.y - rad, 0); y <= min(p.y + rad, size.y - 1); y++) {
         for (int x = max(p.x - rad, 0); x <= min(p.x + rad, size.x - 1); x++) {
             Ray ray = rays[y * size.x + x];
-            if (ray.material == ~0 || (ray.side == primary.side && ray.voxel[ray.side] == primary.voxel[primary.side])){
+            if (ray.material != ~0 && (ray.side == primary.side && ray.voxel[ray.side] == primary.voxel[primary.side])){
                 numPixels++;
                 totalLight += ray.light;
             }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "MaterialMap.h"
+#include "IndexMap.h"
 #include "..\Graphics\VertexBuffer.h"
 #include "..\Graphics\PipelineStateHeader.h"
 #include "..\Graphics\ConstantBufferView.h"
@@ -12,8 +12,12 @@ namespace Peio::Vxl {
 	struct PEIO_VXL_EXPORT VoxelRenderer {
 
 		struct Scene {
+			struct Sky {
+				Float2 sunRotation = {};
+			};
 			uint numRays = 1;
 			Uint2 windowSize = {};
+			Sky sky = {};
 		};
 		struct Camera {
 			Peio::Float3 position = {};
@@ -30,13 +34,13 @@ namespace Peio::Vxl {
 
 		Scene scene = {};
 		Camera camera = {};
-		MaterialMap materialMap = {};
+		IndexMap<uint, 3> indexMap = {};
 
 		void Init(ID3D12GraphicsCommandList* cmdList);
 		
 		void UpdateScene(ID3D12GraphicsCommandList* cmdList);
 		void UpdateCamera(ID3D12GraphicsCommandList* cmdList);
-		void UpdateMaterialMap(ID3D12GraphicsCommandList* cmdList);
+		void UpdateIndexMap(ID3D12GraphicsCommandList* cmdList);
 
 		void Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, Gfx::BufferSRV* materialSrv, Gfx::BufferUAV* rayUav);
 
@@ -56,8 +60,8 @@ namespace Peio::Vxl {
 		Gfx::SubresourceBuffer<Camera> cameraBuffer = {};
 		Gfx::BufferSRV cameraSrv = {};
 
-		Gfx::SubresourceBuffer<MaterialMap::Group> materialMapBuffer = {};
-		Gfx::BufferSRV materialMapSrv = {};
+		Gfx::SubresourceBuffer<IndexMap<uint, 3>::Node> indexMapBuffer = {};
+		Gfx::BufferSRV indexMapSrv = {};
 
 		//Gfx::BufferUAV rayUav = {};
 

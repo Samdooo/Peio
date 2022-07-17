@@ -30,6 +30,8 @@ void Peio::Vxl::MaterialMap::Init(uint maxSize, uint numLayers)
 	path.resize(numLayers);
 }
 
+#include <iostream>
+
 Peio::uint Peio::Vxl::MaterialMap::GetNext()
 {
 	if (numDeleted) {
@@ -53,6 +55,7 @@ void Peio::Vxl::MaterialMap::RemoveRef(uint index)
 	if (references[index] == 0) {
 		map.erase(groups[index]);
 		groups[index] = Group();
+		references[index] = 0;
 		AddDeleted(index);
 	}
 	else {
@@ -75,18 +78,32 @@ Peio::uint Peio::Vxl::MaterialMap::GetMaterial(Uint3 pos) const
 	return ~0;
 }
 
-void Peio::Vxl::MaterialMap::SetMaterial(Uint3 pos, uint material)
+void Peio::Vxl::MaterialMap::SetMaterial(Uint3 pos, uint material, bool log)
 {
 	path[0] = 0;
+	uint firstRef = ~0;
 	for (uint l = 0; l < numLayers - 1; l++) {
 		uint mask = 1U << (numLayers - l - 1);
 		if (path[l] == ~0)
 			path[l + 1] = ~0;
 		else
 			path[l + 1] = groups[path[l]].indices[(bool)(pos.x() & mask)][(bool)(pos.y() & mask)][(bool)(pos.z() & mask)];
+		if (firstRef == ~0 && path[l + 1] != ~0 && references[path[l + 1]] > 0)
+			firstRef = l + 1;
+		if (log)
+			std::cout << "Path #" << (l + 1) << ": " << path[l] << std::endl;
 	}
 
+	if (material != 0 && material < groups.size() && groups[material] != Group()) {
+		references[material]++;
+	}
+
+	/*
+	POSSIBLE FIX: Treat materials more as pointers, so update reference counts when handling material layers as well
+	*/
+
 	uint next = material;
+
 	for (uint l = numLayers - 1;; l--) {
 		uint mask = 1U << (numLayers - l - 1);
 
@@ -94,33 +111,115 @@ void Peio::Vxl::MaterialMap::SetMaterial(Uint3 pos, uint material)
 		uint& index = group.indices[(bool)(pos.x() & mask)][(bool)(pos.y() & mask)][(bool)(pos.z() & mask)];
 		if (index == next)
 			break;
+		uint old = index;
 		index = next;
 
 		if (l == 0) {
+			if (old != ~0 && old != 0 && old < groups.size()) {
+				RemoveRef(old);
+			}
 			groups[path[l]] = group;
 			break;
 		}
 
 		if (map.contains(group)) {
 			next = map.at(group);
-			if (path[l] != ~0)
-				RemoveRef(path[l]);
 			references[next]++;
+			if (old != ~0 && old != 0 && old < groups.size()) {
+				RemoveRef(old);
+			}
+			if (l != numLayers - 1 && path[l] != ~0) {
+				for (uint x = 0; x < 2; x++) {
+					for (uint y = 0; y < 2; y++) {
+						for (uint z = 0; z < 2; z++) {
+							if (group.indices[x][y][z] != ~0)
+								RemoveRef(group.indices[x][y][z]);
+						}
+					}
+				}
+			}
+			if (log)
+				std::cout << "Compressed" << std::endl;
 		}
-		else if (path[l] == ~0 || references[path[l]] > 0) {
-			if (path[l] != ~0)
-				RemoveRef(path[l]);
+		else if (path[l] == ~0 || l >= firstRef) {
+			if (l != numLayers - 1 && path[l] != ~0) {
+				for (uint x = 0; x < 2; x++) {
+					for (uint y = 0; y < 2; y++) {
+						for (uint z = 0; z < 2; z++) {
+							if (group.indices[x][y][z] != ~0 && group.indices[x][y][z] != next)
+								references[group.indices[x][y][z]]++;
+						}
+					}
+				}
+			}
 			next = GetNext();
 			groups[next] = group;
 			map.insert({ group, next });
+			if (log)
+				std::cout << "Copied" << std::endl;
 		}
 		else {
+			if (l != numLayers - 1 && old != ~0) {
+				RemoveRef(old);
+			}
 			map.erase(groups[path[l]]);
 			groups[path[l]] = group;
 			next = path[l];
 			map.insert({ group, next });
+			// Break?
+			if (log)
+				std::cout << "Overwritten" << std::endl;
 		}
 	}
+
+	//if (compression != ~0) {
+	//    references[compression]++;
+	//}
+
+	//path[0] = 0;
+	//for (uint l = 0; l < numLayers - 1; l++) {
+	//	uint mask = 1U << (numLayers - l - 1);
+	//	if (path[l] == ~0)
+	//		path[l + 1] = ~0;
+	//	else
+	//		path[l + 1] = groups[path[l]].indices[(bool)(pos.x() & mask)][(bool)(pos.y() & mask)][(bool)(pos.z() & mask)];
+	//}
+	//
+	//uint next = material;
+	//for (uint l = numLayers - 1;; l--) {
+	//	uint mask = 1U << (numLayers - l - 1);
+	//
+	//	Group group = (path[l] == ~0) ? Group() : groups[path[l]];
+	//	uint& index = group.indices[(bool)(pos.x() & mask)][(bool)(pos.y() & mask)][(bool)(pos.z() & mask)];
+	//	if (index == next)
+	//		break;
+	//	index = next;
+	//
+	//	if (l == 0) {
+	//		groups[path[l]] = group;
+	//		break;
+	//	}
+	//
+	//	if (map.contains(group)) {
+	//		next = map.at(group);
+	//		if (path[l] != ~0)
+	//			RemoveRef(path[l]);
+	//		references[next]++;
+	//	}
+	//	else if (path[l] == ~0 || references[path[l]] > 0) {
+	//		if (path[l] != ~0)
+	//			RemoveRef(path[l]);
+	//		next = GetNext();
+	//		groups[next] = group;
+	//		map.insert({ group, next });
+	//	}
+	//	else {
+	//		map.erase(groups[path[l]]);
+	//		groups[path[l]] = group;
+	//		next = path[l];
+	//		map.insert({ group, next });
+	//	}
+	//}
 }
 
 Peio::Vxl::MaterialMap::Group* Peio::Vxl::MaterialMap::GetGroups()
@@ -135,121 +234,121 @@ Peio::uint Peio::Vxl::MaterialMap::GetNumGroups()
 
 Peio::Vxl::MaterialMap::Ray Peio::Vxl::MaterialMap::Trace(Double3 origin, Double3 ray, Uint3 skip)
 {
-    const Double3 invRay = { 1.0 / ray.x(), 1.0 / ray.y(), 1.0 / ray.z() };
+	const Double3 invRay = { 1.0 / ray.x(), 1.0 / ray.y(), 1.0 / ray.z() };
 
-    Ray result;
-    result.voxel = {};
-    result.side = ~0;
-    result.normal = {};
-    result.material = ~0;
+	Ray result;
+	result.voxel = {};
+	result.side = ~0;
+	result.normal = {};
+	result.material = ~0;
 
-    double curScale = 0.0;
+	double curScale = 0.0;
 
-    { // Trace to the root cube
-        double rad = (double)(1U << numLayers) / 2.0;
-        Double3 mid = Double3(rad, rad, rad) - origin;
-        Double3 invRad = { abs(invRay.x() * rad), abs(invRay.y() * rad), abs(invRay.z() * rad) };
-        Double3 minDiv = mid * invRay - invRad;
-        Double3 maxDiv = mid * invRay + invRad;
+	{ // Trace to the root cube
+		double rad = (double)(1U << numLayers) / 2.0;
+		Double3 mid = Double3(rad, rad, rad) - origin;
+		Double3 invRad = { abs(invRay.x() * rad), abs(invRay.y() * rad), abs(invRay.z() * rad) };
+		Double3 minDiv = mid * invRay - invRad;
+		Double3 maxDiv = mid * invRay + invRad;
 
-        //double minScale = max(max(max(minDiv.x, minDiv.y), minDiv.z), 0.0);
-        double minScale = 0.0;
-        for (uint i = 0; i < 3; i++) {
-            if (minDiv[i] > minScale) {
-                minScale = minDiv[i];
-                result.side = i;
-            }
-        }
+		//double minScale = max(max(max(minDiv.x, minDiv.y), minDiv.z), 0.0);
+		double minScale = 0.0;
+		for (uint i = 0; i < 3; i++) {
+			if (minDiv[i] > minScale) {
+				minScale = minDiv[i];
+				result.side = i;
+			}
+		}
 
-        double maxScale = std::min(std::min(maxDiv.x(), maxDiv.y()), maxDiv.z());
+		double maxScale = std::min(std::min(maxDiv.x(), maxDiv.y()), maxDiv.z());
 
-        if (minScale > maxScale) {
-            result.side = ~0;
-            return result;
-        }
-        curScale = minScale;
-    }
+		if (minScale > maxScale) {
+			result.side = ~0;
+			return result;
+		}
+		curScale = minScale;
+	}
 
-    Uint3 path = {};
-    uint curLayer = 0;
-    std::vector<uint> indices(numLayers);
-    uint nextIndex = 0;
-    bool down = true;
+	Uint3 path = {};
+	uint curLayer = 0;
+	std::vector<uint> indices(numLayers);
+	uint nextIndex = 0;
+	bool down = true;
 
-    while (true) {
-        uint mask = 1U << (numLayers - curLayer - 1);
-        double rad = (double)((size_t)1 << (numLayers - curLayer)) / 2.0;
-        Double3 mid = (Double3)(path & Uint3(~mask, ~mask, ~mask)) + Double3(rad, rad, rad);
-    
-        if (down) {
-            if (curLayer == numLayers) {
-                if (path == skip) {
-                    curLayer--;
-                    down = false;
-                    continue;
-                }
-                result.voxel = path;
-                result.material = nextIndex;
-                break;
-            }
-    
-            Double3 curPos = origin + ray * curScale;
-            indices[curLayer] = nextIndex;
-            for (uint i = 0; i < 3; i++) {
-                if (curPos[i] >= mid[i])
-                    path[i] |= mask;
-                else
-                    path[i] &= ~mask;
-            }
-        }
-        else {
-            uint axis = -1;
-            double bestScale = std::numeric_limits<double>::max();
-            for (uint i = 0; i < 3; i++) {
-                double s = (mid[i] - origin[i]) * invRay[i];
-                if (s <= curScale) // Might cause errors because of double inaccuracy (?)
-                    continue;
-                if (s < bestScale) {
-                    axis = i;
-                    bestScale = s;
-                }
-            }
-    
-            bool inside = true;
-            for (uint i = 0; i < 3; i++) {
-                if (abs((origin[i] + ray[i] * bestScale) - mid[i]) > rad) {
-                    inside = false;
-                    break;
-                }
-            }
-    
-            if (axis == -1 || !inside) {
-                if (curLayer == 0)
-                    break;
-                for (uint i = 0; i < 3; i++)
-                    path &= ~mask;
-                curLayer--;
-                continue;
-            }
-            result.side = axis;
-            curScale = bestScale;
-            path[axis] ^= mask;
-        }
-        nextIndex = groups[indices[curLayer]].indices[(bool)(path.x() & mask)]
-            [(bool)(path.y() & mask)][(bool)(path.z() & mask)];
-        if (nextIndex == -1) {
-            down = false;
-            continue;
-        }
-        else {
-            down = true;
-            curLayer++;
-        }
-    }
-    if (result.material != ~0) {
-        result.normal = ray;
-        result.normal[result.side] = -result.normal[result.side];
-        result.collision = origin + ray * curScale;
-    }
-    return result;
+	while (true) {
+		uint mask = 1U << (numLayers - curLayer - 1);
+		double rad = (double)((size_t)1 << (numLayers - curLayer)) / 2.0;
+		Double3 mid = (Double3)(path & Uint3(~mask, ~mask, ~mask)) + Double3(rad, rad, rad);
+
+		if (down) {
+			if (curLayer == numLayers) {
+				if (path == skip) {
+					curLayer--;
+					down = false;
+					continue;
+				}
+				result.voxel = path;
+				result.material = nextIndex;
+				break;
+			}
+
+			Double3 curPos = origin + ray * curScale;
+			indices[curLayer] = nextIndex;
+			for (uint i = 0; i < 3; i++) {
+				if (curPos[i] >= mid[i])
+					path[i] |= mask;
+				else
+					path[i] &= ~mask;
+			}
+		}
+		else {
+			uint axis = -1;
+			double bestScale = std::numeric_limits<double>::max();
+			for (uint i = 0; i < 3; i++) {
+				double s = (mid[i] - origin[i]) * invRay[i];
+				if (s <= curScale) // Might cause errors because of double inaccuracy (?)
+					continue;
+				if (s < bestScale) {
+					axis = i;
+					bestScale = s;
+				}
+			}
+
+			bool inside = true;
+			for (uint i = 0; i < 3; i++) {
+				if (abs((origin[i] + ray[i] * bestScale) - mid[i]) > rad) {
+					inside = false;
+					break;
+				}
+			}
+
+			if (axis == -1 || !inside) {
+				if (curLayer == 0)
+					break;
+				for (uint i = 0; i < 3; i++)
+					path &= ~mask;
+				curLayer--;
+				continue;
+			}
+			result.side = axis;
+			curScale = bestScale;
+			path[axis] ^= mask;
+		}
+		nextIndex = groups[indices[curLayer]].indices[(bool)(path.x() & mask)]
+			[(bool)(path.y() & mask)][(bool)(path.z() & mask)];
+		if (nextIndex == -1) {
+			down = false;
+			continue;
+		}
+		else {
+			down = true;
+			curLayer++;
+		}
+	}
+	if (result.material != ~0) {
+		result.normal = ray;
+		result.normal[result.side] = -result.normal[result.side];
+		result.collision = origin + ray * curScale;
+	}
+	return result;
 }

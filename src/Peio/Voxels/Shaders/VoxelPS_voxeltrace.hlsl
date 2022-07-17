@@ -13,7 +13,7 @@ struct VoxelRay {
 
 VoxelRay VoxelTrace(const double3 origin, const double3 ray, uint3 skip) {
 
-    const uint numLayers = 10;
+    const uint numLayers = 12;
     const double3 invRay = 1.0 / ray;
 
     VoxelRay result;

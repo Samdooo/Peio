@@ -29,14 +29,14 @@ namespace Peio::Vxl {
 		void Init(uint maxSize, uint numLayers);
 
 		_NODISCARD uint GetMaterial(Uint3 pos) const;
-		void SetMaterial(Uint3 pos, uint material);
+		void SetMaterial(Uint3 pos, uint material, bool log = false);
 
 		_NODISCARD Group* GetGroups();
 		_NODISCARD uint GetNumGroups();
 
 		_NODISCARD Ray Trace(Double3 origin, Double3 ray, Uint3 skip = Uint3(-1, -1, -1));
 
-	protected:
+	//protected:
 
 		_NODISCARD uint GetNext();
 		void AddDeleted(uint index);
