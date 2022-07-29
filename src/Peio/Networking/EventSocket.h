@@ -20,7 +20,7 @@ namespace Peio::Net {
 		void Update(EventHandler<>* handler, WSANETWORKEVENTS& netEvents) {
 			if (netEvents.lNetworkEvents & (1 << L_event)) {
 				SocketEvent<T_super> e{ reinterpret_cast<T_super<Socket<>>*>(this), netEvents.iErrorCode[L_event] };
-				handler->Handle(e);
+				handler->Handle(&e);
 			}
 		}
 

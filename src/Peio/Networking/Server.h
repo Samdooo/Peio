@@ -30,10 +30,10 @@ namespace Peio::Net {
 
 	protected:
 
-		void Handle(AcceptEvent& event) override;
-		void Handle(ReceiveEvent& event) override;
-		void Handle(SendEvent& event) override;
-		void Handle(CloseEvent& event) override;
+		bool Handle(AcceptEvent* event) override;
+		bool Handle(ReceiveEvent* event) override;
+		bool Handle(SendEvent* event) override;
+		bool Handle(CloseEvent* event) override;
 
 		EventHandler<>* handler = nullptr;
 		ListenerSocket listener = {};

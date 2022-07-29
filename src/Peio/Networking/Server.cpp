@@ -44,38 +44,40 @@ namespace Peio::Net {
 		Close();
 	}
 
-	void Server::Handle(AcceptEvent& event)
+	bool Server::Handle(AcceptEvent* event)
 	{
 		ServerSocket* client = new ServerSocket;
-		client->Accept(event.sock->GetSocket());
+		client->Accept(event->sock->GetSocket());
 		client->RegisterEvents();
 		clients.insert({ client->GetSocket(), client });
 		ServerConnectionEvent connectionEvent = { client };
-		handler->Handle(connectionEvent);
+		return handler->Handle(&connectionEvent);
 	}
 
-	void Server::Handle(ReceiveEvent& event)
+	bool Server::Handle(ReceiveEvent* event)
 	{
-		if (!clients.count(event.sock->GetSocket()))
-			return;
-		ServerSocket* client = clients.at(event.sock->GetSocket());
+		if (!clients.count(event->sock->GetSocket()))
+			return false;
+		ServerSocket* client = clients.at(event->sock->GetSocket());
 		int length = client->Receive(buffer, bufferLength);
 		ServerReceiveEvent receiveEvent = { client, buffer, length };
-		handler->Handle(receiveEvent);
+		return handler->Handle(&receiveEvent);
 	}
 
-	void Server::Handle(SendEvent& event)
+	bool Server::Handle(SendEvent* event)
 	{
+		return false;
 	}
 
-	void Server::Handle(CloseEvent& event)
+	bool Server::Handle(CloseEvent* event)
 	{
-		if (!clients.count(event.sock->GetSocket()))
-			return;
-		ServerDisconnectionEvent disconnectionEvent = { clients.at(event.sock->GetSocket()) };
-		handler->Handle(disconnectionEvent);
-		delete clients.at(event.sock->GetSocket());
-		clients.erase(event.sock->GetSocket());
+		if (!clients.count(event->sock->GetSocket()))
+			return false;
+		ServerDisconnectionEvent disconnectionEvent = { clients.at(event->sock->GetSocket()) };
+		handler->Handle(&disconnectionEvent);
+		delete clients.at(event->sock->GetSocket());
+		clients.erase(event->sock->GetSocket());
+		return false;
 	}
 
 }

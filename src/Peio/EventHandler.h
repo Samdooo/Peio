@@ -33,8 +33,9 @@ namespace Peio {
 		bool Handle(T_event* event) {
 			EventHandler<T_event>* handler = dynamic_cast<EventHandler<T_event>*>(this);
 			if (handler) {
-				handler->Handle(event);
+				return handler->Handle(event);
 			}
+			return false;
 		}
 
 		virtual ~EventHandler() {}
