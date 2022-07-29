@@ -11,10 +11,10 @@ struct VoxelRay {
     float3 collision;
 };
 
-VoxelRay VoxelTrace(const double3 origin, const double3 ray, uint3 skip) {
+VoxelRay VoxelTrace(const float3 origin, const float3 ray, uint3 skip) {
 
-    const uint numLayers = 12;
-    const double3 invRay = 1.0 / ray;
+    const uint numLayers = 16;
+    const float3 invRay = 1.0 / ray;
 
     VoxelRay result;
     result.voxel = 0;
@@ -22,17 +22,17 @@ VoxelRay VoxelTrace(const double3 origin, const double3 ray, uint3 skip) {
     result.normal = 0.0;
     result.material = ~0;
     
-    double curScale = 0.0;
-    const double minTotalScale = 0.001;
+    float curScale = 0.0;
+    const float minTotalScale = 0.001;
 
     { // Trace to the root cube
-        double rad = (double)(1U << numLayers) / 2.0;
-        double3 mid = double3(rad, rad, rad) - origin;
-        double3 minDiv = mid * invRay - abs(invRay * rad);
-        double3 maxDiv = mid * invRay + abs(invRay * rad);
+        float rad = (float)(1U << numLayers) / 2.0;
+        float3 mid = float3(rad, rad, rad) - origin;
+        float3 minDiv = mid * invRay - abs(invRay * rad);
+        float3 maxDiv = mid * invRay + abs(invRay * rad);
 
-        //double minScale = max(max(max(minDiv.x, minDiv.y), minDiv.z), 0.0);
-        double minScale = 0.0;
+        //float minScale = max(max(max(minDiv.x, minDiv.y), minDiv.z), 0.0);
+        float minScale = 0.0;
         [unroll(3)] for (uint i = 0; i < 3; i++) {
             if (minDiv[i] > minScale) {
                 minScale = minDiv[i];
@@ -40,7 +40,7 @@ VoxelRay VoxelTrace(const double3 origin, const double3 ray, uint3 skip) {
             }
         }
 
-        double maxScale = min(min(maxDiv.x, maxDiv.y), maxDiv.z);
+        float maxScale = min(min(maxDiv.x, maxDiv.y), maxDiv.z);
 
         if (minScale > maxScale) {
             result.side = ~0;
@@ -57,8 +57,8 @@ VoxelRay VoxelTrace(const double3 origin, const double3 ray, uint3 skip) {
 
     [loop] while (true) {
         uint mask = 1U << (numLayers - curLayer - 1);
-        double rad = (double)(1U << (numLayers - curLayer)) / 2.0;
-        double3 mid = (double3)(path & uint3(~mask, ~mask, ~mask)) + double3(rad, rad, rad);
+        float rad = (float)(1U << (numLayers - curLayer)) / 2.0;
+        float3 mid = (float3)(path & uint3(~mask, ~mask, ~mask)) + float3(rad, rad, rad);
 
         if (down) {
             if (curLayer == numLayers) {
@@ -77,7 +77,7 @@ VoxelRay VoxelTrace(const double3 origin, const double3 ray, uint3 skip) {
                 break;
             }
 
-            double3 curPos = origin + ray * curScale;
+            float3 curPos = origin + ray * curScale;
             indices[curLayer] = nextIndex;
             [unroll(3)] for (uint i = 0; i < 3; i++) {
                 if (curPos[i] >= mid[i])
@@ -88,10 +88,10 @@ VoxelRay VoxelTrace(const double3 origin, const double3 ray, uint3 skip) {
         }
         else {
             uint axis = -1;
-            double bestScale = 1.#INF;
+            float bestScale = 1.#INF;
             [unroll(3)] for (uint i = 0; i < 3; i++) {
-                double s = (mid[i] - origin[i]) * invRay[i];
-                if (s <= curScale) // Might cause errors because of double inaccuracy (?)
+                float s = (mid[i] - origin[i]) * invRay[i];
+                if (s <= curScale) // Might cause errors because of float inaccuracy (?)
                     continue;
                 if (s < bestScale) {
                     axis = i;
@@ -136,7 +136,11 @@ VoxelRay VoxelTrace(const double3 origin, const double3 ray, uint3 skip) {
         result.collision = (float3)origin + (float3)(ray * curScale);
         result.collision[result.side] = (float)result.voxel[result.side];
         if (ray[result.side] < 0.0)
-            result.collision[result.side] += 1.0f;
+            result.collision[result.side] += 1.01f;
+        else
+            result.collision[result.side] -= 0.01f;
+        //else
+        //    result.collision[result.side] -= 0.5f;
     }
     return result;
 }

@@ -26,10 +26,6 @@ struct Ray {
 
 RWStructuredBuffer<Ray> rays : register(u1);
 
-/*
-Instead of saving down total emitted light, save down total light and material
-*/
-
 float4 main(VSOutput input) : SV_TARGET
 {
     const float2 offset = abs((float2)scene[0].windowSize / 2.0f - input.pixelPosition);
@@ -44,7 +40,7 @@ float4 main(VSOutput input) : SV_TARGET
     if (primary.material == ~0)
         return float4(primary.light, 1.0f);
 
-    int rad = 7;
+    int rad = 5;
 
     float3 totalLight = 0.0f;
     int numPixels = 0;

@@ -6,8 +6,24 @@ float4 main(VSOutput input) : SV_TARGET
 	//if (min(offset.x, offset.y) <= 1.0f && max(offset.x, offset.y) <= 10.0f){
 	//	return 0.0f;
 	//}
+
 	LightTrace(input.cameraPosition, input.sightRay, input.pixelPosition.xy);
+	//discard;
 	return 0.0f;
+
+	//VoxelRay ray = VoxelTrace(input.cameraPosition, input.sightRay, uint3(-1, -1, -1));
+	//if (ray.material == ~0)
+	//	return float4(0.0f, 0.0f, 0.0f, 1.0f);
+	//else {
+	//	//float3 off = float3(0.5f, 0.5f, 0.5f) + (ray.collision - ((float3)ray.voxel + float3(0.5f, 0.5f, 0.5f)));
+	//	//return float4(off, 1.0f);
+	//	//
+	//	VoxelRay second = VoxelTrace(ray.collision, ray.normal, uint3(-1, -1, -1));
+	//	if (second.material == ~0)
+	//		return float4(0.0f, 0.0f, 1.0f, 1.0f);
+	//	else
+	//		return materials[ray.material].color;
+	//}
 	//return float4(LightTrace(input.cameraPosition, input.sightRay, input.pixelPosition), 1.0f);
 	//VoxelRay ray = VoxelTrace(input.cameraPosition, input.sightRay, uint3(~0, ~0, ~0));
 	//if (ray.material == ~0)

@@ -21,7 +21,7 @@ void LightTrace(float3 origin, float3 startRay, float2 pixelPosition) {
 		for (uint i = 0; i < numRays; i++) {
 			float seed = uint(pixelPosition.y * windowSize.x + pixelPosition.x + (float)i) % uMod;
 			float3 ray = 0.0f;
-			ray.y = frac(PHI * seed);
+			ray.y = 0.1f + frac(PHI * seed) * 0.9f;
 			//ray.y = 1.0f;
 			if (primary.normal[primary.side] < 0.0f)
 				ray.y = -ray.y;
