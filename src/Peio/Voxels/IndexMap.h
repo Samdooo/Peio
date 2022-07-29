@@ -136,18 +136,19 @@ namespace Peio::Vxl {
 			return cur;
 		}
 
-		/* For later: Add the ability to insert other IndexMaps */
-
 		void SetIndex(const Position& position, T_index newIndex, T_index layer = null) {
 			if (layer > numLayers - 1)
 				layer = numLayers - 1;
 
 			path[0] = 0;
+			T_index firstRef = null;
 			for (T_index l = 0; l + 1 <= layer; l++) {
 				if (path[l] == null)
 					path[l + 1] = null;
 				else
 					path[l + 1] = nodes[path[l]].AtLayer(position, l, numLayers);
+				if (firstRef == null && path[l + 1] != null && references[path[l + 1]] > 1)
+					firstRef = l + 1;
 			}
 
 			for (T_index l = layer;; l--) {
@@ -161,18 +162,21 @@ namespace Peio::Vxl {
 				if (l == 0) {
 					if (old != null && l < numLayers - 1)
 						RemoveReference(old, l + 1);
-					if (l < numLayers - 1)
+					if (newIndex != null && l < numLayers - 1)
 						references[newIndex]++;
 					nodes[0] = node;
 					break;
 				}
 
-				if ((l == numLayers - 1) ? leafMap.contains(node) : branchMap.contains(node)) {
-					if (l < numLayers - 1)
+				if (node == Node()) { // Deletion
+					newIndex = null;
+				}
+				else if ((l == numLayers - 1) ? leafMap.contains(node) : branchMap.contains(node)) { // Compression
+					if (newIndex != null && l < numLayers - 1)
 						references[newIndex]++;
 					newIndex = (l == numLayers - 1) ? leafMap.at(node) : branchMap.at(node);
 				}
-				else if (path[l] == null || references[path[l]] > 1) {
+				else if (path[l] == null || l >= firstRef) { // Copying
 					if (l < numLayers - 1) {
 						for (T_index i = 0; i < ((T_index)1 << numDimensions); i++) {
 							T_index child = ((T_index*)&node)[i];
@@ -187,10 +191,10 @@ namespace Peio::Vxl {
 					else
 						branchMap.insert({ node, newIndex });
 				}
-				else {
+				else { // Overwriting
 					if (old != null && l < numLayers - 1)
 						RemoveReference(old, l + 1);
-					if (l < numLayers - 1)
+					if (newIndex != null && l < numLayers - 1)
 						references[newIndex]++;
 					if (l == numLayers - 1)
 						leafMap.erase(nodes[path[l]]);

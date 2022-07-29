@@ -16,7 +16,7 @@ void Peio::Vxl::VoxelRenderer::Init(ID3D12GraphicsCommandList* cmdList)
 	std::vector<D3D12_ROOT_PARAMETER> rootParams = {
 		Gfx::RootParameter::CreateShaderResourceView(0, D3D12_SHADER_VISIBILITY_VERTEX), // Camera buffer
 		Gfx::RootParameter::CreateShaderResourceView(1, D3D12_SHADER_VISIBILITY_PIXEL), // Scene buffer
-		Gfx::RootParameter::CreateShaderResourceView(2, D3D12_SHADER_VISIBILITY_PIXEL), // indexMap buffer
+		Gfx::RootParameter::CreateShaderResourceView(2, D3D12_SHADER_VISIBILITY_PIXEL), // materialMap buffer
 		Gfx::RootParameter::CreateShaderResourceView(3, D3D12_SHADER_VISIBILITY_PIXEL), // Material buffer
 		Gfx::RootParameter::CreateUnorderedAccessView(1, D3D12_SHADER_VISIBILITY_PIXEL), // Ray buffer
 	};
@@ -42,9 +42,9 @@ void Peio::Vxl::VoxelRenderer::Init(ID3D12GraphicsCommandList* cmdList)
 	cameraSrv.Init(sizeof(Camera), 1, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
 	cameraSrv.Upload(cameraBuffer.GetResourceData(), cmdList);
 
-	indexMapBuffer.SetBuffer(&indexMap.nodes[0], indexMap.nodes.size());
-	indexMapSrv.Init(sizeof(IndexMap<uint, 3>::Node) * indexMap.nodes.size(), indexMap.nodes.size(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-	indexMapSrv.Upload(indexMapBuffer.GetResourceData(), cmdList);
+	materialMapBuffer.SetBuffer(&materialMap.nodes[0], materialMap.nodes.size());
+	materialMapSrv.Init(sizeof(IndexMap<uint, 3>::Node) * materialMap.nodes.size(), materialMap.nodes.size(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	materialMapSrv.Upload(materialMapBuffer.GetResourceData(), cmdList);
 
 	//rayUav.Init(sizeof(Ray) * (uint)scene.windowSize.x() * (uint)scene.windowSize.y(), (uint)scene.windowSize.x() * (uint)scene.windowSize.y(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 }
@@ -59,9 +59,9 @@ void Peio::Vxl::VoxelRenderer::UpdateCamera(ID3D12GraphicsCommandList* cmdList)
 	cameraSrv.Upload(cameraBuffer.GetResourceData(), cmdList);
 }
 
-void Peio::Vxl::VoxelRenderer::UpdateIndexMap(ID3D12GraphicsCommandList* cmdList)
+void Peio::Vxl::VoxelRenderer::UpdateMaterialMap(ID3D12GraphicsCommandList* cmdList)
 {
-	indexMapSrv.Upload(indexMapBuffer.GetResourceData(), cmdList);
+	materialMapSrv.Upload(materialMapBuffer.GetResourceData(), cmdList);
 }
 
 void Peio::Vxl::VoxelRenderer::Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, Gfx::BufferSRV* materialSrv, Gfx::BufferUAV* rayUav)
@@ -72,7 +72,7 @@ void Peio::Vxl::VoxelRenderer::Render(ID3D12GraphicsCommandList* cmdList, D3D12_
 
 	cmdList->SetGraphicsRootShaderResourceView(0, cameraSrv.GetGPUAddress());
 	cmdList->SetGraphicsRootShaderResourceView(1, sceneSrv.GetGPUAddress());
-	cmdList->SetGraphicsRootShaderResourceView(2, indexMapSrv.GetGPUAddress());
+	cmdList->SetGraphicsRootShaderResourceView(2, materialMapSrv.GetGPUAddress());
 	cmdList->SetGraphicsRootShaderResourceView(3, materialSrv->GetGPUAddress());
 	cmdList->SetGraphicsRootUnorderedAccessView(4, rayUav->GetGPUAddress());
 

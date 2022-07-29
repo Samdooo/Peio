@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IndexMap.h"
+#include "MaterialMap.h"
 #include "..\Graphics\VertexBuffer.h"
 #include "..\Graphics\PipelineStateHeader.h"
 #include "..\Graphics\ConstantBufferView.h"
@@ -34,13 +34,13 @@ namespace Peio::Vxl {
 
 		Scene scene = {};
 		Camera camera = {};
-		IndexMap<uint, 3> indexMap = {};
+		MaterialMap materialMap = {};
 
 		void Init(ID3D12GraphicsCommandList* cmdList);
 		
 		void UpdateScene(ID3D12GraphicsCommandList* cmdList);
 		void UpdateCamera(ID3D12GraphicsCommandList* cmdList);
-		void UpdateIndexMap(ID3D12GraphicsCommandList* cmdList);
+		void UpdateMaterialMap(ID3D12GraphicsCommandList* cmdList);
 
 		void Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, Gfx::BufferSRV* materialSrv, Gfx::BufferUAV* rayUav);
 
@@ -60,8 +60,8 @@ namespace Peio::Vxl {
 		Gfx::SubresourceBuffer<Camera> cameraBuffer = {};
 		Gfx::BufferSRV cameraSrv = {};
 
-		Gfx::SubresourceBuffer<IndexMap<uint, 3>::Node> indexMapBuffer = {};
-		Gfx::BufferSRV indexMapSrv = {};
+		Gfx::SubresourceBuffer<MaterialMap::Node> materialMapBuffer = {};
+		Gfx::BufferSRV materialMapSrv = {};
 
 		//Gfx::BufferUAV rayUav = {};
 
