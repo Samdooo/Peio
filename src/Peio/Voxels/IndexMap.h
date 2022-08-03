@@ -124,7 +124,7 @@ namespace Peio::Vxl {
 			path.resize(numLayers);
 		}
 
-		_NODISCARD T_index GetIndex(const Position& position, T_index layer = ~0) const {
+		_NODISCARD T_index GetIndex(const Position& position, T_index layer = null) const {
 			if (layer > numLayers - 1)
 				layer = numLayers - 1;
 			T_index cur = 0;
@@ -172,8 +172,6 @@ namespace Peio::Vxl {
 					newIndex = null;
 				}
 				else if ((l == numLayers - 1) ? leafMap.contains(node) : branchMap.contains(node)) { // Compression
-					if (newIndex != null && l < numLayers - 1)
-						references[newIndex]++;
 					newIndex = (l == numLayers - 1) ? leafMap.at(node) : branchMap.at(node);
 				}
 				else if (path[l] == null || l >= firstRef) { // Copying
