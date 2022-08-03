@@ -21,6 +21,9 @@
 #include <Peio/Voxels/VoxelRenderer.h>
 #include <Peio/Voxels/DenoiseRenderer.h>
 #include <sstream>
+#include <Peio/Voxels/Camera.h>
+#include <random>
+#include <Peio/GUI/Text.h>
 
 #include <map>
 #include <unordered_map>
@@ -70,6 +73,14 @@ struct std::hash<Peio::Array<T, length>> {
 	}
 
 };
+
+float frac(float x) {
+	return abs(x - (float)(long long)x);
+}
+
+float rnd(int seed) {
+	return frac(cos((float)seed * PHI) * 12345.6789f);
+}
 
 int main() {
 
@@ -193,6 +204,7 @@ int main() {
 	
 		Peio::Net::Init();
 		Peio::Gfx::Init();
+		Peio::GUI::Rectangle::Init();
 
 		Peio::Int2 windowSize = { 1280, 720 };
 		D3D12_VIEWPORT viewPort = { 0.0f, 0.0f, (float)windowSize.x(), (float)windowSize.y(), 0.0f, 1.0f };
@@ -214,20 +226,22 @@ int main() {
 		ClipCursor(&clip);
 
 		Peio::Vxl::VoxelRenderer renderer;
-		renderer.camera.aspectRatio = (float)windowSize.y() / (float)windowSize.x();
-		renderer.camera.fov = 1.65806f;
-		renderer.camera.position = { 5.0f, 5.0f, -5.0f };
+		renderer.camera.camera.aspectRatio = (float)windowSize.y() / (float)windowSize.x();
+		renderer.camera.camera.fov = 1.65806f;
+		renderer.camera.camera.position = { 5.0f, 5.0f, -5.0f };
 
 		renderer.scene.numRays = 4;
 		renderer.scene.windowSize = (Peio::Float2)windowSize;
 
-		renderer.materialMap.Init(16, (1 << 22));
+		renderer.materialMap.Init(16, (1 << 21));
+
+		renderer.materialMap.SetIndex({ 0, 0, 0 }, 1);
 
 		UINT rad = 16;
 
 		std::vector<Material> materials = {};
 		materials.push_back({
-			{}, { 5.0f, 5.0f, 5.0f }, 0.0f
+			{}, { 15.0f, 15.0f, 15.0f }, 0.0f
 			});
 
 		std::unordered_map<int, std::string> blockPaths = {
@@ -290,6 +304,7 @@ int main() {
 
 					std::cout << "Receiving chunk " << chunkPos.ToString() << std::endl;
 
+					bool finished = false;
 					for (int by = 0; by < 256; by++) {
 						for (int bx = 0; bx < 16; bx++) {
 							for (int bz = 0; bz < 16; bz++) {
@@ -300,6 +315,10 @@ int main() {
 								int key = ((int*)serverBuffer)[2 + ((by * 16 + bx) * 16 + bz)];
 								if (key == 0)
 									continue;
+								if (key == ~0) {
+									finished = true;
+									break;
+								}
 								if (!blockPaths.contains(key))
 									continue;
 								if (blockMap.contains(key)) {
@@ -333,9 +352,14 @@ int main() {
 									blockMap.insert({ key, renderer.materialMap.GetIndex({ (UINT)vx, (UINT)vy, (UINT)vz }, renderer.materialMap.numLayers - 1 - 4) });
 								}
 							}
+							if (finished)
+								break;
 						}
+						if (finished)
+							break;
 					}
 					renderer.UpdateMaterialMap(graphics.GetCommandList());
+					renderer.scene.newRays = true;
 
 					std::cout << "Successfully received chunk " << chunkPos.ToString() << std::endl;
 
@@ -363,14 +387,14 @@ int main() {
 		materialSrv.Init(sizeof(Material)* materials.size(), materials.size(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 		materialSrv.Upload(materialBuffer.GetResourceData(), graphics.GetCommandList());
 
-		float acceleration = 1.1f;
-		float retardation = 0.1f;
+		float acceleration = 5.0f;
+		float retardation = 1.0f;
 		Peio::Float3 velocity = {};
 
 		Peio::FunctionHandler<Peio::Win::RawMouseMoveEvent> mouseMoveHandler(
 			[&renderer](Peio::Win::RawMouseMoveEvent* event) -> bool {
-				renderer.camera.rotation.x() -= (float)event->movement.x() / 1450.0f;
-				renderer.camera.rotation.y() -= (float)event->movement.y() / 1450.0f;
+				renderer.camera.camera.rotation.x() -= (float)event->movement.x() / 1450.0f;
+				renderer.camera.camera.rotation.y() -= (float)event->movement.y() / 1450.0f;
 				return false;
 			}
 		);
@@ -382,32 +406,34 @@ int main() {
 
 		Peio::FunctionHandler<Peio::Win::RawMouseButtonDownEvent> mouseButtonDownHandler(
 			[&renderer, &graphics](Peio::Win::RawMouseButtonDownEvent* event) -> bool {
-				if (event->button == Peio::Win::MouseButton::RIGHT && event->foreground) {
-					Peio::Double3 ray = GetRay(renderer.camera.rotation);
-					Peio::Vxl::MaterialMap::Ray result = renderer.materialMap.Trace((Peio::Double3)renderer.camera.position, ray);
+				if ((event->button == Peio::Win::MouseButton::RIGHT || event->button == Peio::Win::MouseButton::MIDDLE) && event->foreground) {
+					Peio::Double3 ray = GetRay(renderer.camera.camera.rotation);
+					Peio::Vxl::MaterialMap::Ray result = renderer.materialMap.Trace((Peio::Double3)renderer.camera.camera.position, ray);
 					if (result.material == ~0) {
 						std::cout << "Traced air" << std::endl;
 						return false;
 					}
+					renderer.scene.newRays = true;
 					int rad = 5;
 					for (int x = -rad; x <= rad; x++) {
 						for (int y = -rad; y <= rad; y++) {
 							for (int z = -rad; z <= rad; z++) {
 								double dist = sqrt(x * x + y * y + z * z);
 								if (dist < (double)rad)
-									renderer.materialMap.SetIndex((Peio::Int3)result.voxel + Peio::Int3(x, y, z), 1);
+									renderer.materialMap.SetIndex((Peio::Int3)result.voxel + Peio::Int3(x, y, z), (event->button == Peio::Win::MouseButton::MIDDLE) ? 0 : 1);
 							}
 						}
 					}
 					renderer.UpdateMaterialMap(graphics.GetCommandList());
 				}
 				else if (event->button == Peio::Win::MouseButton::LEFT && event->foreground) {
-					Peio::Double3 ray = GetRay(renderer.camera.rotation);
-					Peio::Vxl::MaterialMap::Ray result = renderer.materialMap.Trace((Peio::Double3)renderer.camera.position, ray);
+					Peio::Double3 ray = GetRay(renderer.camera.camera.rotation);
+					Peio::Vxl::MaterialMap::Ray result = renderer.materialMap.Trace((Peio::Double3)renderer.camera.camera.position, ray);
 					if (result.material == ~0) {
 						std::cout << "Traced air" << std::endl;
 						return false;
 					}
+					renderer.scene.newRays = true;
 					int rad = 5;
 					for (int x = -rad; x <= rad; x++) {
 						for (int y = -rad; y <= rad; y++) {
@@ -428,15 +454,44 @@ int main() {
 		Peio::Gfx::BufferUAV rayUav;
 		rayUav.Init(sizeof(Peio::Vxl::VoxelRenderer::Ray)* windowSize.x()* windowSize.y(), windowSize.x()* windowSize.y(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
+		Peio::Gfx::BufferUAV randomUav;
+		randomUav.Init(sizeof(UINT) * windowSize.x() * windowSize.y(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+
+		Peio::Gfx::SubresourceBuffer<UINT> randomBuffer;
+		randomBuffer.Allocate(windowSize.x()* windowSize.y());
+		std::uniform_int_distribution<UINT> random(0, (1 << 16));
+		std::default_random_engine randomGen;
+		for (UINT i = 0; i < randomBuffer.GetNumElements(); i++) {
+			randomBuffer[i] = random(randomGen);
+			//std::cout << randomBuffer[i] << std::endl;
+		}
+		randomUav.Upload(randomBuffer.GetResourceData(), graphics.GetCommandList());
+
 		Peio::Vxl::DenoiseRenderer denoiser;
 		denoiser.Init(graphics.GetCommandList());
 
 		Peio::Clock<double> deltaClock;
 		uint frameCount = 0;
 		double fpsTime = 0.0;
-		double minFrameTime = 1.0 / 40.0;
+		double minFrameTime = 1.0 / 60.0;
+
+		Peio::GUI::Font font;
+		font.Init(&graphics, "Roboto-Light.ttf", 24);
+		font.LoadLetters();
+		font.LoadTextures();
+
+		Peio::GUI::Text fpsText;
+		fpsText.Init(&graphics, { 10.0f, 5.0f }, { 300.0f, 100.0f });
+		fpsText.SetFont(&font);
+		fpsText.SetString("FPS: Calculating...");
+		fpsText.SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+		fpsText.Upload();
 
 		while (true) {
+
+			renderer.scene.newRays = false;
+
+			Peio::Vxl::Camera oldCamera = renderer.camera.camera;
 
 			server.Update();
 
@@ -445,27 +500,27 @@ int main() {
 			double deltaTime = deltaClock.Restart().Seconds();
 
 			if (Keydown(VK_CONTROL)) {
-				acceleration = 50.0f;
+				acceleration = 5000.0f;
 			}
 			else {
-				acceleration = 5.0f;
+				acceleration = 50.0f;
 			}
 
 			if (Keydown('W')) {
-				velocity.x() += (float)deltaTime * acceleration * -sin(renderer.camera.rotation.x());
-				velocity.z() += (float)deltaTime * acceleration * cos(renderer.camera.rotation.x());
+				velocity.x() += (float)deltaTime * acceleration * -sin(renderer.camera.camera.rotation.x());
+				velocity.z() += (float)deltaTime * acceleration * cos(renderer.camera.camera.rotation.x());
 			}
 			if (Keydown('S')) {
-				velocity.x() -= (float)deltaTime * acceleration * -sin(renderer.camera.rotation.x());
-				velocity.z() -= (float)deltaTime * acceleration * cos(renderer.camera.rotation.x());
+				velocity.x() -= (float)deltaTime * acceleration * -sin(renderer.camera.camera.rotation.x());
+				velocity.z() -= (float)deltaTime * acceleration * cos(renderer.camera.camera.rotation.x());
 			}
 			if (Keydown('D')) {
-				velocity.x() += (float)deltaTime * acceleration * cos(renderer.camera.rotation.x());
-				velocity.z() += (float)deltaTime * acceleration * sin(renderer.camera.rotation.x());
+				velocity.x() += (float)deltaTime * acceleration * cos(renderer.camera.camera.rotation.x());
+				velocity.z() += (float)deltaTime * acceleration * sin(renderer.camera.camera.rotation.x());
 			}
 			if (Keydown('A')) {
-				velocity.x() -= (float)deltaTime * acceleration * cos(renderer.camera.rotation.x());
-				velocity.z() -= (float)deltaTime * acceleration * sin(renderer.camera.rotation.x());
+				velocity.x() -= (float)deltaTime * acceleration * cos(renderer.camera.camera.rotation.x());
+				velocity.z() -= (float)deltaTime * acceleration * sin(renderer.camera.camera.rotation.x());
 			}
 			if (Keydown(VK_SPACE)) {
 				velocity.y() += (float)deltaTime * acceleration;
@@ -476,21 +531,28 @@ int main() {
 
 			if (Keydown(VK_UP)) {
 				renderer.scene.sky.sunRotation.y() += 0.04f;
+				renderer.scene.newRays = true;
 			}
 			if (Keydown(VK_DOWN)) {
 				renderer.scene.sky.sunRotation.y() -= 0.04f;
+				renderer.scene.newRays = true;
 			}
 
-			renderer.camera.position += velocity;
+			renderer.camera.camera.position += velocity;
 			velocity -= velocity * retardation;
+
+			if (!renderer.scene.newRays)
+				renderer.scene.newRays = !(renderer.camera.camera.position == oldCamera.position && renderer.camera.camera.rotation == oldCamera.rotation);
 
 			renderer.UpdateScene(graphics.GetCommandList());
 			renderer.UpdateCamera(graphics.GetCommandList());
 
 			graphics.Clear({ 0.0f, 0.0f, 0.0f, 1.0f });
 
-			renderer.Render(graphics.GetCommandList(), viewPort, scissorRect, &materialSrv, &rayUav);
-			denoiser.Render(graphics.GetCommandList(), viewPort, scissorRect, renderer.GetSceneSrv(), &materialSrv, &rayUav);
+			renderer.Render(graphics.GetCommandList(), viewPort, scissorRect, &materialSrv, &rayUav, &randomUav);
+			denoiser.Render(graphics.GetCommandList(), viewPort, scissorRect, renderer.GetSceneSrv(), &materialSrv, &rayUav, &randomUav);
+
+			fpsText.Draw();
 
 			graphics.Render();
 
@@ -501,7 +563,8 @@ int main() {
 
 			if (fpsTime >= 1.0) {
 				fpsTime -= 1.0;
-				std::cout << "FPS: " << frameCount << std::endl;
+				//std::cout << "FPS: " << frameCount << std::endl;
+				fpsText.SetString("FPS: " + std::to_string(frameCount));
 				frameCount = 0;
 			}
 		}

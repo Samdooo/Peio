@@ -104,10 +104,19 @@
     <ClCompile Include="src\main4.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="src\main5.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Essentials\Essentials.vcxproj">
+      <Project>{50498e11-d99c-4f9c-9e34-8c9bb140e7b3}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Graphics\Graphics.vcxproj">
       <Project>{6b7904eb-2ed1-4f3f-a434-3630e7531a87}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\GUI\GUI.vcxproj">
+      <Project>{202739bc-31a4-491d-b640-21b5eb627ee9}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Media\Media.vcxproj">
       <Project>{ecf3ac61-0f83-4734-96e7-295ff7ba9536}</Project>
