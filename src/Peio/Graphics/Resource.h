@@ -14,8 +14,6 @@ namespace Peio::Gfx {
 
 		void Upload(const D3D12_SUBRESOURCE_DATA& data, ID3D12GraphicsCommandList* cmdList);
 
-		virtual void Create(D3D12_CPU_DESCRIPTOR_HANDLE) {}
-
 		void Release();
 		~Resource();
 

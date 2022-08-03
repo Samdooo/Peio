@@ -12,6 +12,11 @@ void Peio::Gfx::ShaderResourceView::Create(D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle
 	device->CreateShaderResourceView(GetBuffer(), &srvDesc, cpuHandle);
 }
 
+void Peio::Gfx::ShaderResourceView::SetAsRootParameter(ID3D12GraphicsCommandList* cmdList, UINT rootParameterIndex) const
+{
+	cmdList->SetGraphicsRootShaderResourceView(rootParameterIndex, this->GetGPUAddress());
+}
+
 void Peio::Gfx::BufferSRV::Init(UINT64 size, UINT numElements, D3D12_RESOURCE_STATES resourceState, bool copyFootprints)
 {
 	srvDesc = {};

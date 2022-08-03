@@ -9,7 +9,7 @@ namespace Peio::Gfx {
 		this->visibility = visibility;
 	}
 
-	void ResourceArray::AddResource(Resource* resource)
+	void ResourceArray::AddResource(ShaderResource* resource)
 	{
 		resources.push_back(resource);
 	}
@@ -41,7 +41,7 @@ namespace Peio::Gfx {
 		return descriptorHeap;
 	}
 
-	Resource** ResourceArray::GetResources() noexcept
+	ShaderResource** ResourceArray::GetResources() noexcept
 	{
 		return &resources[0];
 	}

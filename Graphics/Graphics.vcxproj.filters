@@ -130,6 +130,9 @@
     <ClInclude Include="..\src\Peio\Graphics\Sampler.h">
       <Filter>Source Files\Utils\Pipeline State\Root Signature</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\ShaderResource.h">
+      <Filter>Source Files\Utils\Heaps\Views</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Graphics\Global.cpp">
@@ -206,6 +209,9 @@
     </ClCompile>
     <ClCompile Include="..\src\Peio\Graphics\Sampler.cpp">
       <Filter>Source Files\Utils\Pipeline State\Root Signature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\ShaderResource.cpp">
+      <Filter>Source Files\Utils\Heaps\Views</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

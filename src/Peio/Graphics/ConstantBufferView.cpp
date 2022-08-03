@@ -16,4 +16,9 @@ namespace Peio::Gfx {
 		device->CreateConstantBufferView(&cbvDesc, cpuHandle);
 	}
 
+	void ConstantBufferView::SetAsRootParameter(ID3D12GraphicsCommandList* cmdList, UINT rootParameterIndex) const
+	{
+		cmdList->SetGraphicsRootConstantBufferView(rootParameterIndex, this->GetGPUAddress());
+	}
+
 }

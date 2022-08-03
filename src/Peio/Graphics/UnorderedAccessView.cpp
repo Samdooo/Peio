@@ -14,6 +14,11 @@ namespace Peio::Gfx {
 		device->CreateUnorderedAccessView(GetBuffer(), nullptr, &uavDesc, cpuHandle);
 	}
 
+	void UnorderedAccessView::SetAsRootParameter(ID3D12GraphicsCommandList* cmdList, UINT rootParameterIndex) const
+	{
+		cmdList->SetGraphicsRootUnorderedAccessView(rootParameterIndex, this->GetGPUAddress());
+	}
+
 	void BufferUAV::Init(UINT64 size, UINT numElements, D3D12_RESOURCE_STATES resourceState)
 	{
 		D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(size);
