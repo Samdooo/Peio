@@ -16,7 +16,8 @@ namespace Peio::Vxl {
 		std::vector<D3D12_ROOT_PARAMETER> rootParams = {
 			Gfx::RootParameter::CreateShaderResourceView(0, D3D12_SHADER_VISIBILITY_PIXEL), // Scene buffer
 			Gfx::RootParameter::CreateShaderResourceView(1, D3D12_SHADER_VISIBILITY_PIXEL), // Material buffer
-			Gfx::RootParameter::CreateUnorderedAccessView(1, D3D12_SHADER_VISIBILITY_PIXEL) // Ray buffer
+			Gfx::RootParameter::CreateUnorderedAccessView(1, D3D12_SHADER_VISIBILITY_PIXEL), // Ray buffer
+			Gfx::RootParameter::CreateUnorderedAccessView(2, D3D12_SHADER_VISIBILITY_PIXEL) // Random buffer
 		};
 
 		ID3D12RootSignature* rootSignature = Gfx::RootSignature::Create(rootParams, {},
@@ -33,7 +34,7 @@ namespace Peio::Vxl {
 		);
 	}
 
-	void DenoiseRenderer::Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, const Gfx::BufferSRV* sceneSrv, const Gfx::BufferSRV* materialSrv, const Gfx::BufferUAV* rayUav)
+	void DenoiseRenderer::Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, const Gfx::BufferSRV* sceneSrv, const Gfx::BufferSRV* materialSrv, const Gfx::BufferUAV* rayUav, const Gfx::BufferUAV* randomUav)
 	{
 		pipelineState.Set(cmdList);
 		cmdList->RSSetViewports(1, &viewPort);
@@ -42,6 +43,7 @@ namespace Peio::Vxl {
 		cmdList->SetGraphicsRootShaderResourceView(0, sceneSrv->GetGPUAddress());
 		cmdList->SetGraphicsRootShaderResourceView(1, materialSrv->GetGPUAddress());
 		cmdList->SetGraphicsRootShaderResourceView(2, rayUav->GetGPUAddress());
+		cmdList->SetGraphicsRootShaderResourceView(3, randomUav->GetGPUAddress());
 
 		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		cmdList->IASetVertexBuffers(0, 1, &vertexBuffer.GetBufferView());

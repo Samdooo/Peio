@@ -6,6 +6,7 @@
 #include "..\Graphics\ConstantBufferView.h"
 #include "..\Graphics\ShaderResourceView.h"
 #include "..\Graphics\UnorderedAccessView.h"
+#include "Camera.h"
 
 namespace Peio::Vxl {
 
@@ -18,22 +19,24 @@ namespace Peio::Vxl {
 			uint numRays = 1;
 			Uint2 windowSize = {};
 			Sky sky = {};
+			BOOL newRays = TRUE;
 		};
-		struct Camera {
-			Peio::Float3 position = {};
-			Peio::Float2 rotation = {};
-			float fov = 1.5f;
-			float aspectRatio = 1.0f;
-		};
+		//struct Camera {
+		//	Peio::Float3 position = {};
+		//	Peio::Float2 rotation = {};
+		//	float fov = 1.5f;
+		//	float aspectRatio = 1.0f;
+		//};
 		struct Ray {
 			Uint3 voxel = {};
 			uint material = ~0;
 			uint side = ~0;
 			Float3 light = {};
+			uint numRays = 0;
 		};
 
 		Scene scene = {};
-		Camera camera = {};
+		SmoothCamera camera = {};
 		MaterialMap materialMap = {};
 
 		void Init(ID3D12GraphicsCommandList* cmdList);
@@ -42,7 +45,7 @@ namespace Peio::Vxl {
 		void UpdateCamera(ID3D12GraphicsCommandList* cmdList);
 		void UpdateMaterialMap(ID3D12GraphicsCommandList* cmdList);
 
-		void Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, Gfx::BufferSRV* materialSrv, Gfx::BufferUAV* rayUav);
+		void Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, Gfx::BufferSRV* materialSrv, Gfx::BufferUAV* rayUav, Gfx::BufferUAV* randomUav);
 
 		_NODISCARD const Gfx::BufferSRV* GetSceneSrv() const;
 

@@ -23,6 +23,7 @@ struct Scene {
     uint numRays;
     uint2 windowSize;
     Sky sky;
+    bool newRays;
 };
 
 StructuredBuffer<Scene> scene : register(t1);
@@ -46,8 +47,17 @@ struct Ray {
     uint material;
     uint side;
     float3 light;
+    uint numRays;
 };
 
 RWStructuredBuffer<Ray> rays : register(u1);
+
+RWStructuredBuffer<uint> random : register(u2);
+#define MAX_SEED (1 << 10)
+
+float randFloat(uint2 pixelPosition, uint add) {
+    uint seed = random[pixelPosition.y * scene[0].windowSize.x + pixelPosition.x];
+    return abs(frac(cos((float)(seed + add) * PHI) * 12345.6789f));
+}
 
 #endif

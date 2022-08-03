@@ -11,7 +11,9 @@ struct VoxelRay {
     float3 collision;
 };
 
-VoxelRay VoxelTrace(const float3 origin, const float3 ray, uint3 skip) {
+VoxelRay VoxelTrace(const float3 origin, const float3 inRay, uint3 skip) {
+
+    const float3 ray = inRay;//normalize(inRay);
 
     const uint numLayers = 16;
     const float3 invRay = 1.0 / ray;
@@ -55,6 +57,8 @@ VoxelRay VoxelTrace(const float3 origin, const float3 ray, uint3 skip) {
     uint nextIndex = 0;
     bool down = true;
 
+    //float lodMul = 512.0f;
+
     [loop] while (true) {
         uint mask = 1U << (numLayers - curLayer - 1);
         float rad = (float)(1U << (numLayers - curLayer)) / 2.0;
@@ -80,7 +84,7 @@ VoxelRay VoxelTrace(const float3 origin, const float3 ray, uint3 skip) {
             float3 curPos = origin + ray * curScale;
             indices[curLayer] = nextIndex;
             [unroll(3)] for (uint i = 0; i < 3; i++) {
-                if (curPos[i] >= mid[i])
+                if (curPos[i] >= mid[i]/*&& curScale < rad * lodMul*/)
                     path[i] |= mask;
                 else
                     path[i] &= ~mask;

@@ -2,9 +2,15 @@ struct VSOutput {
 	float4 pixelPosition : SV_POSITION;
 };
 
+struct Sky {
+    float2 sunRotation;
+};
+
 struct Scene {
     uint numRays;
     uint2 windowSize;
+    Sky sky;
+    bool newRays;
 };
 
 StructuredBuffer<Scene> scene : register(t0);
@@ -22,9 +28,12 @@ struct Ray {
     uint material;
     uint side;
     float3 light;
+    uint numRays;
 };
 
 RWStructuredBuffer<Ray> rays : register(u1);
+
+RWStructuredBuffer<uint> random : register(u2);
 
 float4 main(VSOutput input) : SV_TARGET
 {
@@ -40,7 +49,8 @@ float4 main(VSOutput input) : SV_TARGET
     if (primary.material == ~0)
         return float4(primary.light, 1.0f);
 
-    int rad = 5;
+    int rad = 8;
+    //rad = max(rad - primary.numRays + 1, 0);
 
     float3 totalLight = 0.0f;
     int numPixels = 0;
@@ -57,5 +67,7 @@ float4 main(VSOutput input) : SV_TARGET
     totalLight /= (float)numPixels;
     totalLight *= materials[primary.material].color.rgb;
     totalLight += materials[primary.material].light;
+    if (max(max(totalLight.r, totalLight.g), totalLight.b) > 1.0f)
+        totalLight /= max(max(totalLight.r, totalLight.g), totalLight.b);
     return float4(totalLight, 1.0f);
 }

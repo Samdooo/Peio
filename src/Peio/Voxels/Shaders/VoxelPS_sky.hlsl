@@ -25,7 +25,7 @@ float3 SkyTrace(float3 ray) {
     float3 sky_day = float3(0.5f, 0.8f, 0.9f);
     //float3 sky_day = float3(0.9f, 0.3f, 0.4f);
     float3 sky_night = float3(0.06f, 0.02f, 0.25f);
-    float3 sun = float3(20.0f, 20.0f, 18.0f);
+    float3 sun = float3(20.0f, 20.0f, 10.0f) * 2.0f;
 
     float sun_size = 0.2f;
 

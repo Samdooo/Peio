@@ -1,8 +1,6 @@
 #define PEIO_VXL_EXPORTING
 #include "VoxelRenderer.h"
 
-#include <iostream>
-
 void Peio::Vxl::VoxelRenderer::Init(ID3D12GraphicsCommandList* cmdList)
 {
 	vertexBuffer.Allocate(6);
@@ -19,6 +17,7 @@ void Peio::Vxl::VoxelRenderer::Init(ID3D12GraphicsCommandList* cmdList)
 		Gfx::RootParameter::CreateShaderResourceView(2, D3D12_SHADER_VISIBILITY_PIXEL), // materialMap buffer
 		Gfx::RootParameter::CreateShaderResourceView(3, D3D12_SHADER_VISIBILITY_PIXEL), // Material buffer
 		Gfx::RootParameter::CreateUnorderedAccessView(1, D3D12_SHADER_VISIBILITY_PIXEL), // Ray buffer
+		Gfx::RootParameter::CreateUnorderedAccessView(2, D3D12_SHADER_VISIBILITY_PIXEL) // Random buffer
 	};
 
 	ID3D12RootSignature* rootSignature = Gfx::RootSignature::Create(rootParams, {},
@@ -38,7 +37,7 @@ void Peio::Vxl::VoxelRenderer::Init(ID3D12GraphicsCommandList* cmdList)
 	sceneSrv.Init(sizeof(Scene), 1, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 	sceneSrv.Upload(sceneBuffer.GetResourceData(), cmdList);
 
-	cameraBuffer.SetBuffer(&camera, 1);
+	cameraBuffer.SetBuffer(&camera.camera, 1);
 	cameraSrv.Init(sizeof(Camera), 1, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
 	cameraSrv.Upload(cameraBuffer.GetResourceData(), cmdList);
 
@@ -64,7 +63,7 @@ void Peio::Vxl::VoxelRenderer::UpdateMaterialMap(ID3D12GraphicsCommandList* cmdL
 	materialMapSrv.Upload(materialMapBuffer.GetResourceData(), cmdList);
 }
 
-void Peio::Vxl::VoxelRenderer::Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, Gfx::BufferSRV* materialSrv, Gfx::BufferUAV* rayUav)
+void Peio::Vxl::VoxelRenderer::Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, Gfx::BufferSRV* materialSrv, Gfx::BufferUAV* rayUav, Gfx::BufferUAV* randomUav)
 {
 	pipelineState.Set(cmdList);
 	cmdList->RSSetViewports(1, &viewPort);
@@ -75,6 +74,7 @@ void Peio::Vxl::VoxelRenderer::Render(ID3D12GraphicsCommandList* cmdList, D3D12_
 	cmdList->SetGraphicsRootShaderResourceView(2, materialMapSrv.GetGPUAddress());
 	cmdList->SetGraphicsRootShaderResourceView(3, materialSrv->GetGPUAddress());
 	cmdList->SetGraphicsRootUnorderedAccessView(4, rayUav->GetGPUAddress());
+	cmdList->SetGraphicsRootUnorderedAccessView(5, randomUav->GetGPUAddress());
 
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	cmdList->IASetVertexBuffers(0, 1, &vertexBuffer.GetBufferView());

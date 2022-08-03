@@ -8,7 +8,7 @@ namespace Peio::Vxl {
 
 		void Init(ID3D12GraphicsCommandList* cmdList);
 
-		void Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, const Gfx::BufferSRV* sceneSrv, const Gfx::BufferSRV* materialSrv, const Gfx::BufferUAV* rayUav);
+		void Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect, const Gfx::BufferSRV* sceneSrv, const Gfx::BufferSRV* materialSrv, const Gfx::BufferUAV* rayUav, const Gfx::BufferUAV* randomUav);
 
 	protected:
 
