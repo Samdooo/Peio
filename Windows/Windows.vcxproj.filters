@@ -37,6 +37,9 @@
     <ClInclude Include="..\src\Peio\Windows\TextListener.h">
       <Filter>Source Files\Input\Listeners</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Windows\RawKeyboardListener.h">
+      <Filter>Source Files\Input\Listeners</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Windows\Window.cpp">
@@ -55,6 +58,9 @@
       <Filter>Source Files\Input\Listeners</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Peio\Windows\TextListener.cpp">
+      <Filter>Source Files\Input\Listeners</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Windows\RawKeyboardListener.cpp">
       <Filter>Source Files\Input\Listeners</Filter>
     </ClCompile>
   </ItemGroup>
