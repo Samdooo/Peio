@@ -14,7 +14,13 @@ namespace Peio::Vxl {
 			Double3 collision = {};
 		};
 
-		_NODISCARD Ray Trace(Double3 origin, Double3 ray, Uint3 skip = Uint3(-1, -1, -1));
+		_NODISCARD Ray Trace(Double3 origin, Double3 ray);
+		_NODISCARD Ray Trace(Double3 origin, Double2 angle);
+
+	protected:
+
+		static Double3 RotateX(Peio::Double3 p, double angle);
+		static Double3 RotateY(Peio::Double3 p, double angle);
 
 	};
 

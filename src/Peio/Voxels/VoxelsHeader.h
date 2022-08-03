@@ -7,9 +7,16 @@
 #endif
 
 #include "..\Graphics\GraphicsHeader.h"
+#include "..\Windows\WindowsHeader.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "Peio-Graphics-debug.lib")
 #else
 #pragma comment(lib, "Peio-Graphics.lib")
+#endif
+
+#ifdef _DEBUG
+#pragma comment(lib, "Peio-Windows-debug.lib")
+#else
+#pragma comment(lib, "Peio-Windows.lib")
 #endif

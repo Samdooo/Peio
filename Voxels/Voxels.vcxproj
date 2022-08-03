@@ -93,21 +93,28 @@
       <AdditionalLibraryDirectories>$(SolutionDir)bin\</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
-      <ShaderModel>6.6</ShaderModel>
+      <ShaderModel>6.0</ShaderModel>
       <ObjectFileOutput>$(OutDir)VoxelShaders\%(Filename).cso</ObjectFileOutput>
       <DisableOptimizations>false</DisableOptimizations>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Peio\Voxels\Camera.h" />
     <ClInclude Include="..\src\Peio\Voxels\DenoiseRenderer.h" />
+    <ClInclude Include="..\src\Peio\Voxels\FullscreenRenderer.h" />
     <ClInclude Include="..\src\Peio\Voxels\IndexMap.h" />
+    <ClInclude Include="..\src\Peio\Voxels\Material.h" />
     <ClInclude Include="..\src\Peio\Voxels\MaterialMap.h" />
+    <ClInclude Include="..\src\Peio\Voxels\Shader.h" />
     <ClInclude Include="..\src\Peio\Voxels\VoxelRenderer.h" />
     <ClInclude Include="..\src\Peio\Voxels\VoxelsHeader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Peio\Voxels\Camera.cpp" />
     <ClCompile Include="..\src\Peio\Voxels\DenoiseRenderer.cpp" />
+    <ClCompile Include="..\src\Peio\Voxels\FullscreenRenderer.cpp" />
     <ClCompile Include="..\src\Peio\Voxels\MaterialMap.cpp" />
+    <ClCompile Include="..\src\Peio\Voxels\Shader.cpp" />
     <ClCompile Include="..\src\Peio\Voxels\VoxelRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +154,14 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Graphics\Graphics.vcxproj">
+      <Project>{6b7904eb-2ed1-4f3f-a434-3630e7531a87}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Windows\Windows.vcxproj">
+      <Project>{19a3160d-a6d1-4654-bb9d-224526fa4d5d}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
