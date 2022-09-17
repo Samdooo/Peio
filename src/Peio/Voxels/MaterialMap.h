@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IndexMap.h"
+#include "..\Files.h"
 
 namespace Peio::Vxl {
 
@@ -17,7 +18,14 @@ namespace Peio::Vxl {
 		_NODISCARD Ray Trace(Double3 origin, Double3 ray);
 		_NODISCARD Ray Trace(Double3 origin, Double2 angle);
 
+		void SaveToFile(std::ofstream& ofile) const;
+		void LoadFromFile(std::ifstream& ifile);
+
+		void FillHelpers();
+
 	protected:
+
+		void FillMaps(UINT layerIndex, UINT index);
 
 		static Double3 RotateX(Peio::Double3 p, double angle);
 		static Double3 RotateY(Peio::Double3 p, double angle);

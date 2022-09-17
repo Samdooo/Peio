@@ -11,10 +11,10 @@ namespace Peio::Vxl {
 		void Init(ID3D12GraphicsCommandList* cmdList, const char* vertexShaderPath, const char* pixelShaderPath, 
 			std::vector<D3D12_SHADER_VISIBILITY> srvs, std::vector<D3D12_SHADER_VISIBILITY> uavs);
 
-		void Prepare(ID3D12GraphicsCommandList* cmdList);
+		void Prepare(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect);
 		void SetSRV(ID3D12GraphicsCommandList* cmdList, UINT index, D3D12_GPU_VIRTUAL_ADDRESS address);
 		void SetUAV(ID3D12GraphicsCommandList* cmdList, UINT index, D3D12_GPU_VIRTUAL_ADDRESS address);
-		void Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect);
+		void Render(ID3D12GraphicsCommandList* cmdList);
 
 	protected:
 

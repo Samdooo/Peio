@@ -67,6 +67,8 @@ void LightTrace(float3 origin, float3 startRay, float2 pixelPosition) {
 			float2 angle = float2(randFloat((uint2)pixelPosition, outRay.numRays + i) * (2.0f * PI), randFloat((uint2)pixelPosition, outRay.numRays + i + 1) * (2.0f * PI));
 			float3 ray = float3(sin(angle.x) * cos(angle.y), abs(sin(angle.y)), cos(angle.x) * cos(angle.y));
 	
+			
+
 			if (primary.normal[primary.side] < 0.0f)
 				ray.y = -ray.y;
 	

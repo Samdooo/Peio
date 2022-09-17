@@ -136,6 +136,63 @@ Peio::Vxl::MaterialMap::Ray Peio::Vxl::MaterialMap::Trace(Double3 origin, Double
     return Trace(origin, ray);
 }
 
+void Peio::Vxl::MaterialMap::SaveToFile(std::ofstream& ofile) const
+{
+    Files::WriteObject(ofile, numLayers);
+    Files::WriteObject(ofile, nextFree);
+    ofile.write((char*)&nodes[0], sizeof(Node) * nextFree);
+}
+
+void Peio::Vxl::MaterialMap::LoadFromFile(std::ifstream& ifile)
+{
+    numLayers = Files::ReadObject<UINT>(ifile);
+    nextFree = Files::ReadObject<UINT>(ifile);
+    for (UINT i = 0; i < nodes.size(); i++) {
+        nodes[i] = Node();
+        references[i] = 0;
+    }
+    ifile.read((char*)&nodes[0], sizeof(Node) * nextFree);
+    FillHelpers();
+}
+
+void Peio::Vxl::MaterialMap::FillHelpers()
+{
+    branchMap.clear();
+    leafMap.clear();
+
+    FillMaps(0, 0);
+    
+    numDeleted = 0;
+    for (UINT i = 1; i < nextFree; i++) {
+        if (references[i] == 0)
+            deleted[numDeleted++] = i;
+    }
+}
+
+void Peio::Vxl::MaterialMap::FillMaps(UINT layerIndex, UINT index)
+{
+    if (layerIndex > 0) {
+        references[index]++;
+        if (layerIndex == numLayers - 1) {
+            if (leafMap.contains(nodes[index]))
+                return;
+            leafMap.insert({ nodes[index], index });
+        }
+        else {
+            if (branchMap.contains(nodes[index]))
+                return;
+            branchMap.insert({ nodes[index], index });
+        }
+    }
+    if (layerIndex == numLayers - 1)
+        return;
+    for (size_t i = 0; i < sizeof(Node) / sizeof(UINT); i++) {
+        UINT next = ((UINT*)&nodes[index])[i];
+        if (next != null)
+            FillMaps(layerIndex + 1, next);
+    }
+}
+
 Peio::Double3 Peio::Vxl::MaterialMap::RotateX(Peio::Double3 p, double angle)
 {
     double c = cos(angle);

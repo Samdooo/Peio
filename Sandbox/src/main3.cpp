@@ -1,8 +1,8 @@
 #include <iostream>
 #include <Peio/Exception.h>
 
-#include <Peio/Networking/Server.h>
-#include <Peio/Networking/Init.h>
+//#include <Peio/Networking/Server.h>
+//#include <Peio/Networking/Init.h>
 #include <Peio/EventHandler.h>
 #include <Peio/Windows/Window.h>
 #include <Peio/Windows/KeyboardListener.h>
@@ -202,7 +202,7 @@ int main() {
 
 	try {
 	
-		Peio::Net::Init();
+		//Peio::Net::Init();
 		Peio::Gfx::Init();
 		Peio::GUI::Rectangle::Init();
 
@@ -279,110 +279,116 @@ int main() {
 		char* serverBuffer = new char[(1 << 24)];
 		int serverBufferOffset = 0;
 
-		Peio::FunctionHandler<Peio::Net::ServerConnectionEvent, Peio::Net::ServerReceiveEvent, Peio::Net::ServerDisconnectionEvent> serverHandler(
-			[](Peio::Net::ServerConnectionEvent* event) -> bool {
-				std::cout << event->client->GetGlobal().GetIp() << " connected" << std::endl;
-				return false;
-			},
-			[serverBuffer, &serverBufferOffset, &blockMap, &blockPaths, &renderer, &matList, &graphics](Peio::Net::ServerReceiveEvent* event) -> bool {
-				//std::cout << event->client->GetGlobal().GetIp() << " sent:" << std::endl;
-				//std::cout << std::string(event->buffer, event->length) << std::endl;
+		//Peio::FunctionHandler<Peio::Net::ServerConnectionEvent, Peio::Net::ServerReceiveEvent, Peio::Net::ServerDisconnectionEvent> serverHandler(
+		//	[](Peio::Net::ServerConnectionEvent* event) -> bool {
+		//		std::cout << event->client->GetGlobal().GetIp() << " connected" << std::endl;
+		//		return false;
+		//	},
+		//	[serverBuffer, &serverBufferOffset, &blockMap, &blockPaths, &renderer, &matList, &graphics](Peio::Net::ServerReceiveEvent* event) -> bool {
+		//		//std::cout << event->client->GetGlobal().GetIp() << " sent:" << std::endl;
+		//		//std::cout << std::string(event->buffer, event->length) << std::endl;
+		//
+		//		memcpy(serverBuffer + serverBufferOffset, event->buffer, event->length);
+		//		serverBufferOffset += event->length;
+		//
+		//		if (serverBufferOffset == sizeof(int) * (2 + (16 * 16 * 256))) {
+		//			serverBufferOffset = 0;
+		//
+		//			Peio::Int2 chunkPos = *(Peio::Int2*)serverBuffer;
+		//			if (chunkPos.x() < 0 || chunkPos.y() < 0) {
+		//				std::cout << "Received invalid chunk " << chunkPos.ToString() << std::endl;
+		//				char ok = 1;
+		//				event->client->Send(&ok, 1);
+		//				return false;
+		//			}
+		//
+		//			std::cout << "Receiving chunk " << chunkPos.ToString() << std::endl;
+		//
+		//			bool finished = false;
+		//			for (int by = 0; by < 256; by++) {
+		//				for (int bx = 0; bx < 16; bx++) {
+		//					for (int bz = 0; bz < 16; bz++) {
+		//						int vx = (chunkPos.x() * 16 + bx) * 16;
+		//						int vy = by * 16;
+		//						int vz = (chunkPos.y() * 16 + bz) * 16;
+		//
+		//						int key = ((int*)serverBuffer)[2 + ((by * 16 + bx) * 16 + bz)];
+		//						if (key == 0)
+		//							continue;
+		//						if (key == ~0) {
+		//							finished = true;
+		//							break;
+		//						}
+		//						if (!blockPaths.contains(key))
+		//							continue;
+		//						if (blockMap.contains(key)) {
+		//							UINT ind = blockMap.at(key);
+		//							renderer.materialMap.SetIndex({ (UINT)vx, (UINT)vy, (UINT)vz }, ind, renderer.materialMap.numLayers - 1 - 4);
+		//						}
+		//						else {
+		//							Peio::Med::Frame img = Peio::Med::Images::Load(blockPaths.at(key), AV_PIX_FMT_RGBA);
+		//
+		//							for (int x = 0; x < 16; x++) {
+		//								for (int y = 0; y < 16; y++) {
+		//									for (int z = 0; z < 16; z++) {
+		//										//UINT material = ~0;
+		//										UINT col = 0;
+		//										if (x == 0 || x == 15)
+		//											//material = matList.at(*(UINT*)img.GetPixel(y, z));
+		//											col = *(UINT*)img.GetPixel(y, z);
+		//										else if (z == 0 || z == 15)
+		//											col = *(UINT*)img.GetPixel(y, x);
+		//										else if (y == 0 || y == 15)
+		//											col = *(UINT*)img.GetPixel(z, x);
+		//										else
+		//											col = (rand() % 2) ? *(UINT*)img.GetPixel(z, x) : *(UINT*)img.GetPixel(y, x);
+		//										if (((byte*)&col)[3] == 0)
+		//											continue;
+		//										UINT material = matList.at(col);
+		//										renderer.materialMap.SetIndex({ (UINT)vx + (UINT)x, (UINT)vy + (UINT)y, (UINT)vz + (UINT)z }, material);
+		//									}
+		//								}
+		//							}
+		//							blockMap.insert({ key, renderer.materialMap.GetIndex({ (UINT)vx, (UINT)vy, (UINT)vz }, renderer.materialMap.numLayers - 1 - 4) });
+		//						}
+		//					}
+		//					if (finished)
+		//						break;
+		//				}
+		//				if (finished)
+		//					break;
+		//			}
+		//			renderer.UpdateMaterialMap(graphics.GetCommandList());
+		//			renderer.scene.newRays = true;
+		//
+		//			std::cout << "Successfully received chunk " << chunkPos.ToString() << std::endl;
+		//
+		//			char ok = 1;
+		//			event->client->Send(&ok, 1);
+		//		}
+		//		return false;
+		//	},
+		//	[](Peio::Net::ServerDisconnectionEvent* event) -> bool {
+		//		std::cout << event->client->GetGlobal().GetIp() << " disconnected" << std::endl;
+		//		return false;
+		//	}
+		//);
+		//
+		//Peio::Net::Server server;
+		//server.Init(&serverHandler, (1 << 24), 14000);
+		//server.Listen();
 
-				memcpy(serverBuffer + serverBufferOffset, event->buffer, event->length);
-				serverBufferOffset += event->length;
-
-				if (serverBufferOffset == sizeof(int) * (2 + (16 * 16 * 256))) {
-					serverBufferOffset = 0;
-
-					Peio::Int2 chunkPos = *(Peio::Int2*)serverBuffer;
-					if (chunkPos.x() < 0 || chunkPos.y() < 0) {
-						std::cout << "Received invalid chunk " << chunkPos.ToString() << std::endl;
-						char ok = 1;
-						event->client->Send(&ok, 1);
-						return false;
-					}
-
-					std::cout << "Receiving chunk " << chunkPos.ToString() << std::endl;
-
-					bool finished = false;
-					for (int by = 0; by < 256; by++) {
-						for (int bx = 0; bx < 16; bx++) {
-							for (int bz = 0; bz < 16; bz++) {
-								int vx = (chunkPos.x() * 16 + bx) * 16;
-								int vy = by * 16;
-								int vz = (chunkPos.y() * 16 + bz) * 16;
-
-								int key = ((int*)serverBuffer)[2 + ((by * 16 + bx) * 16 + bz)];
-								if (key == 0)
-									continue;
-								if (key == ~0) {
-									finished = true;
-									break;
-								}
-								if (!blockPaths.contains(key))
-									continue;
-								if (blockMap.contains(key)) {
-									UINT ind = blockMap.at(key);
-									renderer.materialMap.SetIndex({ (UINT)vx, (UINT)vy, (UINT)vz }, ind, renderer.materialMap.numLayers - 1 - 4);
-								}
-								else {
-									Peio::Med::Frame img = Peio::Med::Images::Load(blockPaths.at(key), AV_PIX_FMT_RGBA);
-
-									for (int x = 0; x < 16; x++) {
-										for (int y = 0; y < 16; y++) {
-											for (int z = 0; z < 16; z++) {
-												//UINT material = ~0;
-												UINT col = 0;
-												if (x == 0 || x == 15)
-													//material = matList.at(*(UINT*)img.GetPixel(y, z));
-													col = *(UINT*)img.GetPixel(y, z);
-												else if (z == 0 || z == 15)
-													col = *(UINT*)img.GetPixel(y, x);
-												else if (y == 0 || y == 15)
-													col = *(UINT*)img.GetPixel(z, x);
-												else
-													col = (rand() % 2) ? *(UINT*)img.GetPixel(z, x) : *(UINT*)img.GetPixel(y, x);
-												if (((byte*)&col)[3] == 0)
-													continue;
-												UINT material = matList.at(col);
-												renderer.materialMap.SetIndex({ (UINT)vx + (UINT)x, (UINT)vy + (UINT)y, (UINT)vz + (UINT)z }, material);
-											}
-										}
-									}
-									blockMap.insert({ key, renderer.materialMap.GetIndex({ (UINT)vx, (UINT)vy, (UINT)vz }, renderer.materialMap.numLayers - 1 - 4) });
-								}
-							}
-							if (finished)
-								break;
-						}
-						if (finished)
-							break;
-					}
-					renderer.UpdateMaterialMap(graphics.GetCommandList());
-					renderer.scene.newRays = true;
-
-					std::cout << "Successfully received chunk " << chunkPos.ToString() << std::endl;
-
-					char ok = 1;
-					event->client->Send(&ok, 1);
-				}
-				return false;
-			},
-			[](Peio::Net::ServerDisconnectionEvent* event) -> bool {
-				std::cout << event->client->GetGlobal().GetIp() << " disconnected" << std::endl;
-				return false;
+		for (UINT x = 0; x < 4096; x++) {
+			for (UINT z = 0; z < 4096; z++) {
+				renderer.materialMap.SetIndex({ x, 0, z }, 0);
 			}
-		);
-
-		Peio::Net::Server server;
-		server.Init(&serverHandler, (1 << 24), 14000);
-		server.Listen();
+		}
 
 		renderer.Init(graphics.GetCommandList());
 
 		Peio::Gfx::SubresourceBuffer<Material> materialBuffer;
 		materialBuffer.SetBuffer(&materials[0], materials.size());
-
+		
 		Peio::Gfx::BufferSRV materialSrv;
 		materialSrv.Init(sizeof(Material)* materials.size(), materials.size(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 		materialSrv.Upload(materialBuffer.GetResourceData(), graphics.GetCommandList());
@@ -493,7 +499,7 @@ int main() {
 
 			Peio::Vxl::Camera oldCamera = renderer.camera.camera;
 
-			server.Update();
+			//server.Update();
 
 			window.HandleMessages();
 

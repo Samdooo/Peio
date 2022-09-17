@@ -12,6 +12,8 @@ namespace Peio::Vxl {
 		float fov = 0.5f;
 		float aspectRatio = 1.0f;
 
+		_NODISCARD bool operator==(const Camera& that) const;
+
 	};
 
 	struct PEIO_VXL_EXPORT SmoothCamera {
@@ -19,11 +21,14 @@ namespace Peio::Vxl {
 		Camera camera = {};
 		Clock<float> clock = {};
 
+		Float3 velocity = {};
+		float targetVelocity = 1.0f;
+		float minVelocity = 0.5f;
+		Float3 targetDirection = {};
 		float acceleration = 1.0f;
-		float retardation = 1.0f;
+		float sensitivity = 0.001f;
 
-		void MoveRelative(Float2 rotation);
-		void MoveAbsolute(Float2 rotation);
+		void Rotate(Float2 rotation);
 		void Update();
 
 	protected:
@@ -31,8 +36,6 @@ namespace Peio::Vxl {
 		static Float3 RotateX(Peio::Float3 p, float angle);
 		static Float3 RotateY(Peio::Float3 p, float angle);
 
-		Float3 velocity = {};
-		Float3 dVelocity = {};
 
 	};
 

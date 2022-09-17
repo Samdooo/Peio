@@ -3,27 +3,31 @@
 
 namespace Peio::Vxl {
 
-	void SmoothCamera::MoveRelative(Float2 rotation)
+	bool Camera::operator==(const Camera& that) const 
 	{
-		MoveAbsolute(camera.rotation + rotation);
+		return aspectRatio == that.aspectRatio &&
+			fov == that.fov &&
+			position == that.position &&
+			rotation == that.rotation;
 	}
 
-	void SmoothCamera::MoveAbsolute(Float2 rotation)
+	void SmoothCamera::Rotate(Float2 rotation)
 	{
-		Float3 ray = { 0.0f, 0.0f, acceleration };
-		ray = RotateX(ray, rotation.y());
-		ray = RotateY(ray, rotation.x());
-		ray *= acceleration;
-		dVelocity += ray;
+		camera.rotation += rotation * sensitivity;
+		camera.rotation.x() = fmodf(camera.rotation.x(), 6.2831853071f);
+		camera.rotation.y() = fmodf(camera.rotation.y(), 6.2831853071f);
 	}
 
 	void SmoothCamera::Update()
 	{
 		float delta = clock.Restart().Seconds();
-		velocity -= velocity * std::min(1.0f, retardation * delta);
-		velocity += dVelocity * delta;
-		camera.position += velocity * delta;
-		dVelocity = {};
+		Float3 diff = (targetDirection * targetVelocity) - velocity;
+		velocity += diff * std::min(delta * acceleration, 1.0f);
+
+		Float3 ray = velocity;
+		ray = RotateX(ray, camera.rotation.y());
+		ray = RotateY(ray, camera.rotation.x());
+		camera.position += ray * delta;
 	}
 
 	Float3 SmoothCamera::RotateX(Peio::Float3 p, float angle)

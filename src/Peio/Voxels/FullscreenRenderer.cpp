@@ -37,9 +37,11 @@ namespace Peio::Vxl {
 				}), rootSignature, Gfx::Shader::Load(vertexShaderPath), Gfx::Shader::Load(pixelShaderPath), false);
 	}
 
-	void FullscreenRenderer::Prepare(ID3D12GraphicsCommandList* cmdList)
+	void FullscreenRenderer::Prepare(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect)
 	{
 		pipelineState.Set(cmdList);
+		cmdList->RSSetViewports(1, &viewPort);
+		cmdList->RSSetScissorRects(1, &scissorRect);
 	}
 
 	void FullscreenRenderer::SetSRV(ID3D12GraphicsCommandList* cmdList, UINT index, D3D12_GPU_VIRTUAL_ADDRESS address)
@@ -52,10 +54,8 @@ namespace Peio::Vxl {
 		cmdList->SetGraphicsRootUnorderedAccessView(numSrvs + index, address);
 	}
 
-	void FullscreenRenderer::Render(ID3D12GraphicsCommandList* cmdList, D3D12_VIEWPORT viewPort, D3D12_RECT scissorRect)
+	void FullscreenRenderer::Render(ID3D12GraphicsCommandList* cmdList)
 	{
-		cmdList->RSSetViewports(1, &viewPort);
-		cmdList->RSSetScissorRects(1, &scissorRect);
 		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		cmdList->IASetVertexBuffers(0, 1, &vertexBuffer.GetBufferView());
 		cmdList->DrawInstanced(6, 1, 0, 0);

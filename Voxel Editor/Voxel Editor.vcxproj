@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{686608ca-63ce-45d8-a743-ae8e0a5f8d7f}</ProjectGuid>
+    <RootNamespace>Voxel_Editor</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(ProjectName)\</IntDir>
+    <TargetName>Peio-$(ProjectName)-debug</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(ProjectName)\</IntDir>
+    <TargetName>Peio-$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\</AdditionalLibraryDirectories>
+    </Link>
+    <FxCompile>
+      <ShaderModel>6.0</ShaderModel>
+      <ObjectFileOutput>$(ProjectDir)/Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+      <DisableOptimizations>false</DisableOptimizations>
+    </FxCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Essentials\Essentials.vcxproj">
+      <Project>{50498e11-d99c-4f9c-9e34-8c9bb140e7b3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Graphics\Graphics.vcxproj">
+      <Project>{6b7904eb-2ed1-4f3f-a434-3630e7531a87}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\GUI\GUI.vcxproj">
+      <Project>{202739bc-31a4-491d-b640-21b5eb627ee9}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Media\Media.vcxproj">
+      <Project>{ecf3ac61-0f83-4734-96e7-295ff7ba9536}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Voxels\Voxels.vcxproj">
+      <Project>{cee25723-2e4b-468d-943a-a96da258a44b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Windows\Windows.vcxproj">
+      <Project>{19a3160d-a6d1-4654-bb9d-224526fa4d5d}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\Peio\Voxel Editor\App.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Graphics\Denoiser.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Graphics\Graphics.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Graphics\GUI\DenoiseRadius.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Graphics\GUI\Destroy.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Graphics\GUI\Fill.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Graphics\GUI\Fonts.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Graphics\GUI\Framerate.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Graphics\GUI\GUI.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Graphics\GUI\Material.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Graphics\GUI\Place.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Graphics\GUI\RayCount.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Graphics\GUI\Speed.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Graphics\RayTracer.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Graphics\Window.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Input\BuildInput.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Input\BuildKeybinds.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Input\CameraInput.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Input\CameraKeybinds.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Input\FileInput.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Input\Input.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Input\Keybind.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Input\Keybinds.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Input\StateInput.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Input\StateKeybinds.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\main.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Scene\Camera.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Scene\Info.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Scene\RayField.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Scene\Scene.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\Scene\World.cpp" />
+    <ClCompile Include="..\src\Peio\Voxel Editor\State.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\Peio\Voxel Editor\App.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Graphics\Denoiser.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Graphics\Graphics.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Graphics\GUI\DenoiseRadius.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Graphics\GUI\Destroy.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Graphics\GUI\Fill.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Graphics\GUI\Fonts.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Graphics\GUI\Framerate.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Graphics\GUI\GUI.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Graphics\GUI\Material.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Graphics\GUI\Place.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Graphics\GUI\RayCount.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Graphics\GUI\Speed.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Graphics\RayTracer.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Graphics\Window.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Input\BuildInput.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Input\BuildKeybinds.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Input\CameraInput.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Input\CameraKeybinds.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Input\FileInput.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Input\Input.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Input\Keybind.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Input\Keybinds.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Input\StateInput.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Input\StateKeybinds.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Scene\Camera.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Scene\Info.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Scene\RayField.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Scene\Scene.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\Scene\World.h" />
+    <ClInclude Include="..\src\Peio\Voxel Editor\State.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\src\Peio\Voxel Editor\Graphics\Shaders\DenoisePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="..\src\Peio\Voxel Editor\Graphics\Shaders\DenoiseVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="..\src\Peio\Voxel Editor\Graphics\Shaders\RayPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="..\src\Peio\Voxel Editor\Graphics\Shaders\RayPS_input.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\src\Peio\Voxel Editor\Graphics\Shaders\RayPS_lighttrace.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\src\Peio\Voxel Editor\Graphics\Shaders\RayPS_sky.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\src\Peio\Voxel Editor\Graphics\Shaders\RayPS_voxeltrace.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\src\Peio\Voxel Editor\Graphics\Shaders\RayVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
