@@ -22,7 +22,7 @@ namespace Peio::GUI {
 				}, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
 				D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
 				D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
-				D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS), Gfx::Shader::Load("../bin/GUIShaders/RectVS.cso"), Gfx::Shader::Load("../bin/GUIShaders/RectPS.cso"));
+				D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS), Gfx::Shader::Load("Resources/Shaders/RectVS.cso"), Gfx::Shader::Load("Resources/Shaders/RectPS.cso"));
 	}
 
 	void Rectangle::Init(Gfx::Graphics* graphics, Offset<float, 2> position, Float2 size)

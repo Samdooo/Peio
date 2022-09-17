@@ -58,7 +58,7 @@ namespace Peio::Gfx {
 		}
 
 		~SubresourceBuffer() {
-			Release();
+			//Release();
 		}
 
 	protected:

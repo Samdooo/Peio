@@ -53,7 +53,7 @@ namespace Peio::GUI {
 		}
 		return hovered;
 	}
-	
+
 	bool Button::Handle(Win::MouseWheelEvent* event)
 	{
 		bool hovered = IsHovered(event->position);

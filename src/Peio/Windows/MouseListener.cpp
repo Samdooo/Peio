@@ -6,6 +6,8 @@ namespace Peio::Win {
 	bool MouseListener::Handle(WinMessageEvent* event)
 	{
 		Int2 pos = { GET_X_LPARAM(event->msg.lParam), GET_Y_LPARAM(event->msg.lParam) };
+		if (event->msg.message == WM_MOUSEWHEEL)
+			ScreenToClient(event->msg.hwnd, (LPPOINT)&pos);
 
 		switch (event->msg.message) {
 		case WM_MOUSEMOVE:
