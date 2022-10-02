@@ -9,8 +9,11 @@ namespace Peio::Med {
 	struct PEIO_MED_EXPORT Scaler {
 
 		void Init(Int2 srcSize, Int2 dstSize, AVPixelFormat srcFormat, AVPixelFormat dstFormat, int algorithm = SWS_BICUBIC);
+
 		void Scale(const Frame* src, Frame* dst) const;
 		void Scale(const AVFrame* src, Frame* dst) const;
+		void Scale(const Frame* src, AVFrame* dst) const;
+
 		void Release();
 
 		_NODISCARD Int2 GetSrcSize() const;

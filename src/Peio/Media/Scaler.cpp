@@ -43,6 +43,14 @@ namespace Peio::Med {
         }
     }
 
+    void Scaler::Scale(const Frame* src, AVFrame* dst) const
+    {
+        int ret = sws_scale(swsContext, &src->GetData(), srcLinesize, 0, srcSize.y(), dst->data, dst->linesize);
+        if (ret < 0) {
+            throw PEIO_MED_EXCEPTION("Failed to scale data.", ret);
+        }
+    }
+
     void Scaler::Release()
     {
         if (swsContext) {

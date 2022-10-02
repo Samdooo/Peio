@@ -95,17 +95,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Peio\Media\Encoder.h" />
     <ClInclude Include="..\src\Peio\Media\Exception.h" />
     <ClInclude Include="..\src\Peio\Media\FileDecoder.h" />
     <ClInclude Include="..\src\Peio\Media\Frame.h" />
     <ClInclude Include="..\src\Peio\Media\Images.h" />
     <ClInclude Include="..\src\Peio\Media\MediaHeader.h" />
+    <ClInclude Include="..\src\Peio\Media\Remux.h" />
     <ClInclude Include="..\src\Peio\Media\Scaler.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Peio\Media\Encoder.cpp" />
     <ClCompile Include="..\src\Peio\Media\FileDecoder.cpp" />
     <ClCompile Include="..\src\Peio\Media\Frame.cpp" />
     <ClCompile Include="..\src\Peio\Media\Images.cpp" />
+    <ClCompile Include="..\src\Peio\Media\Remux.cpp" />
     <ClCompile Include="..\src\Peio\Media\Scaler.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

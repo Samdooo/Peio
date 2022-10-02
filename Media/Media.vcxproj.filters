@@ -34,6 +34,12 @@
     <ClInclude Include="..\src\Peio\Media\Images.h">
       <Filter>Source Files\Images</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Media\Encoder.h">
+      <Filter>Source Files\Encoding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Media\Remux.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Media\Scaler.cpp">
@@ -47,6 +53,12 @@
     </ClCompile>
     <ClCompile Include="..\src\Peio\Media\Images.cpp">
       <Filter>Source Files\Images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Media\Encoder.cpp">
+      <Filter>Source Files\Encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Media\Remux.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
