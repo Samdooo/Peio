@@ -18,8 +18,10 @@ namespace Peio::Gfx {
 	public:
 
 		void Init(UINT numBuffers);
+		void InitRenderTargets(Long2 size);
 		void CreateRenderTargets();
 		void SetFrameIndex(UINT frameIndex);
+		void NextBuffer();
 
 		void SetRenderTarget(ID3D12GraphicsCommandList* cmdList) const;
 		void ClearRenderTarget(ID3D12GraphicsCommandList* cmdList, const Float4& color) const;

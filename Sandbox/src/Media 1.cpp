@@ -1,14 +1,14 @@
 #include <Peio/Media/Encoder.h>
 #include <fstream>
 #include <Peio/Media/Remux.h>
+#include <Peio/Graphics/MediaGraphics.h>
 
 int main() {
 
+	Peio::Gfx::Init();
+
 	Peio::Med::Encoder encoder;
 	encoder.Init(AVCodecID::AV_CODEC_ID_H264, AV_PIX_FMT_YUV420P, { 1920, 1080 }, 60, 1'000'000);
-
-	Peio::Med::Frame frame;
-	frame.Init({ 1920, 1080 }, AV_PIX_FMT_RGBA);
 
 	std::ofstream ofile("out.h264", std::ios::binary);
 
@@ -16,17 +16,20 @@ int main() {
 		ofile.write((char*)data, length);
 	};
 
-	for (int i = 0; i < 60 * 5; i++) {
-		Peio::Byte3 col = { (Peio::byte)std::min(20 + i * 2, 255), (Peio::byte)std::min(50 + i, 255), 100};
+	Peio::Gfx::MediaGraphics graphics;
+	graphics.Init({ 1920, 1080 }, 3);
+	
+	Peio::Med::Frame frame;
 
-		for (int y = 0; y < 1080; y++) {
-			for (int x = 0; x < 1920; x++) {
-				frame.GetData()[(y * 1920 + x) * 4 + 0] = col[0];
-				frame.GetData()[(y * 1920 + x) * 4 + 1] = col[1] + x / 100;
-				frame.GetData()[(y * 1920 + x) * 4 + 2] = col[2] + x / 100 + y / 50;
-				frame.GetData()[(y * 1920 + x) * 4 + 3] = 255;
-			}
-		}
+	float col = 1.0f;
+
+	for (int i = 0; i < 60 * 5; i++) {
+		graphics.Clear({ (1.0f - col), 0.0f, col, 1.0f });
+		graphics.Render();
+
+		col *= 0.995f;
+
+		frame.Init(graphics.GetBuffer(), { 1920, 1080 }, AV_PIX_FMT_RGB0);
 
 		encoder.EncodeFrame(&frame, onPacket);
 	}

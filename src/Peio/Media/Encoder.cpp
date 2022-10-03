@@ -1,8 +1,6 @@
 #define PEIO_MED_EXPORTING
 #include "Encoder.h"
 
-#include <iostream>
-
 namespace Peio::Med {
 
 	void Encoder::Init(AVCodecID codecID, AVPixelFormat dstFormat, Int2 dstSize, int framerate, int bitrate, int gopSize, int maxBframes, std::vector<Array<std::string, 2>> opts)
