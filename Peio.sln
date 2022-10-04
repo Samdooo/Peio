@@ -23,6 +23,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GUI", "GUI\GUI.vcxproj", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Voxel Editor", "Voxel Editor\Voxel Editor.vcxproj", "{686608CA-63CE-45D8-A743-AE8E0A5F8D7F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dimension Viewer", "Dimension Viewer\Dimension Viewer.vcxproj", "{338326FE-1D4D-4681-835D-2B2A14DE8F14}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -69,6 +71,10 @@ Global
 		{686608CA-63CE-45D8-A743-AE8E0A5F8D7F}.Debug|x64.Build.0 = Debug|x64
 		{686608CA-63CE-45D8-A743-AE8E0A5F8D7F}.Release|x64.ActiveCfg = Release|x64
 		{686608CA-63CE-45D8-A743-AE8E0A5F8D7F}.Release|x64.Build.0 = Release|x64
+		{338326FE-1D4D-4681-835D-2B2A14DE8F14}.Debug|x64.ActiveCfg = Debug|x64
+		{338326FE-1D4D-4681-835D-2B2A14DE8F14}.Debug|x64.Build.0 = Debug|x64
+		{338326FE-1D4D-4681-835D-2B2A14DE8F14}.Release|x64.ActiveCfg = Release|x64
+		{338326FE-1D4D-4681-835D-2B2A14DE8F14}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

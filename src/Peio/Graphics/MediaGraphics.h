@@ -22,10 +22,9 @@ namespace Peio::Gfx {
 		std::vector<Heap> readbackHeaps = {};
 		std::vector<CD3DX12_TEXTURE_COPY_LOCATION> copySrc = {};
 		std::vector<CD3DX12_TEXTURE_COPY_LOCATION> copyDst = {};
+		std::vector<byte*> buffers = {};
 		D3D12_PLACED_SUBRESOURCE_FOOTPRINT bufferFootprint = {};
 		D3D12_RANGE mapRange = {};
-
-		byte* buffer = nullptr;
 
 	};
 

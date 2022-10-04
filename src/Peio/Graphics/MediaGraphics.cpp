@@ -23,14 +23,14 @@ namespace Peio::Gfx {
 		readbackHeaps.resize(numBuffers);
 		copySrc.resize(numBuffers);
 		copyDst.resize(numBuffers);
+		buffers.resize(numBuffers);
 		for (UINT i = 0; i < numBuffers; i++) {
 			readbackHeaps[i].Init(D3D12_HEAP_TYPE_READBACK, CD3DX12_RESOURCE_DESC::Buffer(size.x() * size.y() * 4), D3D12_RESOURCE_STATE_COPY_DEST);
+			readbackHeaps[i].Map((void**)&buffers[i], 0, true);
 			copySrc[i] = CD3DX12_TEXTURE_COPY_LOCATION(renderTargets.GetRenderTargets()[i].GetBuffer(), 0);
 			copyDst[i] = CD3DX12_TEXTURE_COPY_LOCATION(readbackHeaps[i].GetBuffer(), bufferFootprint);
 		}
 		mapRange = { 0, (UINT64)size.x() * (UINT64)size.y() * 4ULL };
-
-		buffer = new byte[(UINT64)size.x() * (UINT64)size.y() * 4ULL];
 	}
 
 	void MediaGraphics::Clear(const Float4& color)
@@ -69,8 +69,6 @@ namespace Peio::Gfx {
 
 		renderTargets.NextBuffer();
 		cmdList.Reset(0, frameIndex);
-
-		readbackHeaps[frameIndex].Map((void**)&buffer, 0, true);
 	}
 
 	void MediaGraphics::Release()
@@ -81,10 +79,6 @@ namespace Peio::Gfx {
 		for (UINT i = 0; i < readbackHeaps.size(); i++) {
 			readbackHeaps[i].Release();
 		}
-		if (buffer) {
-			delete[] buffer;
-			buffer = nullptr;
-		}
 	}
 
 	MediaGraphics::~MediaGraphics()
@@ -94,7 +88,7 @@ namespace Peio::Gfx {
 
 	byte* MediaGraphics::GetBuffer() const
 	{
-		return buffer;
+		return buffers[(renderTargets.GetFrameIndex() + renderTargets.GetNumBuffers() - 1) % renderTargets.GetNumBuffers()];
 	}
 
 }
