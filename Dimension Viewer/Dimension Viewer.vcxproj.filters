@@ -18,6 +18,9 @@
     <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\RayVS.hlsl">
       <Filter>Source Files\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_old.hlsl">
+      <Filter>Source Files\Shaders</Filter>
+    </FxCompile>
     <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\RayPS.hlsl">
       <Filter>Source Files\Shaders</Filter>
     </FxCompile>

@@ -78,7 +78,7 @@ int main() {
 	};
 
 	Peio::Gfx::MediaGraphics graphics;
-	graphics.Init(size, 1);
+	graphics.Init(size, 3);
 	
 	Peio::Vxl::FullscreenRenderer renderer;
 	renderer.Init(graphics.GetCommandList(), "Resources/Shaders/RayVS.cso", "Resources/Shaders/RayPS.cso",
@@ -109,7 +109,7 @@ int main() {
 
 	Peio::Gfx::SubresourceBuffer<UINT> raysPerBounceBuffer;
 	raysPerBounceBuffer.Allocate(3);
-	raysPerBounceBuffer[0] = 2;
+	raysPerBounceBuffer[0] = 512;
 	raysPerBounceBuffer[1] = 2;
 	raysPerBounceBuffer[2] = 2;
 	Peio::Gfx::BufferSRV raysPerBounceSrv;
@@ -148,7 +148,7 @@ int main() {
 		{
 			{ 0.0f, 0.0f, 0.0f },
 			{ 0.8f, 0.8f, 0.8f },
-			1.0f
+			0.0f
 		}
 	};
 	Peio::Gfx::BufferSRV sphereSrv;

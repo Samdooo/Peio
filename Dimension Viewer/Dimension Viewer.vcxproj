@@ -96,6 +96,9 @@
     <ClCompile Include="..\src\Peio\Dimension Viewer\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Essentials\Essentials.vcxproj">
+      <Project>{50498e11-d99c-4f9c-9e34-8c9bb140e7b3}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Graphics\Graphics.vcxproj">
       <Project>{6b7904eb-2ed1-4f3f-a434-3630e7531a87}</Project>
     </ProjectReference>
@@ -109,7 +112,11 @@
   <ItemGroup>
     <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\RayPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_old.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\RayVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
