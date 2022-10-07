@@ -18,11 +18,25 @@
     <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\RayVS.hlsl">
       <Filter>Source Files\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_old.hlsl">
-      <Filter>Source Files\Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\RayPS.hlsl">
       <Filter>Source Files\Shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_input.hlsli">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_random.hlsli">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_rect.hlsli">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_sphere.hlsli">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_trace.hlsli">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -113,15 +113,17 @@
     <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\RayPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_old.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
     <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\RayVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_input.hlsli" />
+    <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_random.hlsli" />
+    <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_rect.hlsli" />
+    <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_sphere.hlsli" />
+    <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_trace.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
