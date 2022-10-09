@@ -110,6 +110,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\DenoisePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\DenoiseVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\RayPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
@@ -119,11 +127,13 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_input.hlsli" />
+    <None Include="..\src\Peio\Dimension Viewer\Shaders\Ray_input.hlsli" />
+    <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_light.hlsli" />
     <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_random.hlsli" />
     <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_rect.hlsli" />
     <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_sphere.hlsli" />
     <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_trace.hlsli" />
+    <None Include="..\src\Peio\Dimension Viewer\Shaders\Ray_math.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
