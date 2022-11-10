@@ -1,10 +1,10 @@
 #pragma once
 
 #include "WindowsHeader.h"
-#include "..\EventHandler.h"
+#include "..\Procedure.h"
+#include "..\Exception.h"
 
 #include <unordered_set>
-#include <unordered_map>
 #include <typeinfo>
 
 namespace Peio::Win {
@@ -23,43 +23,23 @@ namespace Peio::Win {
 
 	struct PEIO_WIN_EXPORT Input {
 
-		static void AddListener(EventHandler<WinMessageEvent>* listener);
-
-		//template <typename... T_events>
-		//static void AddEventHandler(EventHandler<T_events...>* eventHandler) {
-		//	(eventHandlers[typeid(T_events).hash_code()].insert(static_cast<EventHandler<>*>(eventHandler)), ...);
-		//}
-		//
-		//template <typename... T_events>
-		//static void RemoveEventHandler(EventHandler<T_events...>* eventHandler) {
-		//	(eventHandlers.at(typeid(T_events).hash_code()).erase(static_cast<EventHandler<>*>(eventHandler)), ...);
-		//}
-		//
-		//template <typename T_event>
-		//static void Handle(T_event& event) {
-		//	if (!eventHandlers.count(typeid(T_event).hash_code()))
-		//		return;
-		//	std::unordered_set<EventHandler<>*>& handlers = eventHandlers.at(typeid(T_event).hash_code());
-		//	for (EventHandler<>* handler : handlers)
-		//		handler->Handle(event);
-		//}
-		//
-		//template <typename T_event>
-		//static void HandleNew(T_event event) {
-		//	Handle(event);
-		//}
+		static void AddListener(Procedure<WinEvent*>* listener);
+		static void RemoveListener(Procedure<WinEvent*>* listener);
 
 		static LRESULT CALLBACK WindowProc(HWND, UINT, WPARAM, LPARAM);
+		static void HandleEvent(WinEvent* event);
 
-		//static HandlerSet handlers;
-		static BaseHandlerSet<WinEvent> eventHandlers;
+		template <typename T_event>
+		static void HandleNewEvent(T_event event) {
+			HandleEvent(&event);
+		}
 
 	protected:
 
-		static std::vector<EventHandler<WinMessageEvent>*> listeners;
+		static std::unordered_set<Procedure<WinEvent*>*> listeners;
 
 	};
 
-	using Listener = PEIO_WIN_EXPORT EventHandler<WinMessageEvent>;
+	using Listener = PEIO_WIN_EXPORT Procedure<WinMessageEvent*>;
 
 }

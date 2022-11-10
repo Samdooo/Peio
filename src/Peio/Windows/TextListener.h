@@ -11,10 +11,12 @@ namespace Peio::Win {
 		TextEvent(MSG msg, char character, ushort repeat, bool prev) : WinEvent(msg), character(character), repeat(repeat), prev(prev) {}
 	};
 
-	struct PEIO_WIN_EXPORT TextListener : public Listener {
+	//struct PEIO_WIN_EXPORT TextListener : public Listener {
+	//
+	//	bool Handle(WinMessageEvent* event) override;
+	//
+	//};
 
-		bool Handle(WinMessageEvent* event) override;
-
-	};
+	extern PEIO_WIN_EXPORT Procedure<WinEvent*> textListener;
 
 }

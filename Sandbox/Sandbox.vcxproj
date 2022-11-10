@@ -76,7 +76,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\dev\C++\Peio\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,23 +107,14 @@
     <ClCompile Include="src\main5.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="src\Media 1.cpp" />
+    <ClCompile Include="src\Media 1.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\Windows 1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Essentials\Essentials.vcxproj">
       <Project>{50498e11-d99c-4f9c-9e34-8c9bb140e7b3}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Graphics\Graphics.vcxproj">
-      <Project>{6b7904eb-2ed1-4f3f-a434-3630e7531a87}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\GUI\GUI.vcxproj">
-      <Project>{202739bc-31a4-491d-b640-21b5eb627ee9}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Media\Media.vcxproj">
-      <Project>{ecf3ac61-0f83-4734-96e7-295ff7ba9536}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Voxels\Voxels.vcxproj">
-      <Project>{cee25723-2e4b-468d-943a-a96da258a44b}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Windows\Windows.vcxproj">
       <Project>{19a3160d-a6d1-4654-bb9d-224526fa4d5d}</Project>

@@ -3,13 +3,19 @@
 
 namespace Peio::Win {
 
-	std::vector<EventHandler<WinMessageEvent>*> Input::listeners = {};
-	BaseHandlerSet<WinEvent> Input::eventHandlers = {};
-	//HandlerSet Input::eventHandlers.Handlers;
+	std::unordered_set<Procedure<WinEvent*>*> Input::listeners = {};
 
-	void Input::AddListener(EventHandler<WinMessageEvent>* listener)
+	void Input::AddListener(Procedure<WinEvent*>* listener)
 	{
-		listeners.push_back(listener);
+		listeners.insert(listener);
+	}
+
+	void Input::RemoveListener(Procedure<WinEvent*>* listener)
+	{
+		if (!listeners.count(listener)) {
+			throw PEIO_EXCEPTION("EventHandler not found in current set.");
+		}
+		listeners.erase(listener);
 	}
 
 	LRESULT Input::WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -19,14 +25,18 @@ namespace Peio::Win {
 		message.returnDefaultProc = true;
 		message.returnValue = 0;
 
-		for (EventHandler<WinMessageEvent>* listener : listeners) {
-			listener->Handle(&message);
-		}
+		HandleEvent(&message);
 
 		if (message.returnDefaultProc)
 			return DefWindowProc(hwnd, msg, wParam, lParam);
 		else
 			return message.returnValue;
+	}
+
+	void Input::HandleEvent(WinEvent* event)
+	{
+		for (Procedure<WinEvent*>* listener : listeners)
+			listener->operator()(event);
 	}
 
 }

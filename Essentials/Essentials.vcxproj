@@ -96,12 +96,9 @@
     <ClInclude Include="..\src\Peio\FunctionHash.h" />
     <ClInclude Include="..\src\Peio\Offset.h" />
     <ClInclude Include="..\src\Peio\PeioHeader.h" />
-    <ClInclude Include="..\src\Peio\EventHandler.h" />
+    <ClInclude Include="..\src\Peio\Procedure.h" />
     <ClInclude Include="..\src\Peio\Tree.h" />
     <ClInclude Include="..\src\Peio\TypeMap.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\src\Peio\EventHandler.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

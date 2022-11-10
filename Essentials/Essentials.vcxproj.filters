@@ -16,9 +16,6 @@
     <ClInclude Include="..\src\Peio\Exception.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Peio\EventHandler.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Peio\Clock.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -37,10 +34,8 @@
     <ClInclude Include="..\src\Peio\FunctionHash.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\src\Peio\EventHandler.cpp">
+    <ClInclude Include="..\src\Peio\Procedure.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
+    </ClInclude>
   </ItemGroup>
 </Project>

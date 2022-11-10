@@ -14,7 +14,7 @@ namespace Peio::Win {
 		BOOL ret = RegisterRawInputDevices(&rid, 1, sizeof(rid));
 	}
 
-	bool RawKeyboardListener::Handle(WinMessageEvent* event)
+	Procedure<WinEvent*> rawKeyboardListener = Listener([](WinMessageEvent* event)
 	{
 		if (event->msg.message == WM_INPUT) {
 			UINT inputSize = 0;
@@ -29,13 +29,13 @@ namespace Peio::Win {
 			bool foreground = !event->msg.wParam;
 
 			if ((input.data.keyboard.Flags & 1) == 0) {
-				Input::eventHandlers.HandleNew(RawKeyDownEvent{ event->msg, foreground, input.data.keyboard.VKey });
+				Input::HandleNewEvent(RawKeyDownEvent{ event->msg, foreground, input.data.keyboard.VKey });
 			}
 			else if ((input.data.keyboard.Flags & 1) == 1) {
-				Input::eventHandlers.HandleNew(RawKeyUpEvent{ event->msg, foreground, input.data.keyboard.VKey });
+				Input::HandleNewEvent(RawKeyUpEvent{ event->msg, foreground, input.data.keyboard.VKey });
 			}
 		}
 		return false;
-	}
+	});
 
 }

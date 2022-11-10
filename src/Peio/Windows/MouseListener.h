@@ -36,10 +36,12 @@ namespace Peio::Win {
 		MouseWheelEvent(MSG msg, short delta, Int2 position) : WinEvent(msg), delta(delta), position(position) {}
 	};
 
-	struct PEIO_WIN_EXPORT MouseListener : public Listener {
+	//struct PEIO_WIN_EXPORT MouseListener : public Listener {
+	//
+	//	bool Handle(WinMessageEvent* event) override;
+	//
+	//};
 
-		bool Handle(WinMessageEvent* event) override;
-
-	};
+	extern PEIO_WIN_EXPORT Procedure<WinEvent*> mouseListener;
 
 }

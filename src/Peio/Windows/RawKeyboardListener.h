@@ -16,8 +16,8 @@ namespace Peio::Win {
 
 		static void Register(HWND hwnd);
 
-		bool Handle(WinMessageEvent* event) override;
-
 	};
+
+	extern PEIO_WIN_EXPORT Procedure<WinEvent*> rawKeyboardListener;
 
 }
