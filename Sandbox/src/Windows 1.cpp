@@ -1,6 +1,6 @@
 #include <Peio/Windows/Window.h>
 #include <Peio/Windows/Input.h>
-#include <Peio/Windows/KeyboardListener.h>
+#include <Peio/Windows/RawKeyboardListener.h>
 #include <iostream>
 
 int main() {
@@ -11,12 +11,13 @@ int main() {
 	window.CreateWindow("Peio Sandbox", WS_OVERLAPPEDWINDOW, 0, { 100, 100 }, { 1280, 720 });
 	window.Show();
 
-	Peio::Win::Input::AddListener(&Peio::Win::keyboardListener);
-	//
-	//Peio::Procedure<Peio::Win::WinEvent*> proc = Peio::Procedure<Peio::Win::KeyboardEvent*>([](Peio::Win::KeyboardEvent* e) {
-	//	std::cout << "Keyboard " << e->key << std::endl;
-	//});
-	//Peio::Win::Input::AddListener(&proc);
+	Peio::Win::RawKeyboardListener::Register(window.GetHWND());
+	Peio::Win::Input::AddListener(&Peio::Win::rawKeyboardListener);
+
+	Peio::Procedure<Peio::Win::RawKeyDownEvent*> proc = [](Peio::Win::RawKeyDownEvent* e) {
+		std::cout << e->key << std::endl;
+	};
+	Peio::Win::Input::AddListener(&proc);
 
 	while (true) {
 		window.HandleMessages();

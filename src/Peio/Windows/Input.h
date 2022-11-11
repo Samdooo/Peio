@@ -23,8 +23,13 @@ namespace Peio::Win {
 
 	struct PEIO_WIN_EXPORT Input {
 
-		static void AddListener(Procedure<WinEvent*>* listener);
-		static void RemoveListener(Procedure<WinEvent*>* listener);
+		template <typename T_event>
+		static void AddListener(Procedure<T_event*>* listener) {
+			listeners.insert({ (size_t)listener, *listener });
+		}
+		static void RemoveListener(Procedure<WinEvent*>* listener) {
+			listeners.erase((size_t)listener);
+		}
 
 		static LRESULT CALLBACK WindowProc(HWND, UINT, WPARAM, LPARAM);
 		static void HandleEvent(WinEvent* event);
@@ -36,7 +41,7 @@ namespace Peio::Win {
 
 	protected:
 
-		static std::unordered_set<Procedure<WinEvent*>*> listeners;
+		static std::unordered_map<size_t, Procedure<WinEvent*>> listeners;
 
 	};
 

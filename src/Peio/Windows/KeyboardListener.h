@@ -20,6 +20,6 @@ namespace Peio::Win {
 	//
 	//};
 
-	extern PEIO_WIN_EXPORT Procedure<WinEvent*> keyboardListener;
+	extern PEIO_WIN_EXPORT Listener keyboardListener;
 
 }

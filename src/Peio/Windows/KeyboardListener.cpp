@@ -3,7 +3,7 @@
 
 namespace Peio::Win {
 
-	Procedure<WinEvent*> keyboardListener = Listener([](WinMessageEvent* event) {
+	Listener keyboardListener = [](WinMessageEvent* event) {
 		switch (event->msg.message) {
 		case WM_KEYDOWN:
 			Input::HandleNewEvent(KeydownEvent{ event->msg, (uchar)event->msg.wParam, LOWORD(event->msg.lParam), bool(event->msg.lParam & (1 << 30)) });
@@ -14,6 +14,6 @@ namespace Peio::Win {
 		default:
 			break;
 		}
-	});
+	};
 
 }

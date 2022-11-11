@@ -3,20 +3,7 @@
 
 namespace Peio::Win {
 
-	std::unordered_set<Procedure<WinEvent*>*> Input::listeners = {};
-
-	void Input::AddListener(Procedure<WinEvent*>* listener)
-	{
-		listeners.insert(listener);
-	}
-
-	void Input::RemoveListener(Procedure<WinEvent*>* listener)
-	{
-		if (!listeners.count(listener)) {
-			throw PEIO_EXCEPTION("EventHandler not found in current set.");
-		}
-		listeners.erase(listener);
-	}
+	std::unordered_map<size_t, Procedure<WinEvent*>> Input::listeners = {};
 
 	LRESULT Input::WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
@@ -35,8 +22,8 @@ namespace Peio::Win {
 
 	void Input::HandleEvent(WinEvent* event)
 	{
-		for (Procedure<WinEvent*>* listener : listeners)
-			listener->operator()(event);
+		for (auto& listener : listeners)
+			listener.second(event);
 	}
 
 }

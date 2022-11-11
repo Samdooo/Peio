@@ -3,7 +3,7 @@
 
 namespace Peio::Win {
 
-	Procedure<WinEvent*> mouseListener = Listener([](WinMessageEvent* event)
+	Listener mouseListener = [](WinMessageEvent* event)
 	{
 		Int2 pos = { GET_X_LPARAM(event->msg.lParam), GET_Y_LPARAM(event->msg.lParam) };
 		if (event->msg.message == WM_MOUSEWHEEL)
@@ -44,6 +44,6 @@ namespace Peio::Win {
 			break;
 		}
 		return false;
-	});
+	};
 
 }

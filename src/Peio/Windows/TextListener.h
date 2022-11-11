@@ -17,6 +17,6 @@ namespace Peio::Win {
 	//
 	//};
 
-	extern PEIO_WIN_EXPORT Procedure<WinEvent*> textListener;
+	extern PEIO_WIN_EXPORT Listener textListener;
 
 }

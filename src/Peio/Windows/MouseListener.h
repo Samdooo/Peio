@@ -42,6 +42,6 @@ namespace Peio::Win {
 	//
 	//};
 
-	extern PEIO_WIN_EXPORT Procedure<WinEvent*> mouseListener;
+	extern PEIO_WIN_EXPORT Listener mouseListener;
 
 }

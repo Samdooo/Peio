@@ -14,28 +14,29 @@ namespace Peio::Win {
 		BOOL ret = RegisterRawInputDevices(&rid, 1, sizeof(rid));
 	}
 
-	Procedure<WinEvent*> rawKeyboardListener = Listener([](WinMessageEvent* event)
+	Listener rawKeyboardListener = [](WinMessageEvent* event)
 	{
 		if (event->msg.message == WM_INPUT) {
 			UINT inputSize = 0;
 			GetRawInputData((HRAWINPUT)event->msg.lParam, RID_INPUT, nullptr, &inputSize, sizeof(RAWINPUTHEADER));
 
-			RAWINPUT input = {};
-			GetRawInputData((HRAWINPUT)event->msg.lParam, RID_INPUT, &input, &inputSize, sizeof(RAWINPUTHEADER));
+			RAWINPUT* input = (RAWINPUT*)malloc(inputSize);
+			GetRawInputData((HRAWINPUT)event->msg.lParam, RID_INPUT, input, &inputSize, sizeof(RAWINPUTHEADER));
 
-			if (input.header.dwType != RIM_TYPEKEYBOARD) {
+			if (input->header.dwType != RIM_TYPEKEYBOARD) {
 				return false;
 			}
 			bool foreground = !event->msg.wParam;
 
-			if ((input.data.keyboard.Flags & 1) == 0) {
-				Input::HandleNewEvent(RawKeyDownEvent{ event->msg, foreground, input.data.keyboard.VKey });
+			if ((input->data.keyboard.Flags & 1) == 0) {
+				Input::HandleNewEvent(RawKeyDownEvent{ event->msg, foreground, input->data.keyboard.VKey });
 			}
-			else if ((input.data.keyboard.Flags & 1) == 1) {
-				Input::HandleNewEvent(RawKeyUpEvent{ event->msg, foreground, input.data.keyboard.VKey });
+			else if ((input->data.keyboard.Flags & 1) == 1) {
+				Input::HandleNewEvent(RawKeyUpEvent{ event->msg, foreground, input->data.keyboard.VKey });
 			}
+			delete input;
 		}
 		return false;
-	});
+	};
 
 }
