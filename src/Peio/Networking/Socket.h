@@ -73,8 +73,6 @@ namespace Peio::Net {
 			}
 		}
 
-	protected:
-
 		using _T_sock = T_sock<Socket<T_socks...>>;
 		static constexpr long events = _T_sock::events | Socket<T_socks...>::events;
 

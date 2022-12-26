@@ -13,8 +13,6 @@ namespace Peio::Net {
 	template <typename T_sock, template <typename> typename T_super, long L_event>
 	struct EventSocket : public T_sock {
 
-	protected:
-
 		static constexpr long events = (1 << L_event);
 
 		void Update(EventHandler<>* handler, WSANETWORKEVENTS& netEvents) {

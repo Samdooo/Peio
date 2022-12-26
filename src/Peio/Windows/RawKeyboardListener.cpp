@@ -34,7 +34,7 @@ namespace Peio::Win {
 			else if ((input->data.keyboard.Flags & 1) == 1) {
 				Input::HandleNewEvent(RawKeyUpEvent{ event->msg, foreground, input->data.keyboard.VKey });
 			}
-			delete input;
+			free(input);
 		}
 		return false;
 	};

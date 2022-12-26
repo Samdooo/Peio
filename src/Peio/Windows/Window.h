@@ -43,11 +43,14 @@ namespace Peio::Win {
 
 		~Window();
 
+		ProcedureSet<WinEvent*> listeners = {};
+
 	protected:
 
 		HWND hwnd = nullptr;
 		std::wstring wName = {};
 		WNDCLASSEX wndClass = {};
+		Procedure<WinEvent*> listener = {};
 
 	};
 

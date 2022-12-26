@@ -39,6 +39,12 @@ namespace Peio::Win {
 		if (!hwnd) {
 			throw PEIO_WIN_EXCEPTION("Failed to create window.");
 		}
+
+		listener = [this](WinEvent* e) {
+			if (e->msg.hwnd == hwnd)
+				listeners(e);
+		};
+		Input::listeners.Insert(&listener);
 	}
 
 	void Window::SetAbsoluteStyles(LONG styles)
@@ -95,6 +101,8 @@ namespace Peio::Win {
 
 	Window::~Window()
 	{
+		if (Input::listeners.Contains(&listener))
+			Input::listeners.Remove(&listener);
 		if (hwnd) {
 			DestroyWindow(hwnd);
 			hwnd = nullptr;
@@ -133,6 +141,8 @@ namespace Peio::Win {
 
 	void Window::Close()
 	{
+		if (Input::listeners.Contains(&listener))
+			Input::listeners.Remove(&listener);
 		CloseWindow(hwnd);
 	}
 

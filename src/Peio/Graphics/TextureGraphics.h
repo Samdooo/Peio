@@ -22,7 +22,6 @@ namespace Peio::Gfx {
 		RenderTexture texture = {};
 		DescriptorHeap srvHeap = {};
 		DescriptorHeap rtvHeap = {};
-		//Heap* frontBuffer = nullptr;
 
 	};
 

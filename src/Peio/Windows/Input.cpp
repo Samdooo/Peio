@@ -3,7 +3,7 @@
 
 namespace Peio::Win {
 
-	std::unordered_map<size_t, Procedure<WinEvent*>> Input::listeners = {};
+	ProcedureSet<WinEvent*> Input::listeners = {};
 
 	LRESULT Input::WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
@@ -12,18 +12,12 @@ namespace Peio::Win {
 		message.returnDefaultProc = true;
 		message.returnValue = 0;
 
-		HandleEvent(&message);
+		listeners(&message);
 
 		if (message.returnDefaultProc)
 			return DefWindowProc(hwnd, msg, wParam, lParam);
 		else
 			return message.returnValue;
-	}
-
-	void Input::HandleEvent(WinEvent* event)
-	{
-		for (auto& listener : listeners)
-			listener.second(event);
 	}
 
 }

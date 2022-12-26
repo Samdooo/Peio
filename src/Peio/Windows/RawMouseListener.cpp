@@ -46,7 +46,7 @@ namespace Peio::Win {
 			else if (input->data.mouse.usButtonFlags & RI_MOUSE_MIDDLE_BUTTON_UP)
 				Input::HandleNewEvent(RawMouseButtonUpEvent{ event->msg, foreground, MouseButton::MIDDLE });
 
-			delete input;
+			free(input);
 		}
 		return false;
 	};
