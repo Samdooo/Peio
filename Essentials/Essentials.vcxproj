@@ -90,6 +90,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\Array.h" />
+    <ClInclude Include="..\src\Peio\Buffer.h" />
     <ClInclude Include="..\src\Peio\Clock.h" />
     <ClInclude Include="..\src\Peio\EventHandler.h" />
     <ClInclude Include="..\src\Peio\Exception.h" />

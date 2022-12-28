@@ -40,6 +40,9 @@
     <ClInclude Include="..\src\Peio\EventHandler.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Buffer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\EventHandler.cpp">
