@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Graphics.h"
-#include "ShaderResourceView.h"
+#include "Resource.h"
 
 namespace Peio::Gfx {
 
@@ -12,14 +12,13 @@ namespace Peio::Gfx {
 		void Clear(const Float4& color) override;
 		void Render() override;
 
-		void Release();
 		~MediaGraphics();
 
 		_NODISCARD byte* GetBuffer() const;
 
 	protected:
 
-		std::vector<Heap> readbackHeaps = {};
+		std::vector<Resource> readbackResources = {};
 		std::vector<CD3DX12_TEXTURE_COPY_LOCATION> copySrc = {};
 		std::vector<CD3DX12_TEXTURE_COPY_LOCATION> copyDst = {};
 		std::vector<byte*> buffers = {};

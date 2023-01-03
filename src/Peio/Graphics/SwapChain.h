@@ -8,8 +8,8 @@ namespace Peio::Gfx {
 
 		protected:
 
-			Microsoft::WRL::ComPtr<IDXGIFactory2> factory = nullptr;
-			Microsoft::WRL::ComPtr<IDXGISwapChain3> swapChain = nullptr;
+			ComPtr<IDXGIFactory2> factory = nullptr;
+			ComPtr<IDXGISwapChain3> swapChain = nullptr;
 
 		public:
 
@@ -19,8 +19,6 @@ namespace Peio::Gfx {
 
 			void GetBuffer(UINT buffer, ID3D12Resource** renderTarget);
 			UINT SwapBuffers();
-
-			void Release();
 
 			~SwapChain();
 

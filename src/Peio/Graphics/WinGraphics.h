@@ -19,8 +19,6 @@ namespace Peio::Gfx {
 		void Clear(const Float4& color) override;
 		void Render() override;
 
-		void Release();
-
 		~WinGraphics();
 
 	};

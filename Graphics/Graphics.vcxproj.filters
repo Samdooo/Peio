@@ -58,6 +58,24 @@
     <ClInclude Include="..\src\Peio\Graphics\MediaGraphics.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\Resource.h">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\UploadResource.h">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\Descriptor.h">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\DescriptorHeap.h">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\InputParameter.h">
+      <Filter>Source Files\Utils\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\InputLayout.h">
+      <Filter>Source Files\Utils\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Graphics\Global.cpp">
@@ -83,6 +101,24 @@
     </ClCompile>
     <ClCompile Include="..\src\Peio\Graphics\MediaGraphics.cpp">
       <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\Resource.cpp">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\UploadResource.cpp">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\Descriptor.cpp">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\DescriptorHeap.cpp">
+      <Filter>Source Files\Utils\Heaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\InputParameter.cpp">
+      <Filter>Source Files\Utils\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\InputLayout.cpp">
+      <Filter>Source Files\Utils\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

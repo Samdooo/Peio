@@ -3,7 +3,7 @@
 
 void Peio::Gfx::WinGraphics::Init(HWND hwnd, Long2 size, UINT numBuffers, bool fullscreen)
 {
-	Release();
+	WinGraphics::~WinGraphics();
 
 	this->size = size;
 	cmdQueue.Init();
@@ -21,10 +21,9 @@ void Peio::Gfx::WinGraphics::Resize(HWND hwnd, Long2 size, UINT numBuffers, bool
 
 	renderTargets.Init(numBuffers);
 	for (UINT i = 0; i < numBuffers; i++) {
-		swapChain.GetBuffer(i, renderTargets.GetRenderTargets()[i].GetBufferPtr());
+		swapChain.GetBuffer(i, renderTargets.GetRenderTarget(i)->GetResourcePtr());
 	}
-
-	renderTargets.CreateRenderTargets();
+	renderTargets.Put();
 }
 
 void Peio::Gfx::WinGraphics::Clear(const Float4& color)
@@ -39,17 +38,17 @@ void Peio::Gfx::WinGraphics::Clear(const Float4& color)
 	cmdList.GetAllocator(1, frameIndex).Wait();
 	cmdList.Reset(1, frameIndex);
 
-	renderTargets.GetCurrentRenderTarget().Transition(D3D12_RESOURCE_STATE_RENDER_TARGET, cmdList.GetCommandList());
-	renderTargets.SetRenderTarget(cmdList.GetCommandList());
+	renderTargets.GetRenderTarget(frameIndex)->Transition(D3D12_RESOURCE_STATE_RENDER_TARGET, cmdList.GetCommandList());
+	renderTargets.SetCurrent(cmdList.GetCommandList());
 	
-	renderTargets.ClearRenderTarget(cmdList.GetCommandList(), color);
+	renderTargets.ClearCurrent(cmdList.GetCommandList(), color);
 }
 
 void Peio::Gfx::WinGraphics::Render()
 {
 	UINT frameIndex = renderTargets.GetFrameIndex();
 
-	renderTargets.GetCurrentRenderTarget().Transition(D3D12_RESOURCE_STATE_PRESENT, cmdList.GetCommandList());
+	renderTargets.GetRenderTarget(frameIndex)->Transition(D3D12_RESOURCE_STATE_PRESENT, cmdList.GetCommandList());
 
 	cmdList.Close();
 	cmdList.GetAllocator(0, frameIndex).Wait();
@@ -63,15 +62,6 @@ void Peio::Gfx::WinGraphics::Render()
 	cmdList.Reset(0, frameIndex);
 }
 
-void Peio::Gfx::WinGraphics::Release()
-{
-	cmdQueue.Release();
-	cmdList.Release();
-	swapChain.Release();
-	renderTargets.Release();
-}
-
 Peio::Gfx::WinGraphics::~WinGraphics()
 {
-	Release();
 }

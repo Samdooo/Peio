@@ -26,3 +26,10 @@
 #pragma comment(lib, "DXGI.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "d3dcompiler.lib")
+
+namespace Peio::Gfx {
+
+	template <typename T>
+	using ComPtr = Microsoft::WRL::ComPtr<T>;
+
+}

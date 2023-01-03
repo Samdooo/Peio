@@ -4,7 +4,7 @@
 void Peio::Gfx::SwapChain::Init(ID3D12CommandQueue* cmdQueue, HWND hwnd, Long2 size, UINT numBuffers, bool fullscreen)
 {
 	HRESULT ret;
-	Release();
+	SwapChain::~SwapChain();
 
 	ret = CreateDXGIFactory1(__uuidof(IDXGIFactory2), &factory);
 	if (ret != 0) {
@@ -79,20 +79,9 @@ UINT Peio::Gfx::SwapChain::SwapBuffers()
 	return swapChain->GetCurrentBackBufferIndex();
 }
 
-void Peio::Gfx::SwapChain::Release()
-{
-	if (swapChain) {
-		swapChain->SetFullscreenState(FALSE, nullptr); /* To avoid getting weird errors */
-		swapChain.ReleaseAndGetAddressOf();
-		swapChain = nullptr;
-	}
-	if (factory) {
-		factory.ReleaseAndGetAddressOf();
-		factory = nullptr;
-	}
-}
-
 Peio::Gfx::SwapChain::~SwapChain()
 {
-	Release();
+	if (swapChain) {
+		swapChain->SetFullscreenState(FALSE, nullptr);
+	}
 }

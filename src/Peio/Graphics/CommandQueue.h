@@ -8,7 +8,7 @@ namespace Peio::Gfx {
 
 	protected:
 
-		Microsoft::WRL::ComPtr<ID3D12CommandQueue> cmdQueue = nullptr;
+		ComPtr<ID3D12CommandQueue> cmdQueue = nullptr;
 
 	public:
 
@@ -16,8 +16,6 @@ namespace Peio::Gfx {
 		void Execute(ID3D12CommandList* const* lists, UINT numLists);
 
 		_NODISCARD ID3D12CommandQueue* GetQueue() const noexcept;
-
-		void Release();
 
 		~CommandQueue();
 

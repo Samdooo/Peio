@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -96,6 +96,7 @@
     <ClInclude Include="..\src\Peio\Exception.h" />
     <ClInclude Include="..\src\Peio\Files.h" />
     <ClInclude Include="..\src\Peio\FunctionHash.h" />
+    <ClInclude Include="..\src\Peio\Group.h" />
     <ClInclude Include="..\src\Peio\Offset.h" />
     <ClInclude Include="..\src\Peio\PeioHeader.h" />
     <ClInclude Include="..\src\Peio\Procedure.h" />

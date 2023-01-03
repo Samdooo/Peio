@@ -3,7 +3,7 @@
 
 void Peio::Gfx::CommandQueue::Init()
 {
-	Release();
+	CommandQueue::~CommandQueue();
 
 	D3D12_COMMAND_QUEUE_DESC desc = {};
 	HRESULT ret = device->CreateCommandQueue(&desc, __uuidof(ID3D12CommandQueue), &cmdQueue);
@@ -22,15 +22,7 @@ ID3D12CommandQueue* Peio::Gfx::CommandQueue::GetQueue() const noexcept
 	return cmdQueue.Get();
 }
 
-void Peio::Gfx::CommandQueue::Release()
-{
-	if (cmdQueue) {
-		cmdQueue.ReleaseAndGetAddressOf();
-		cmdQueue = nullptr;
-	}
-}
-
 Peio::Gfx::CommandQueue::~CommandQueue()
 {
-	Release();
+	
 }

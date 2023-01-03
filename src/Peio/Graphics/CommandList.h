@@ -11,7 +11,7 @@ namespace Peio::Gfx {
 		CommandAllocator** allocators = nullptr;
 		UINT numBuffers = 0, numAllocators = 0;
 
-		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> cmdList = nullptr;
+		ComPtr<ID3D12GraphicsCommandList> cmdList = nullptr;
 
 		ID3D12CommandList* cmdLists[1] = {};
 
@@ -26,8 +26,6 @@ namespace Peio::Gfx {
 
 		_NODISCARD ID3D12GraphicsCommandList* GetCommandList() const noexcept;
 		_NODISCARD ID3D12CommandList* const* GetCommandLists() const noexcept;
-
-		void Release();
 
 		~CommandList();
 

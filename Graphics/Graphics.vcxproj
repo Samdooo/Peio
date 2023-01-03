@@ -95,22 +95,38 @@
     <ClInclude Include="..\src\Peio\Graphics\CommandList.h" />
     <ClInclude Include="..\src\Peio\Graphics\CommandQueue.h" />
     <ClInclude Include="..\src\Peio\Graphics\D3DBPP.h" />
+    <ClInclude Include="..\src\Peio\Graphics\Descriptor.h" />
+    <ClInclude Include="..\src\Peio\Graphics\DescriptorHeap.h" />
     <ClInclude Include="..\src\Peio\Graphics\Exception.h" />
     <ClInclude Include="..\src\Peio\Graphics\Graphics.h" />
     <ClInclude Include="..\src\Peio\Graphics\GraphicsHeader.h" />
     <ClInclude Include="..\src\Peio\Graphics\Global.h" />
-    <ClInclude Include="..\src\Peio\Graphics\MediaGraphics.h" />
+    <ClInclude Include="..\src\Peio\Graphics\InputLayout.h" />
+    <ClInclude Include="..\src\Peio\Graphics\InputParameter.h" />
+    <ClInclude Include="..\src\Peio\Graphics\Resource.h" />
+    <ClInclude Include="..\src\Peio\Graphics\MediaGraphics.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\src\Peio\Graphics\SwapChain.h" />
+    <ClInclude Include="..\src\Peio\Graphics\UploadResource.h" />
     <ClInclude Include="..\src\Peio\Graphics\WinGraphics.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Graphics\CommandAllocator.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\CommandList.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\CommandQueue.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\Descriptor.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\DescriptorHeap.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\Graphics.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\Global.cpp" />
-    <ClCompile Include="..\src\Peio\Graphics\MediaGraphics.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\InputLayout.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\InputParameter.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\Resource.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\MediaGraphics.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\src\Peio\Graphics\SwapChain.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\UploadResource.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\WinGraphics.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

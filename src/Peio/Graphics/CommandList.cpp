@@ -4,7 +4,7 @@
 void Peio::Gfx::CommandList::Init(ID3D12CommandQueue* cmdQueue, UINT numBuffers, UINT numAllocators)
 {
 	HRESULT ret;
-	Release();
+	CommandList::~CommandList();
 
 	this->numBuffers = numBuffers;
 	this->numAllocators = numAllocators;
@@ -58,22 +58,13 @@ ID3D12CommandList* const* Peio::Gfx::CommandList::GetCommandLists() const noexce
 	return cmdLists;
 }
 
-void Peio::Gfx::CommandList::Release()
+Peio::Gfx::CommandList::~CommandList()
 {
-	if (cmdList) {
-		cmdList.ReleaseAndGetAddressOf();
-		cmdList = nullptr;
-	}
 	if (allocators) {
 		for (UINT i = 0; i < numAllocators; i++)
-			PEIO_SAFE_DELETEALL(allocators[i]);
-
+			if (allocators[i])
+				delete[] allocators[i];
 		delete[] allocators;
 		allocators = nullptr;
 	}
-}
-
-Peio::Gfx::CommandList::~CommandList()
-{
-	Release();
 }

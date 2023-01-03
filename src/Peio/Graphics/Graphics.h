@@ -2,7 +2,7 @@
 
 #include "CommandQueue.h"
 #include "CommandList.h"
-#include "RenderTargetHeap.h"
+#include "DescriptorHeap.h"
 
 namespace Peio::Gfx {
 

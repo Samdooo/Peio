@@ -1,7 +1,7 @@
 #define PEIO_GFX_EXPORTING
 #include "Global.h"
 
-Microsoft::WRL::ComPtr<ID3D12Device> Peio::Gfx::device = nullptr;
+Peio::Gfx::ComPtr<ID3D12Device> Peio::Gfx::device = nullptr;
 
 void Peio::Gfx::Init()
 {

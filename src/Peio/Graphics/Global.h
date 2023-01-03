@@ -5,7 +5,7 @@
 
 namespace Peio::Gfx {
 
-		extern PEIO_GFX_EXPORT Microsoft::WRL::ComPtr<ID3D12Device> device;
+		extern PEIO_GFX_EXPORT ComPtr<ID3D12Device> device;
 
 		void PEIO_GFX_EXPORT Init();
 

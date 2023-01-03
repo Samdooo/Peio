@@ -4,7 +4,7 @@
 void Peio::Gfx::CommandAllocator::Init()
 {
 	HRESULT ret;
-	Release();
+	CommandAllocator::~CommandAllocator();
 
 	ret = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), &cmdAllocator);
 	if (ret != 0) {
@@ -50,20 +50,6 @@ void Peio::Gfx::CommandAllocator::Reset() const
 	}
 }
 
-void Peio::Gfx::CommandAllocator::Release()
-{
-	if (cmdAllocator) {
-		cmdAllocator.ReleaseAndGetAddressOf();
-		cmdAllocator = nullptr;
-	}
-	if (fence) {
-		fence.ReleaseAndGetAddressOf();
-		fence = nullptr;
-	}
-	fenceEvent = nullptr;
-	fenceTarget = 0;
-}
-
 ID3D12CommandAllocator* Peio::Gfx::CommandAllocator::GetAllocator() const noexcept
 {
 	return cmdAllocator.Get();
@@ -76,5 +62,9 @@ ID3D12Fence* Peio::Gfx::CommandAllocator::GetFence() const noexcept
 
 Peio::Gfx::CommandAllocator::~CommandAllocator()
 {
-	Release();
+	if (fenceEvent) {
+		CloseHandle(fenceEvent);
+		fenceEvent = nullptr;
+	}
+	fenceTarget = 0;
 }
