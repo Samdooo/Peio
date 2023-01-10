@@ -8,7 +8,7 @@ namespace Peio::Gfx {
 		MediaGraphics::~MediaGraphics();
 
 		cmdQueue.Init();
-		//cmdList.Init(cmdQueue.GetQueue(), numBuffers, 2);
+		cmdList.Init(cmdQueue.GetQueue(), numBuffers, 2);
 
 		bufferFootprint.Footprint.Width = (UINT)size.x();
 		bufferFootprint.Footprint.Height = size.y();
@@ -19,17 +19,17 @@ namespace Peio::Gfx {
 		renderTargets.Init(numBuffers, size);
 		renderTargets.Put();
 
-		//readbackResources.resize(numBuffers);
-		//copySrc.resize(numBuffers);
-		//copyDst.resize(numBuffers);
-		//buffers.resize(numBuffers);
-		//for (UINT i = 0; i < numBuffers; i++) {
-		//	readbackResources[i].Init(D3D12_HEAP_TYPE_READBACK, CD3DX12_RESOURCE_DESC::Buffer(size.x() * size.y() * 4), D3D12_RESOURCE_STATE_COPY_DEST);
-		//	readbackResources[i].Map((void**)&buffers[i], 0, true);
-		//	copySrc[i] = CD3DX12_TEXTURE_COPY_LOCATION(renderTargets.GetRenderTarget(i)->GetResource(), 0);
-		//	copyDst[i] = CD3DX12_TEXTURE_COPY_LOCATION(readbackResources[i].GetResource(), bufferFootprint);
-		//}
-		//mapRange = { 0, (UINT64)size.x() * (UINT64)size.y() * 4ULL };
+		readbackResources.resize(numBuffers);
+		copySrc.resize(numBuffers);
+		copyDst.resize(numBuffers);
+		buffers.resize(numBuffers);
+		for (UINT i = 0; i < numBuffers; i++) {
+			readbackResources[i].Init(D3D12_HEAP_TYPE_READBACK, CD3DX12_RESOURCE_DESC::Buffer(size.x() * size.y() * 4), D3D12_RESOURCE_STATE_COPY_DEST);
+			readbackResources[i].Map((void**)&buffers[i], 0, true);
+			copySrc[i] = CD3DX12_TEXTURE_COPY_LOCATION(renderTargets.GetRenderTarget(i)->GetResource(), 0);
+			copyDst[i] = CD3DX12_TEXTURE_COPY_LOCATION(readbackResources[i].GetResource(), bufferFootprint);
+		}
+		mapRange = { 0, (UINT64)size.x() * (UINT64)size.y() * 4ULL };
 	}
 
 	void MediaGraphics::Clear(const Float4& color)
@@ -81,6 +81,7 @@ namespace Peio::Gfx {
 	byte* MediaGraphics::GetBuffer() const
 	{
 		return buffers[(renderTargets.GetFrameIndex() + renderTargets.GetNumDescriptors() - 1) % renderTargets.GetNumDescriptors()];
+		//return buffers[renderTargets.GetFrameIndex()];
 	}
 
 }

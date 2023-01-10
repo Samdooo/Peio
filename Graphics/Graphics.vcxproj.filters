@@ -73,8 +73,20 @@
     <ClInclude Include="..\src\Peio\Graphics\InputParameter.h">
       <Filter>Source Files\Utils\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Peio\Graphics\InputLayout.h">
+    <ClInclude Include="..\src\Peio\Graphics\Renderer.h">
       <Filter>Source Files\Utils\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\VertexLayout.h">
+      <Filter>Source Files\Utils\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\StaticSampler.h">
+      <Filter>Source Files\Utils\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\Shader.h">
+      <Filter>Source Files\Utils\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\VertexBuffer.h">
+      <Filter>Source Files\Utils\Heaps</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -117,8 +129,20 @@
     <ClCompile Include="..\src\Peio\Graphics\InputParameter.cpp">
       <Filter>Source Files\Utils\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Peio\Graphics\InputLayout.cpp">
+    <ClCompile Include="..\src\Peio\Graphics\Renderer.cpp">
       <Filter>Source Files\Utils\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\VertexLayout.cpp">
+      <Filter>Source Files\Utils\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\StaticSampler.cpp">
+      <Filter>Source Files\Utils\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\Shader.cpp">
+      <Filter>Source Files\Utils\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\VertexBuffer.cpp">
+      <Filter>Source Files\Utils\Heaps</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

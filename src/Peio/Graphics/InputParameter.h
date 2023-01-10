@@ -54,6 +54,7 @@ namespace Peio::Gfx {
 		void Init(UINT numDescriptors);
 		void Put(Group<Descriptor, InputParameter> descriptor, UINT index);
 		
+		_NODISCARD D3D12_ROOT_PARAMETER CreateParameter() override;
 
 		void Set(ID3D12GraphicsCommandList* cmdList) const override;
 
@@ -62,6 +63,7 @@ namespace Peio::Gfx {
 		using DescriptorHeap::Put;
 
 		std::vector<Group<Descriptor, InputParameter>> descriptors = {};
+		std::vector<D3D12_DESCRIPTOR_RANGE> ranges = {};
 
 	};
 

@@ -75,6 +75,46 @@ namespace Peio::Gfx {
 		descriptors[index] = descriptor;
 	}
 
+	D3D12_ROOT_PARAMETER TableParameter::CreateParameter()
+	{
+		param = {};
+		param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+		param.ShaderVisibility = visibility;
+		
+		ranges.clear();
+		for (UINT i = 0; i < descriptors.size(); i++) {
+			D3D12_ROOT_PARAMETER p = descriptors[i].Get<InputParameter>()->CreateParameter();
+			D3D12_DESCRIPTOR_RANGE_TYPE type;
+			switch (p.ParameterType) {
+			case D3D12_ROOT_PARAMETER_TYPE_CBV:
+				type = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+				break;
+			case D3D12_ROOT_PARAMETER_TYPE_SRV:
+				type = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+				break;
+			case D3D12_ROOT_PARAMETER_TYPE_UAV:
+				type = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
+				break;
+			}
+			if (ranges.size() && ranges.back().RangeType == type && ranges.back().BaseShaderRegister + ranges.back().NumDescriptors == p.Descriptor.ShaderRegister) {
+				ranges.back().NumDescriptors++;
+			}
+			else {
+				D3D12_DESCRIPTOR_RANGE range = {};
+				range.BaseShaderRegister = p.Descriptor.ShaderRegister;
+				range.NumDescriptors = 1;
+				range.OffsetInDescriptorsFromTableStart = ranges.size() ? (ranges.back().OffsetInDescriptorsFromTableStart + ranges.back().NumDescriptors) : 0;
+				range.RangeType = type;
+				range.RegisterSpace = 0;
+				ranges.push_back(range);
+			}
+		}
+		param.DescriptorTable.NumDescriptorRanges = ranges.size();
+		param.DescriptorTable.pDescriptorRanges = &ranges[0];
+
+		return param;
+	}
+
 	void TableParameter::Set(ID3D12GraphicsCommandList* cmdList) const
 	{
 		ID3D12DescriptorHeap* heaps[1] = { heap.Get() };

@@ -22,8 +22,8 @@ namespace Peio::Gfx {
 		desc.Width = size.x();
 		desc.Height = size.y();
 		desc.Format = format;
-
-		Resource::Init(D3D12_HEAP_TYPE_DEFAULT, desc, D3D12_RESOURCE_STATE_PRESENT);
+		
+		Resource::Init(D3D12_HEAP_TYPE_DEFAULT, desc, D3D12_RESOURCE_STATE_PRESENT, D3D12_HEAP_FLAG_SHARED | D3D12_HEAP_FLAG_ALLOW_DISPLAY);
 	}
 
 	void RenderTarget::Put(D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle) const
@@ -57,9 +57,21 @@ namespace Peio::Gfx {
 		device->CreateShaderResourceView(resource->GetResource(), &srvDesc, cpuHandle);
 	}
 
+	UINT ArrayDescriptor::GetElementSize() const noexcept
+	{
+		return elementSize;
+	}
+
+	UINT ArrayDescriptor::GetNumElements() const noexcept
+	{
+		return numElements;
+	}
+
 	void ArrayBufferResource::Init(UINT elementSize, UINT numElements, bool allocateVector)
 	{
 		BufferedResource::Init((UINT64)elementSize * (UINT64)numElements, allocateVector);
+		this->elementSize = elementSize;
+		this->numElements = numElements;
 
 		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;

@@ -52,7 +52,7 @@ namespace Peio::Gfx {
 
 	void BufferedResource::Upload(ID3D12GraphicsCommandList* cmdList)
 	{
-		UploadResource::Upload(this, data, cmdList);
+		BufferResource::Upload(this, this, cmdList);
 	}
 
 }

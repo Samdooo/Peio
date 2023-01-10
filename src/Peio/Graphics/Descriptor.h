@@ -50,9 +50,13 @@ namespace Peio::Gfx {
 
 		void Put(const Resource* resource, D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle) const;
 
+		_NODISCARD UINT GetElementSize() const noexcept;
+		_NODISCARD UINT GetNumElements() const noexcept;
+
 	protected:
 
 		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+		UINT elementSize = 0, numElements = 0;
 
 	};
 

@@ -101,14 +101,18 @@
     <ClInclude Include="..\src\Peio\Graphics\Graphics.h" />
     <ClInclude Include="..\src\Peio\Graphics\GraphicsHeader.h" />
     <ClInclude Include="..\src\Peio\Graphics\Global.h" />
-    <ClInclude Include="..\src\Peio\Graphics\InputLayout.h" />
+    <ClInclude Include="..\src\Peio\Graphics\Renderer.h" />
     <ClInclude Include="..\src\Peio\Graphics\InputParameter.h" />
     <ClInclude Include="..\src\Peio\Graphics\Resource.h" />
     <ClInclude Include="..\src\Peio\Graphics\MediaGraphics.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Graphics\Shader.h" />
+    <ClInclude Include="..\src\Peio\Graphics\StaticSampler.h" />
     <ClInclude Include="..\src\Peio\Graphics\SwapChain.h" />
     <ClInclude Include="..\src\Peio\Graphics\UploadResource.h" />
+    <ClInclude Include="..\src\Peio\Graphics\VertexBuffer.h" />
+    <ClInclude Include="..\src\Peio\Graphics\VertexLayout.h" />
     <ClInclude Include="..\src\Peio\Graphics\WinGraphics.h" />
   </ItemGroup>
   <ItemGroup>
@@ -119,14 +123,18 @@
     <ClCompile Include="..\src\Peio\Graphics\DescriptorHeap.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\Graphics.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\Global.cpp" />
-    <ClCompile Include="..\src\Peio\Graphics\InputLayout.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\Renderer.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\InputParameter.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\Resource.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\MediaGraphics.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\src\Peio\Graphics\Shader.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\StaticSampler.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\SwapChain.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\UploadResource.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\VertexBuffer.cpp" />
+    <ClCompile Include="..\src\Peio\Graphics\VertexLayout.cpp" />
     <ClCompile Include="..\src\Peio\Graphics\WinGraphics.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
