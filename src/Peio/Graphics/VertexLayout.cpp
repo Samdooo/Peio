@@ -17,7 +17,7 @@ namespace Peio::Gfx {
 				&elements[i].name[0], 0, elements[i].format, 0, bytes, 
 				D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 			};
-			bytes += BitsPerPixel(elements[i].format) / 8;
+			bytes += (UINT)BitsPerPixel(elements[i].format) / 8U;
 		}
 		layoutDesc.pInputElementDescs = &elementDescs[0];
 

@@ -122,8 +122,4 @@ namespace Peio::Gfx {
 		cmdList->SetGraphicsRootDescriptorTable(parameterIndex, DescriptorHeap::GetGPUHandle());
 	}
 
-
-
-	
-
 }

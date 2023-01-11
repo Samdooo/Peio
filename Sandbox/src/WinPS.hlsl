@@ -1,4 +1,6 @@
+RWStructuredBuffer<float4> color : register(u1);
+
 float4 main(float4 pos : SV_POSITION) : SV_TARGET
 {
-	return float4(1.0f, 1.0f, 1.0f, 1.0f);
+	return color[0];
 }

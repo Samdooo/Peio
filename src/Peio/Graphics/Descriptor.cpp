@@ -67,9 +67,9 @@ namespace Peio::Gfx {
 		return numElements;
 	}
 
-	void ArrayBufferResource::Init(UINT elementSize, UINT numElements, bool allocateVector)
+	void ArrayBufferResource::Init(UINT elementSize, UINT numElements, bool allocateVector, D3D12_RESOURCE_STATES state)
 	{
-		BufferedResource::Init((UINT64)elementSize * (UINT64)numElements, allocateVector);
+		BufferedResource::Init((UINT64)elementSize * (UINT64)numElements, allocateVector, D3D12_HEAP_TYPE_DEFAULT, state);
 		this->elementSize = elementSize;
 		this->numElements = numElements;
 
@@ -100,9 +100,9 @@ namespace Peio::Gfx {
 		device->CreateUnorderedAccessView(resource->GetResource(), nullptr, &uavDesc, cpuHandle);
 	}
 
-	void RWArrayBufferResource::Init(UINT elementSize, UINT numElements, bool allocateVector)
+	void RWArrayBufferResource::Init(UINT elementSize, UINT numElements, bool allocateVector, D3D12_RESOURCE_STATES state)
 	{
-		BufferedResource::Init((UINT64)elementSize * (UINT64)numElements, allocateVector);
+		BufferedResource::Init((UINT64)elementSize * (UINT64)numElements, allocateVector, D3D12_HEAP_TYPE_DEFAULT, state);
 
 		D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
 		uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;

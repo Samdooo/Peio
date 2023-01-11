@@ -62,7 +62,7 @@ namespace Peio::Gfx {
 
 	struct PEIO_GFX_EXPORT ArrayBufferResource : public BufferedResource, public ArrayDescriptor {
 
-		void Init(UINT elementSize, UINT numElements, bool allocateVector = true);
+		void Init(UINT elementSize, UINT numElements, bool allocateVector = true, D3D12_RESOURCE_STATES state = D3D12_RESOURCE_STATE_COMMON);
 
 		void Put(D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle) const override;
 
@@ -85,7 +85,7 @@ namespace Peio::Gfx {
 
 	struct PEIO_GFX_EXPORT RWArrayBufferResource : public BufferedResource, public RWArrayDescriptor {
 
-		void Init(UINT elementSize, UINT numElements, bool allocateVector = true);
+		void Init(UINT elementSize, UINT numElements, bool allocateVector = true, D3D12_RESOURCE_STATES state = D3D12_RESOURCE_STATE_COMMON);
 
 		void Put(D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle) const override;
 
