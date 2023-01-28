@@ -13,42 +13,13 @@
     <ClCompile Include="..\src\Peio\Dimension Viewer\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Peio\Dimension Viewer\App.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\RayVS.hlsl">
-      <Filter>Source Files\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\RayPS.hlsl">
-      <Filter>Source Files\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\DenoisePS.hlsl">
-      <Filter>Source Files\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\src\Peio\Dimension Viewer\Shaders\DenoiseVS.hlsl">
-      <Filter>Source Files\Shaders</Filter>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\src\Peio\Dimension Viewer\Shaders\Ray_input.hlsli">
-      <Filter>Source Files\Shaders</Filter>
-    </None>
-    <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_random.hlsli">
-      <Filter>Source Files\Shaders</Filter>
-    </None>
-    <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_rect.hlsli">
-      <Filter>Source Files\Shaders</Filter>
-    </None>
-    <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_sphere.hlsli">
-      <Filter>Source Files\Shaders</Filter>
-    </None>
-    <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_trace.hlsli">
-      <Filter>Source Files\Shaders</Filter>
-    </None>
-    <None Include="..\src\Peio\Dimension Viewer\Shaders\RayPS_light.hlsli">
-      <Filter>Source Files\Shaders</Filter>
-    </None>
-    <None Include="..\src\Peio\Dimension Viewer\Shaders\Ray_math.hlsli">
-      <Filter>Source Files\Shaders</Filter>
-    </None>
+    <ClInclude Include="..\src\Peio\Dimension Viewer\App.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

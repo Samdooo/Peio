@@ -17,7 +17,7 @@
     <Filter Include="Source Files\Utils\Renderer">
       <UniqueIdentifier>{4601d762-5cda-4c7e-9ecf-fa9fc43ba754}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Utils\Heaps">
+    <Filter Include="Source Files\Utils\Resources">
       <UniqueIdentifier>{9e84c61c-5634-417d-adc1-c1c694d9724d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -59,16 +59,16 @@
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Peio\Graphics\Resource.h">
-      <Filter>Source Files\Utils\Heaps</Filter>
+      <Filter>Source Files\Utils\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Peio\Graphics\UploadResource.h">
-      <Filter>Source Files\Utils\Heaps</Filter>
+      <Filter>Source Files\Utils\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Peio\Graphics\Descriptor.h">
-      <Filter>Source Files\Utils\Heaps</Filter>
+      <Filter>Source Files\Utils\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Peio\Graphics\DescriptorHeap.h">
-      <Filter>Source Files\Utils\Heaps</Filter>
+      <Filter>Source Files\Utils\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Peio\Graphics\InputParameter.h">
       <Filter>Source Files\Utils\Renderer</Filter>
@@ -86,7 +86,7 @@
       <Filter>Source Files\Utils\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Peio\Graphics\VertexBuffer.h">
-      <Filter>Source Files\Utils\Heaps</Filter>
+      <Filter>Source Files\Utils\Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -115,16 +115,16 @@
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Peio\Graphics\Resource.cpp">
-      <Filter>Source Files\Utils\Heaps</Filter>
+      <Filter>Source Files\Utils\Resources</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Peio\Graphics\UploadResource.cpp">
-      <Filter>Source Files\Utils\Heaps</Filter>
+      <Filter>Source Files\Utils\Resources</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Peio\Graphics\Descriptor.cpp">
-      <Filter>Source Files\Utils\Heaps</Filter>
+      <Filter>Source Files\Utils\Resources</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Peio\Graphics\DescriptorHeap.cpp">
-      <Filter>Source Files\Utils\Heaps</Filter>
+      <Filter>Source Files\Utils\Resources</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Peio\Graphics\InputParameter.cpp">
       <Filter>Source Files\Utils\Renderer</Filter>
@@ -142,7 +142,7 @@
       <Filter>Source Files\Utils\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Peio\Graphics\VertexBuffer.cpp">
-      <Filter>Source Files\Utils\Heaps</Filter>
+      <Filter>Source Files\Utils\Resources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

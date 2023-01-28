@@ -15,6 +15,7 @@
 #include <Peio/Graphics/Renderer.h>
 #include <Peio/Files.h>
 #include <Peio/Graphics/Descriptor.h>
+#include <Peio/Graphics/DescriptorHeap.h>
 
 struct Vertex {
 	Peio::Float2 pos = {};
@@ -81,7 +82,7 @@ int main() {
 	Peio::Win::Window window;
 	window.CreateClass("Peio Sandbox Class", 0);
 	window.RegisterClass();
-	window.CreateWindow("Peio Sandbox", WS_OVERLAPPEDWINDOW, 0, { 100, 100 }, { 1280, 720 });
+	window.CreateWindow("Peio Sandbox", WS_POPUP, 0, { 100, 100 }, { 1280, 720 });
 	window.Show();
 	
 	Peio::Gfx::WinGraphics graphics;
@@ -91,20 +92,27 @@ int main() {
 	renderer.vs.Compile("../Sandbox/src/WinVS.hlsl", "vs_6_0");
 	renderer.ps.Compile("../Sandbox/src/WinPS.hlsl", "ps_6_0");
 	
-	Peio::Gfx::RWArrayBufferParameter colorBuffer;
+	Peio::Gfx::TableParameter table;
+	table.Init(1);
+
+	Peio::Gfx::ArrayBufferParameter colorBuffer;
 	Peio::Float4 color = { 0.0f, 1.0f, 1.0f, 1.0f };
 	colorBuffer.Init(sizeof(color), 1, false);
 	colorBuffer.buffer.SetData((byte*)&color, sizeof(color));
 	colorBuffer.Upload(graphics.GetCommandList());
-	colorBuffer.shaderRegister = 1;
+	colorBuffer.shaderRegister = 0;
 	colorBuffer.visibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
-	renderer.parameters.push_back(&colorBuffer);
+	table.Put((Peio::Group<Peio::Gfx::Descriptor, Peio::Gfx::InputParameter>)&colorBuffer, 0);
+	D3D12_ROOT_PARAMETER p = table.CreateParameter();
+	std::cout << p.ParameterType << " " << p.DescriptorTable.NumDescriptorRanges << " " << p.DescriptorTable.pDescriptorRanges[0].NumDescriptors << " " << p.DescriptorTable.pDescriptorRanges[0].RangeType << std::endl;
+
+	renderer.parameters.push_back(&table);
 
 	renderer.vertexLayout.elements = {
 		Peio::Gfx::VertexElement{"POSITION", DXGI_FORMAT_R32G32_FLOAT}
 	};
-	renderer.topologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
 	renderer.Create();
 	
 	Peio::Buffer<Vertex> buf;
@@ -121,7 +129,7 @@ int main() {
 	RECT scissorRect = { 0, 0, 1280, 720 };
 	D3D12_VIEWPORT viewPort = { 0.0f, 0.0f, 1280.0f, 720.0f, 0.0f, 1.0f };
 
-	bool first = true;
+	
 	while (true) {
 		window.HandleMessages();
 	

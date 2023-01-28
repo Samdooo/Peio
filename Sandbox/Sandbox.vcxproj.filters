@@ -5,6 +5,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Source Files\DimensionViewer">
+      <UniqueIdentifier>{b9353b6c-91eb-444e-ad20-81adec7c8d9f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -25,8 +28,8 @@
     <ClCompile Include="src\Media 1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Windows 1.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\DimensionViewer.cpp">
+      <Filter>Source Files\DimensionViewer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -41,6 +44,12 @@
     </FxCompile>
     <FxCompile Include="src\WinPS.hlsl">
       <Filter>Source Files</Filter>
+    </FxCompile>
+    <FxCompile Include="src\RayVS.hlsl">
+      <Filter>Source Files\DimensionViewer</Filter>
+    </FxCompile>
+    <FxCompile Include="src\RayPS.hlsl">
+      <Filter>Source Files\DimensionViewer</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
