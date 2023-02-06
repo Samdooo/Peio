@@ -3,6 +3,7 @@
 [<img src="https://i.imgur.com/W6jntv2.png" width=50% height=50%>](https://www.youtube.com/watch?v=Ntglvek07Us)
 
 Dimension Viewer är ett projekt vars syfte är att generalisera en typ av realistisk ljussimulering, så kallad global illumination, till högre dimensioner.
+(Klicka på bilden ovan för ett exempel)
 
 Simuleringen är skriven i språken C++ och HLSL och finns under [src/Peio/Dimension Viewer](<src/Peio/Dimension Viewer>). Den är byggd ovanpå några andra egenskrivna projekt:
 
