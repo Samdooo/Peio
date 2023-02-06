@@ -18,11 +18,11 @@ Programmet kan endast köras på Windows-datorer.
 ### **Kloning**
 [Microsoft Visual Studio 2022](https://visualstudio.microsoft.com/vs/) bör ha installerats innan projektet klonas.
 Klona sedan hela projektet ("Peio") till en tom mapp och öppna `Peio.sln`. Filen under `Dimension Viewer/Source Files/main.cpp` är till största del fri att leka runt med.
-Innan programmet kan köras behöver några DLL-filer placeras i mappen `bin`. Dessa finns att ladda ner [här](https://drive.google.com/uc?id=1AOwn3nTKK3aPo04PS9NkOiHt3LPdHix0&export=download).
+I menyn, gå sedan till `Build -> Build Solution`. Innan programmet kan köras behöver några DLL-filer placeras i mappen `bin`. Dessa finns att ladda ner [här](https://drive.google.com/uc?id=1AOwn3nTKK3aPo04PS9NkOiHt3LPdHix0&export=download). Kör sedan filen `Peio-Dimension Viewer.exe` i mappen `bin` för att starta programmet.
 
 ### **Installation**
 Det rekommenderas att klona projektet för att kunna ändra inställningar, men om endast programmet önskas finns en zip-fil med de nödvändiga filerna att ladda ner [här](https://drive.google.com/uc?id=1zPyBVQ80Q-mrt42WHN7JoLv94LSl0lSV&export=download).
-<br> Extrahera zip-filen i en tom mapp och kör filen `Peio-Dimension Viewer.exe` i mappen `bin`.
+<br> Extrahera zip-filen och kör filen `Peio-Dimension Viewer.exe` i mappen `bin`.
 
 ### **Navigering**
 Default-världen är fyrdimensionell och består av 20 st slumpmässiga objekt: tio hyperrektanglar och tio hypersfärer.
