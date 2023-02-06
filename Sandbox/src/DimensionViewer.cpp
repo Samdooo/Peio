@@ -91,23 +91,16 @@ int main() {
 	Peio::Gfx::Renderer renderer;
 	renderer.vs.Compile("../Sandbox/src/WinVS.hlsl", "vs_6_0");
 	renderer.ps.Compile("../Sandbox/src/WinPS.hlsl", "ps_6_0");
-	
-	Peio::Gfx::TableParameter table;
-	table.Init(1);
 
-	Peio::Gfx::ArrayBufferParameter colorBuffer;
-	Peio::Float4 color = { 0.0f, 1.0f, 1.0f, 1.0f };
-	colorBuffer.Init(sizeof(color), 1, false);
-	colorBuffer.buffer.SetData((byte*)&color, sizeof(color));
+	Peio::Gfx::SingleResourceParameter colorBuffer;
+	Peio::Float4 color = { 1.0f, 0.0f, 1.0f, 1.0f };
+	colorBuffer.Init(sizeof(color), false);
+	colorBuffer.buffer.SetData((byte*)&color, sizeof(color));;
 	colorBuffer.Upload(graphics.GetCommandList());
-	colorBuffer.shaderRegister = 0;
-	colorBuffer.visibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	colorBuffer.shaderRegister = 1;
+	colorBuffer.visibility = D3D12_SHADER_VISIBILITY_ALL;
 
-	table.Put((Peio::Group<Peio::Gfx::Descriptor, Peio::Gfx::InputParameter>)&colorBuffer, 0);
-	D3D12_ROOT_PARAMETER p = table.CreateParameter();
-	std::cout << p.ParameterType << " " << p.DescriptorTable.NumDescriptorRanges << " " << p.DescriptorTable.pDescriptorRanges[0].NumDescriptors << " " << p.DescriptorTable.pDescriptorRanges[0].RangeType << std::endl;
-
-	renderer.parameters.push_back(&table);
+	renderer.parameters.push_back(&colorBuffer);
 
 	renderer.vertexLayout.elements = {
 		Peio::Gfx::VertexElement{"POSITION", DXGI_FORMAT_R32G32_FLOAT}

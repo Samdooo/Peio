@@ -79,6 +79,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -102,13 +103,70 @@
     <ProjectReference Include="..\Media\Media.vcxproj">
       <Project>{ecf3ac61-0f83-4734-96e7-295ff7ba9536}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Windows\Windows.vcxproj">
+      <Project>{19a3160d-a6d1-4654-bb9d-224526fa4d5d}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Peio\Dimension Viewer\App.cpp" />
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Graphics\WinGraphics.cpp" />
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Input\Camera.cpp" />
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Input\Input.cpp" />
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Input\State.cpp" />
     <ClCompile Include="..\src\Peio\Dimension Viewer\main.cpp" />
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Renderer\Denoiser.cpp" />
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Renderer\FullscreenRenderer.cpp" />
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Renderer\RayRenderer.cpp" />
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Scene\Camera.cpp" />
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Scene\Objects.cpp" />
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Scene\Rays.cpp" />
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Scene\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Peio\Dimension Viewer\App.h" />
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Graphics\WinGraphics.h" />
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Input\Camera.h" />
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Input\Input.h" />
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Input\State.h" />
+    <ClInclude Include="..\src\Peio\Dimension Viewer\MathVector.h" />
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Renderer\Denoiser.h" />
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Renderer\FullscreenRenderer.h" />
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Renderer\RayRenderer.h" />
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Scene\Camera.h" />
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Scene\Objects.h" />
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Scene\Rays.h" />
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Scene\Scene.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\DenoisePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\DenoiseVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\RayPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\RayVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\Ray_header.hlsli" />
+    <None Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\Ray_math.hlsli" />
+    <None Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\Ray_rect.hlsli" />
+    <None Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\Ray_scene.hlsli" />
+    <None Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\Ray_sky.hlsli" />
+    <None Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\Ray_sphere.hlsli" />
+    <None Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\Ray_trace.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
