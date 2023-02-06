@@ -69,6 +69,7 @@ namespace Peio::Gfx {
 		cmdList->IASetVertexBuffers(0, 1, &vertexBuffer->GetView());
 
 		for (UINT i = 0; i < parameters.size(); i++) {
+			parameters[i]->parameterIndex = i;
 			parameters[i]->Set(cmdList);
 		}
 

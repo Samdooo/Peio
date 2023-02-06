@@ -7,7 +7,7 @@ namespace Peio::Gfx {
     {
         view = {};
         view.BufferLocation = ArrayBufferResource::GetGPUAddress();
-        view.SizeInBytes = ArrayBufferResource::buffer.GetSize();
+        view.SizeInBytes = (UINT)ArrayBufferResource::buffer.GetSize();
         view.StrideInBytes = ArrayBufferResource::srvDesc.Buffer.StructureByteStride;
         return view;
     }

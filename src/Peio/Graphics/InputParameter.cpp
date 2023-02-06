@@ -15,7 +15,8 @@ namespace Peio::Gfx {
 
 	void SingleParameter::Set(const Resource* single, ID3D12GraphicsCommandList* cmdList) const
 	{
-		cmdList->SetGraphicsRootConstantBufferView(parameterIndex, single->GetGPUAddress());
+		if (single->HasBuffer())
+			cmdList->SetGraphicsRootConstantBufferView(parameterIndex, single->GetGPUAddress());
 	}
 
 	void SingleResourceParameter::Set(ID3D12GraphicsCommandList* cmdList) const
@@ -35,7 +36,8 @@ namespace Peio::Gfx {
 
 	void ArrayParameter::Set(const Resource* array, ID3D12GraphicsCommandList* cmdList) const
 	{
-		cmdList->SetGraphicsRootShaderResourceView(parameterIndex, array->GetGPUAddress());
+		if (array->HasBuffer())
+			cmdList->SetGraphicsRootShaderResourceView(parameterIndex, array->GetGPUAddress());
 	}
 
 	D3D12_ROOT_PARAMETER RWArrayParameter::CreateParameter()
@@ -50,7 +52,8 @@ namespace Peio::Gfx {
 
 	void RWArrayParameter::Set(const Resource* array, ID3D12GraphicsCommandList* cmdList) const
 	{
-		cmdList->SetGraphicsRootUnorderedAccessView(parameterIndex, array->GetGPUAddress());
+		if (array->HasBuffer())
+			cmdList->SetGraphicsRootUnorderedAccessView(parameterIndex, array->GetGPUAddress());
 	}
 
 	void ArrayBufferParameter::Set(ID3D12GraphicsCommandList* cmdList) const
@@ -109,7 +112,7 @@ namespace Peio::Gfx {
 				ranges.push_back(range);
 			}
 		}
-		param.DescriptorTable.NumDescriptorRanges = ranges.size();
+		param.DescriptorTable.NumDescriptorRanges = (UINT)ranges.size();
 		param.DescriptorTable.pDescriptorRanges = &ranges[0];
 
 		return param;

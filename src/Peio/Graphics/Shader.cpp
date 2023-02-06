@@ -34,7 +34,7 @@ namespace Peio::Gfx {
 		return 0;
 	}
 
-	void Shader::Compile(std::string path, std::string profile)
+	void Shader::Compile(std::string path, std::string profile, std::vector<std::pair<std::string, std::string>> defines)
 	{
 		HRESULT ret;
 
@@ -66,10 +66,18 @@ namespace Peio::Gfx {
 		IncludeHandler includeHandler = {};
 		includeHandler.library = library.Get();
 
+		std::vector<std::pair<std::wstring, std::wstring>> wDefines(defines.size());
+		std::vector<DxcDefine> dxcDefines(defines.size());
+		for (UINT i = 0; i < defines.size(); i++) {
+			wDefines[i] = { std::wstring(CA2W(defines[i].first.c_str())), std::wstring(CA2W(defines[i].second.c_str())) };
+			dxcDefines[i].Name = wDefines[i].first.c_str();
+			dxcDefines[i].Value = wDefines[i].second.c_str();
+		}
+
 		std::wstring wProfile = std::wstring(CA2W(profile.c_str()));
 		ComPtr<IDxcOperationResult> result = nullptr;
 		ret = compiler->Compile(sourceBlob.Get(), wProfile.c_str(), L"main", 
-			wProfile.c_str(), nullptr, 0, nullptr, 0, &includeHandler, &result);
+			wProfile.c_str(), nullptr, 0, &dxcDefines[0], (UINT)dxcDefines.size(), &includeHandler, &result);
 		if (result)
 			result->GetStatus(&ret);
 		if (ret != 0) {

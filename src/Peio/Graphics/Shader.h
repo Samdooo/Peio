@@ -20,7 +20,7 @@ namespace Peio::Gfx {
 
 		std::string data = {};
 		
-		void Compile(std::string path, std::string profile);
+		void Compile(std::string path, std::string profile, std::vector<std::pair<std::string, std::string>> defines = {});
 
 	protected:
 

@@ -8,7 +8,7 @@ namespace Peio::Gfx {
 	{
 		layoutDesc = {};
 
-		layoutDesc.NumElements = elements.size();
+		layoutDesc.NumElements = (UINT)elements.size();
 		elementDescs.resize(elements.size());
 
 		UINT bytes = 0;
