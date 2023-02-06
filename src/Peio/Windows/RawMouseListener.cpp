@@ -24,6 +24,7 @@ namespace Peio::Win {
 			GetRawInputData((HRAWINPUT)event->msg.lParam, RID_INPUT, input, &inputSize, sizeof(RAWINPUTHEADER));
 
 			if (input->header.dwType != RIM_TYPEMOUSE) {
+				free(input);
 				return false;
 			}
 			bool foreground = !event->msg.wParam;
@@ -45,6 +46,9 @@ namespace Peio::Win {
 				Input::HandleNewEvent(RawMouseButtonDownEvent{ event->msg, foreground, MouseButton::MIDDLE });
 			else if (input->data.mouse.usButtonFlags & RI_MOUSE_MIDDLE_BUTTON_UP)
 				Input::HandleNewEvent(RawMouseButtonUpEvent{ event->msg, foreground, MouseButton::MIDDLE });
+
+			if (input->data.mouse.usButtonFlags & RI_MOUSE_WHEEL)
+				Input::HandleNewEvent(RawMouseWheelEvent{ event->msg, foreground, (SHORT)input->data.mouse.usButtonData });
 
 			free(input);
 		}

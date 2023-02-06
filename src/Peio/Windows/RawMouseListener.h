@@ -14,6 +14,11 @@ namespace Peio::Win {
 		MouseButton button;
 		RawMouseButtonEvent(MSG msg, bool foreground, MouseButton button) : WinEvent(msg), foreground(foreground), button(button) {}
 	};
+	struct PEIO_WIN_EXPORT RawMouseWheelEvent : public WinEvent {
+		bool foreground;
+		SHORT delta;
+		RawMouseWheelEvent(MSG msg, bool foreground, SHORT delta) : WinEvent(msg), foreground(foreground), delta(delta) {}
+	};
 
 	struct PEIO_WIN_EXPORT RawMouseButtonDownEvent : public RawMouseButtonEvent { using RawMouseButtonEvent::RawMouseButtonEvent;  };
 	struct PEIO_WIN_EXPORT RawMouseButtonUpEvent : public RawMouseButtonEvent { using RawMouseButtonEvent::RawMouseButtonEvent; };

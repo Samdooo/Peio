@@ -24,6 +24,7 @@ namespace Peio::Win {
 			GetRawInputData((HRAWINPUT)event->msg.lParam, RID_INPUT, input, &inputSize, sizeof(RAWINPUTHEADER));
 
 			if (input->header.dwType != RIM_TYPEKEYBOARD) {
+				free(input);
 				return false;
 			}
 			bool foreground = !event->msg.wParam;
