@@ -7,7 +7,7 @@ int main() {
 
 	/* TESTING CODE */
 
-	App::app.scene.numDims = 3;
+	App::app.scene.numDims = 4;
 	App::app.scene.maxBounces = 2;
 	App::app.scene.rays.perBounce = { 16 };
 	App::app.scene.info.denoiser.radius = 8;
