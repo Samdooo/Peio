@@ -14,7 +14,6 @@ namespace Peio::Gfx {
 	public:
 
 		void Init(HWND hwnd, Long2 size, UINT numBuffers, bool fullscreen);
-		void Resize(HWND hwnd, Long2 size, UINT numBuffers, bool fullscreen);
 
 		void Clear(const Float4& color) override;
 		void Render() override;

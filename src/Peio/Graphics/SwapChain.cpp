@@ -11,13 +11,6 @@ void Peio::Gfx::SwapChain::Init(ID3D12CommandQueue* cmdQueue, HWND hwnd, Long2 s
 		throw PEIO_GFX_EXCEPTION("Failed to create factory.", ret);
 	}
 	
-	//Resize(cmdQueue, hwnd, size, numBuffers, fullscreen);
-}
-
-void Peio::Gfx::SwapChain::Resize(ID3D12CommandQueue* cmdQueue, HWND hwnd, Long2 size, UINT numBuffers, bool fullscreen)
-{
-	HRESULT ret;
-
 	DXGI_SWAP_CHAIN_DESC1 chainDesc = {};
 	chainDesc = {};
 	chainDesc.Width = size.x();
@@ -52,9 +45,14 @@ void Peio::Gfx::SwapChain::Resize(ID3D12CommandQueue* cmdQueue, HWND hwnd, Long2
 		throw PEIO_GFX_EXCEPTION("Failed to convert swap chain.", ret);
 	}
 	swapChainTmp.ReleaseAndGetAddressOf();
-
+	
 	if (fullscreen)
 		swapChain->SetFullscreenState(TRUE, nullptr);
+}
+
+void Peio::Gfx::SwapChain::Resize(Long2 size, UINT numBuffers)
+{
+	swapChain->ResizeBuffers(numBuffers, size.x(), size.y(), DXGI_FORMAT_R8G8B8A8_UNORM, 0);
 }
 
 void Peio::Gfx::SwapChain::SetFullscreenState(BOOL fullscreen)

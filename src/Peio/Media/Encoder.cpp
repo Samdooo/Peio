@@ -92,6 +92,11 @@ namespace Peio::Med {
 		Encode(nullptr, onPacket);
 	}
 
+	int Encoder::GetFrameIndex() const noexcept
+	{
+		return frameIndex;
+	}
+
 	void Encoder::Release()
 	{
 		if (codecContext) {

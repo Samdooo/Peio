@@ -48,6 +48,7 @@ namespace Peio::Gfx {
 
 	void RenderTargetHeap::Init(UINT numRenderTargets)
 	{
+		RenderTargetHeap::~RenderTargetHeap();
 		DescriptorHeap::Init(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, numRenderTargets);
 		renderTargets.resize(numRenderTargets);
 	}

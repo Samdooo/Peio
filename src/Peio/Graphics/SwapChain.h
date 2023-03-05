@@ -14,7 +14,7 @@ namespace Peio::Gfx {
 		public:
 
 			void Init(ID3D12CommandQueue* cmdQueue, HWND hwnd, Long2 size, UINT numBuffers, bool fullscreen);
-			void Resize(ID3D12CommandQueue* cmdQueue, HWND hwnd, Long2 size, UINT numBuffers, bool fullscreen);
+			void Resize(Long2 size, UINT numBuffers);
 			void SetFullscreenState(BOOL fullscreen);
 
 			void GetBuffer(UINT buffer, ID3D12Resource** renderTarget);

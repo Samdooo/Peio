@@ -14,6 +14,8 @@ namespace Peio::Med {
 		void EncodeFrame(const Frame* frame, std::function<void(const byte*, int)> onPacket);
 		void Flush(std::function<void(const byte*, int)> onPacket);
 
+		_NODISCARD int GetFrameIndex() const noexcept;
+
 		void Release();
 		~Encoder();
 

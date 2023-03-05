@@ -41,7 +41,7 @@ namespace Peio::Gfx {
 		cmdQueue.Execute(cmdList.GetCommandLists(), 1);
 		cmdList.GetAllocator(0, frameIndex).Signal(cmdQueue.GetQueue());
 
-		cmdList.GetAllocator(1, frameIndex).Wait();
+		//cmdList.GetAllocator(1, frameIndex).Wait();
 		cmdList.Reset(1, frameIndex);
 
 		renderTargets.GetRenderTarget(frameIndex)->Transition(D3D12_RESOURCE_STATE_RENDER_TARGET, cmdList.GetCommandList());
@@ -65,6 +65,9 @@ namespace Peio::Gfx {
 
 		cmdQueue.Execute(cmdList.GetCommandLists(), 1);
 		cmdList.GetAllocator(1, frameIndex).Signal(cmdQueue.GetQueue());
+
+		cmdList.GetAllocator(1, frameIndex).Wait();
+		//cmdList.Reset(1, frameIndex);
 
 		renderTargets.Next();
 		cmdList.Reset(0, frameIndex);

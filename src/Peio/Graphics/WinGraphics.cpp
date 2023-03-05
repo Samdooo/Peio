@@ -10,15 +10,6 @@ void Peio::Gfx::WinGraphics::Init(HWND hwnd, Long2 size, UINT numBuffers, bool f
 	cmdList.Init(cmdQueue.GetQueue(), numBuffers, 2);
 
 	swapChain.Init(cmdQueue.GetQueue(), hwnd, size, numBuffers, fullscreen);
-
-	Resize(hwnd, size, numBuffers, fullscreen);
-}
-
-void Peio::Gfx::WinGraphics::Resize(HWND hwnd, Long2 size, UINT numBuffers, bool fullscreen)
-{
-	this->size = size;
-	swapChain.Resize(cmdQueue.GetQueue(), hwnd, size, numBuffers, fullscreen);
-
 	renderTargets.Init(numBuffers);
 	for (UINT i = 0; i < numBuffers; i++) {
 		swapChain.GetBuffer(i, renderTargets.GetRenderTarget(i)->GetResourcePtr());

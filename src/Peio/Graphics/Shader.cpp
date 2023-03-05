@@ -46,7 +46,7 @@ namespace Peio::Gfx {
 		ComPtr<IDxcLibrary> library = nullptr;
 		ret = DxcCreateInstance(CLSID_DxcLibrary, __uuidof(IDxcLibrary), &library);
 		if (ret != 0) {
-			throw PEIO_GFX_EXCEPTION("Failed to create root signature.", ret);
+			throw PEIO_GFX_EXCEPTION("Failed to create dxc library.", ret);
 		}
 
 		ComPtr<IDxcCompiler> compiler = nullptr;

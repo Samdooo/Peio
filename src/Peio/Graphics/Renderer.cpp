@@ -15,8 +15,10 @@ namespace Peio::Gfx {
 		CD3DX12_ROOT_SIGNATURE_DESC rootDesc = {};
 		rootDesc.Init((UINT)rootParameters.size(), &rootParameters[0], (UINT)staticSamplers.size(), &staticSamplers[0], D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
-		if (rootSignature)
+		if (rootSignature) {
 			rootSignature.ReleaseAndGetAddressOf();
+			rootSignature = nullptr;
+		}
 
 		ComPtr<ID3DBlob> signatureBlob = nullptr;
 		ret = D3D12SerializeRootSignature(&rootDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, nullptr);
@@ -52,6 +54,11 @@ namespace Peio::Gfx {
 		desc.SampleDesc = { 1, 0 };
 		desc.DepthStencilState.DepthEnable = false;
 		desc.DSVFormat = DXGI_FORMAT_UNKNOWN;
+
+		if (pipelineState) {
+			pipelineState.ReleaseAndGetAddressOf();
+			pipelineState = nullptr;
+		}
 
 		ret = device->CreateGraphicsPipelineState(&desc, __uuidof(ID3D12PipelineState), &pipelineState);
 		if (ret != 0) {
