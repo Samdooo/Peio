@@ -14,14 +14,17 @@
     <Filter Include="Source Files\Renderer">
       <UniqueIdentifier>{aeecc2e2-2ab5-4b0a-a641-30bc68c8cdab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Graphics">
-      <UniqueIdentifier>{0405cfe9-0931-49b2-b4f3-af5482bc7341}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Renderer\Shaders">
       <UniqueIdentifier>{c1a6886b-dc91-4149-9b7b-b683e6e9635c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Input">
-      <UniqueIdentifier>{a5d5a7d0-03cb-410d-bd0f-eeeee4b47a02}</UniqueIdentifier>
+    <Filter Include="Source Files\Video">
+      <UniqueIdentifier>{b7321dcd-dfe1-49d1-9f4c-94a7f8157b3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Windows">
+      <UniqueIdentifier>{6971ebf1-5a08-431a-ae37-30f5271baf85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Configurator">
+      <UniqueIdentifier>{d67c7723-3f0e-43ab-9c0c-243dc9b12e73}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -46,23 +49,44 @@
     <ClCompile Include="..\src\Peio\Dimension Viewer\Renderer\RayRenderer.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Peio\Dimension Viewer\Graphics\WinGraphics.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Peio\Dimension Viewer\Input\Input.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Peio\Dimension Viewer\Input\State.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Peio\Dimension Viewer\Input\Camera.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Peio\Dimension Viewer\Scene\Rays.cpp">
       <Filter>Source Files\Scene</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Peio\Dimension Viewer\Renderer\Denoiser.cpp">
       <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Windows\Camera.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Windows\Input.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Windows\State.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Windows\WinGraphics.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Video\VideoGraphics.cpp">
+      <Filter>Source Files\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Video\Path.cpp">
+      <Filter>Source Files\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Config\Config.cpp">
+      <Filter>Source Files\Configurator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Config\Scene.cpp">
+      <Filter>Source Files\Configurator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Config\Controls.cpp">
+      <Filter>Source Files\Configurator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Config\CameraPath.cpp">
+      <Filter>Source Files\Configurator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Peio\Dimension Viewer\Config\Objects.cpp">
+      <Filter>Source Files\Configurator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -87,59 +111,83 @@
     <ClInclude Include="..\src\Peio\Dimension Viewer\Renderer\RayRenderer.h">
       <Filter>Source Files\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Peio\Dimension Viewer\Graphics\WinGraphics.h">
-      <Filter>Source Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Peio\Dimension Viewer\Input\Input.h">
-      <Filter>Source Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Peio\Dimension Viewer\Input\State.h">
-      <Filter>Source Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Peio\Dimension Viewer\Input\Camera.h">
-      <Filter>Source Files\Input</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Peio\Dimension Viewer\Scene\Rays.h">
       <Filter>Source Files\Scene</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Peio\Dimension Viewer\Renderer\Denoiser.h">
       <Filter>Source Files\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Windows\Camera.h">
+      <Filter>Source Files\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Windows\Input.h">
+      <Filter>Source Files\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Windows\State.h">
+      <Filter>Source Files\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Windows\WinGraphics.h">
+      <Filter>Source Files\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Video\VideoGraphics.h">
+      <Filter>Source Files\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Video\Path.h">
+      <Filter>Source Files\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Config\Config.h">
+      <Filter>Source Files\Configurator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Config\Scene.h">
+      <Filter>Source Files\Configurator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Config\Controls.h">
+      <Filter>Source Files\Configurator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Config\CameraPath.h">
+      <Filter>Source Files\Configurator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Peio\Dimension Viewer\Config\Objects.h">
+      <Filter>Source Files\Configurator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\RayVS.hlsl">
+    <FxCompile Include="Shaders\DenoisePS.hlsl">
       <Filter>Source Files\Renderer\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\RayPS.hlsl">
+    <FxCompile Include="Shaders\DenoiseVS.hlsl">
       <Filter>Source Files\Renderer\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\DenoiseVS.hlsl">
+    <FxCompile Include="Shaders\RayPS.hlsl">
       <Filter>Source Files\Renderer\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\DenoisePS.hlsl">
+    <FxCompile Include="Shaders\RayVS.hlsl">
       <Filter>Source Files\Renderer\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\Ray_trace.hlsli">
+    <None Include="Shaders\Ray_header.hlsli">
       <Filter>Source Files\Renderer\Shaders</Filter>
     </None>
-    <None Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\Ray_header.hlsli">
+    <None Include="Shaders\Ray_light.hlsli">
       <Filter>Source Files\Renderer\Shaders</Filter>
     </None>
-    <None Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\Ray_math.hlsli">
+    <None Include="Shaders\Ray_math.hlsli">
       <Filter>Source Files\Renderer\Shaders</Filter>
     </None>
-    <None Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\Ray_rect.hlsli">
+    <None Include="Shaders\Ray_rect.hlsli">
       <Filter>Source Files\Renderer\Shaders</Filter>
     </None>
-    <None Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\Ray_scene.hlsli">
+    <None Include="Shaders\Ray_scene.hlsli">
       <Filter>Source Files\Renderer\Shaders</Filter>
     </None>
-    <None Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\Ray_sphere.hlsli">
+    <None Include="Shaders\Ray_sky.hlsli">
       <Filter>Source Files\Renderer\Shaders</Filter>
     </None>
-    <None Include="..\src\Peio\Dimension Viewer\Renderer\Shaders\Ray_sky.hlsli">
+    <None Include="Shaders\Ray_sphere.hlsli">
+      <Filter>Source Files\Renderer\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Ray_trace.hlsli">
       <Filter>Source Files\Renderer\Shaders</Filter>
     </None>
   </ItemGroup>

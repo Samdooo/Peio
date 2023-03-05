@@ -1,64 +1,57 @@
 #include "App.h"
 #include "MathVector.h"
 
+#include <iostream>
+#include <filesystem>
+
 #define PI 3.1415926535898f
+#define PHI 1.6180339887499f
 
-int main() {
+int main(int argc, char* argv[]) {
 
-	/* TESTING CODE */
+	try {
 
-	App::app.scene.numDims = 4;
-	App::app.scene.maxBounces = 2;
-	App::app.scene.rays.perBounce = { 16 };
-	App::app.scene.info.denoiser.radius = 8;
-	App::app.scene.info.denoiser.maxDist = 0.3f;
-	App::app.scene.info.denoiser.maxAngle = 0.1f;
+		Peio::Clock<double> clock;
+		double framerate = 40.0;
 
-	App::app.scene.info.screenSize = { 1280, 720 };
-	App::app.scene.camera.position = MathVector<float>(App::app.scene.numDims, 0.0f);
-	App::app.scene.camera.rotation = MathVector<float>(App::app.scene.numDims - 1, 0.0f);
-	App::app.scene.camera.fov = PI / 2.0f;
-	App::app.scene.camera.aspectRatio = (float)App::app.scene.info.screenSize.y() / (float)App::app.scene.info.screenSize.x();
-	
-	App::app.input.camera.speed = 10.0f;
-	App::app.input.camera.acceleration = 10.0f;
-
-	auto RandFloat = []() -> float {
-		return 2.0f * (float)rand() / (float)RAND_MAX - 1.0f;
-	};
-
-	{
-		float dist = 4.0f;
-		for (UINT i = 0; i < 10; i++) {
-			Scene::HyperSphere sphere;
-			sphere.center.resize(App::app.scene.numDims);
-			for (UINT j = 0; j < App::app.scene.numDims; j++)
-				sphere.center[j] = RandFloat() * dist;
-			sphere.radius = 1.0f + RandFloat() * 0.5f;
-			sphere.material.reflection = { abs(RandFloat()), abs(RandFloat()), abs(RandFloat()) };
-			App::app.scene.objects.hyperSpheres.spheres.push_back(sphere);
+		if (argc >= 2) {
+			App::app.config.configPath = std::string(argv[1]) + "/";
 		}
-		float size = 8.0f;
-		for (UINT i = 0; i < 10; i++) {
-			Scene::HyperRectangle rect;
-			rect.low.resize(App::app.scene.numDims);
-			rect.high.resize(App::app.scene.numDims);
-			for (UINT i = 0; i < App::app.scene.numDims; i++) {
-				rect.low[i] = RandFloat() * dist;
-				rect.high[i] = rect.low[i] + abs(RandFloat()) * size;
+
+		App::app.Init();
+		while (App::app.Update()) {
+			if (App::app.scene.objects.hyperRectangles.rects.size()) {
+				//App::app.scene.objects.hyperRectangles.rects[0].rotation[0] += 0.019f;
+				//App::app.scene.objects.hyperRectangles.rects[0].rotation[1] += 0.012f;
+				//if (App::app.scene.numDims > 3) {
+				//	App::app.scene.objects.hyperRectangles.rects[0].rotation[2] += 0.01f;
+				//}
 			}
-			rect.material.reflection = { abs(RandFloat()), abs(RandFloat()), abs(RandFloat()) };
-			App::app.scene.objects.hyperRectangles.rects.push_back(rect);
+			if (App::app.isVideo) {
+				if (clock.Elapsed().Seconds() >= 1.0) {
+					clock.Restart();
+					std::cout << App::app.videoGraphics.encoder.GetFrameIndex() << "/" << App::app.videoGraphics.path.points.size() << " frames rendered" << std::endl;
+				}
+			}
+			else {
+				while (clock.Elapsed().Seconds() < (1.0 / framerate)) {}
+				clock.Restart();
+			}
 		}
+		std::cout << App::app.videoGraphics.path.points.size() << "/" << App::app.videoGraphics.path.points.size() << " frames rendered" << std::endl;
+		App::app.Cleanup();
 	}
-
-	Peio::Clock<double> clock;
-	double framerate = 40.0;
-
-	App::app.Init();
-	while (App::app.Update()) {
-		while (clock.Elapsed().Seconds() < (1.0 / framerate)) {}
-		clock.Restart();
+	catch (Peio::Gfx::Exception e) {
+		std::cout << "Gfx Exception: \"" << e.msg << "\" in " << e.file << " line " << e.line << std::endl;
+		std::cin.get();
+	}
+	catch (Peio::Exception e) {
+		std::cout << "Exception: \"" << e.msg << "\" in " << e.file << " line " << e.line << std::endl;
+		std::cin.get();
+	}
+	catch (...) {
+		std::cout << "Unknown exception." << std::endl;
+		std::cin.get();
 	}
 
 	return 0;

@@ -1,0 +1,12 @@
+# The camera path consists of any number of points (position + rotation), between which the camera moves with linear interpolation
+path: [
+  {
+  position: [ -4.65, 2.6, -9.6, 0.0 ],
+  rotation: [ -0.127, 0.83, 0.0 ], 
+  duration: 240 # The number of frames between this point and the next
+  },
+  {
+  position: [ -3.62, 2.89, 12.5, 0.0 ],
+  rotation: [ -0.168, -1.03, 0.0 ]
+  }
+]

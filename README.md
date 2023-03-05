@@ -19,22 +19,28 @@ Programmet kan endast köras på Windows-datorer.
 ### **Kloning**
 [Microsoft Visual Studio 2022](https://visualstudio.microsoft.com/vs/) bör ha installerats innan projektet klonas.
 Klona sedan hela projektet ("Peio") till en tom mapp och öppna `Peio.sln`. Filen under `Dimension Viewer/Source Files/main.cpp` är till största del fri att leka runt med.
-I menyn, gå sedan till `Build -> Build Solution`. Innan programmet kan köras behöver några DLL-filer placeras i mappen `bin`. Dessa finns att ladda ner [här](https://drive.google.com/uc?id=1AOwn3nTKK3aPo04PS9NkOiHt3LPdHix0&export=download). Kör sedan filen `Peio-Dimension Viewer.exe` i mappen `bin` för att starta programmet.
+I menyn, gå sedan till `Build -> Build Solution`. Innan programmet kan köras behöver några filer placeras i mappen `bin`. Dessa finns att ladda ner [här](https://drive.google.com/uc?id=1AOwn3nTKK3aPo04PS9NkOiHt3LPdHix0&export=download). Kör sedan filen `Peio-Dimension Viewer.exe` i mappen `bin` för att starta programmet.
 
 ### **Installation**
 Det rekommenderas att klona projektet för att kunna ändra inställningar, men om endast programmet önskas finns en zip-fil med de nödvändiga filerna att ladda ner [här](https://drive.google.com/uc?id=1zPyBVQ80Q-mrt42WHN7JoLv94LSl0lSV&export=download).
 <br> Extrahera zip-filen och kör filen `Peio-Dimension Viewer.exe` i mappen `bin`.
 
-### **Navigering**
-Default-världen är fyrdimensionell och består av 20 st slumpmässiga objekt: tio hyperrektanglar och tio hypersfärer.
+### **Konfiguration**
+I mappen `Config` som ligger tillsammans med `Peio-Dimension Viewer.exe` finns några YAML-filer som innehåller inställningar till programmet. I filerna finns även förklaringar till inställningarna.
 
-Tryck på `esc` för aktivera eller inaktivera kontrollerna.
+Programmet kan antingen köras i `live`-läge, där kameran kan kontrolleras i realtid, eller i `video`-läge, där en videofil renderas och kameran följer en förutbestämd bana beskriven i `cameraPath.yaml`.
 
-Kamerans rörelse styrs med `W`, `S`, `D`, `A`, `Mellanslag`, `Shift`. 
-<br> Tryck på `Uppåtpil` eller `Nedåtpil` för att ändra vilka axlar, i förhållande till kameran, ovannämnda tangenter flyttar kameran längs.
-
-Kamerans rotation styrs med musrörelser.
+### **Live-läge**
+Tryck på `F1` för att ladda om inställningarna medan programmet körs.
+<br> Tryck på `F3` för att logga kamerans position och rotation.
+<br> Kamerans rotation styrs med musrörelser.
 <br> `Scrolla` för att ändra vilka plan kameran roterar längs.
+
+**Om inga inställningar ändras gäller följande:**
+<br> Världen är fyrdimensionell och består av en roterad fyrdimensionell kub, samt en halvspeglande fyrdimensionell sfär.
+<br> Tryck på `esc` för att aktivera eller inaktivera kontrollerna.
+<br> Kamerans rörelse styrs med `W`, `S`, `D`, `A`, `Mellanslag`, `Shift`. 
+<br> Tryck på `Uppåtpil` eller `Nedåtpil` för att ändra vilka axlar, i förhållande till kameran, ovannämnda tangenter flyttar kameran längs.
 
 ## **Rapport**
 Rapporten med alla relevanta formler samt härledningar finns att ladda ner [här](https://drive.google.com/uc?id=1T5tn9xtHR01OGPzWYCWezdt1KJ_7sYWl&export=download).

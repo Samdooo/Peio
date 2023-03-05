@@ -17,6 +17,7 @@ namespace Scene {
 	struct HyperRectangle {
 		MathVector<float> low = {};
 		MathVector<float> high = {};
+		MathVector<float> rotation = {};
 		Material material = {};
 	};
 	struct HyperRectangles {

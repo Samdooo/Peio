@@ -1,16 +1,20 @@
 #include "..\App.h"
 
+#include <iostream>
+
 namespace Scene {
 
 	void Scene::Init() 
 	{
-		infoBuffer.Init(sizeof(Info), 1, false);
-		infoBuffer.buffer.SetData((byte*)&info, sizeof(Info));
-		infoBuffer.shaderRegister = 0;
-		infoBuffer.visibility = D3D12_SHADER_VISIBILITY_ALL;
-		App::app.rayRenderer.parameters.push_back(&infoBuffer);
-		App::app.denoiser.parameters.push_back(&infoBuffer);
-
+		if (!App::app.init) {
+			infoBuffer.Init(sizeof(Info), 1, false);
+			infoBuffer.buffer.SetData((byte*)&info, sizeof(Info));
+			infoBuffer.shaderRegister = 0;
+			infoBuffer.visibility = D3D12_SHADER_VISIBILITY_ALL;
+			App::app.rayRenderer.parameters.push_back(&infoBuffer);
+			App::app.denoiser.parameters.push_back(&infoBuffer);
+			std::cout << "Initialized scene buffer" << std::endl;
+		}
 		camera.Init();
 		objects.Init();
 		rays.Init();

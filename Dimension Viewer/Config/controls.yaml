@@ -1,0 +1,17 @@
+# Keybinds are specified by a decimal integer representing the virtual key code
+# which can be found at https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+
+toggleState: 27 # Escape
+
+# A pair of keybinds for increasing and decreasing the movement dimension, respectively
+moveDimension: [ 38, 40 ] # Up arrow and down arrow, respectively
+
+# Camera movement keybinds are specified in pairs, with the elements of i-th pair representing positive and 
+# negative movement in the (i+k)-th axis relative to the camera, respectively, where k is the movement dimension
+movement: [ 
+  [ 87, 83 ], # W, S
+  [ 32, 16 ], # Spacebar, shift
+  [ 68, 65 ] # D, A
+]
+
+mouseSensitivity: 0.001

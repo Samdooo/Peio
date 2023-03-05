@@ -25,6 +25,11 @@ void Rotate(in out float p[numDims], in float v[numDims - 1]){
         Rotate2D(p, i, v[i]);
 }
 
+void InvRotate(in out float p[numDims], in float v[numDims - 1]) {
+    [unroll(numDims - 1)] for (uint i = 0; i < numDims - 1; i++)
+        Rotate2D(p, numDims - 2 - i, -v[numDims - 2 - i]);
+}
+
 float GetLength(in out float p[numDims]){
     float length = 0.0f;
     [unroll(numDims)] for (uint i = 0; i < numDims; i++)

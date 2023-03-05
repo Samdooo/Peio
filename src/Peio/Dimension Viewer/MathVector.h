@@ -62,4 +62,20 @@ struct MathVector : public std::vector<T> {
 		return *this;
 	}
 
+	_NODISCARD std::string ToString() const {
+		std::string result = "[";
+		for (size_t i = 0; i < this->size(); i++) {
+			if constexpr (std::is_convertible<T, std::string>::value)
+				result += (std::string)this->at(i);
+			else
+				result += std::to_string(this->at(i));
+
+			if (i == this->size() - 1)
+				result += "]";
+			else
+				result += ", ";
+		}
+		return result;
+	}
+
 };

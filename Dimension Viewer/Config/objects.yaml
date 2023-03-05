@@ -1,0 +1,15 @@
+objects: [
+  {
+  type: "hyperRectangle", # "hyperRectangle" or "hyperSphere"
+  low: [ -1.0, -1.0, -1.0, -1.0 ], # The lower coordinate bound 
+  high: [ 1.0, 1.0, 1.0, 1.0 ], # The higher coordinate bound
+  rotation: [ 0.5, 1.0, 1.0 ],
+  material: { emission: [ 0.0, 0.0, 0.0 ], reflection: [ 0.2, 0.5, 0.9 ], specular: 0.0 }
+  },
+  {
+  type: "hyperSphere",
+  center: [ 5.0, 1.0, 0.0, 0.0 ],
+  radius: 2.0,
+  material: { emission: [ 0.0, 0.0, 0.0 ], reflection: [ 0.9, 0.9, 0.9 ], specular: 0.7 }
+  }
+]

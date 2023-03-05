@@ -9,6 +9,7 @@ namespace Renderer {
 		};
 		Renderer::Create();
 
+		vertexBuffer.~VertexBuffer();
 		vertexBuffer.Init(sizeof(Float2), 6);
 		std::vector<Float2> vertices(6);
 		for (UINT i = 0; i < 6; i++) {
@@ -28,6 +29,8 @@ namespace Renderer {
 
 	void FullscreenRenderer::Render(ID3D12GraphicsCommandList* cmdList)
 	{
+		viewPort = { 0.0f, 0.0f, (float)App::app.scene.info.screenSize.x(), (float)App::app.scene.info.screenSize.y(), 0.0f, 1.0f };
+		scissorRect = { 0, 0, (LONG)App::app.scene.info.screenSize.x(), (LONG)App::app.scene.info.screenSize.y() };
 		Renderer::Render(cmdList, &vertexBuffer, viewPort, scissorRect);
 	}
 

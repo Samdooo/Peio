@@ -1,0 +1,24 @@
+type: "live" # "live" or "video"
+numDims: 4 # Number of dimensions
+screenSize: [ 1280, 720 ] # Size of output in pixels 
+
+camera:
+  fov: 1.57 # Field of view in radians
+  live: # Only configured if scene.type is "live"
+    position: [ -15.0, 0.0, 0.0, 0.0 ] # Original position
+    rotation: [ 0.0, 0.0, 0.0 ] # Original rotation
+    speed: 10.0 # Maximum speed
+    acceleration: 10.0
+  video: # Only configured if scene.type is "video"
+    framerate: 60
+    bitrate: 10000000
+    outpath: "DV output.mp4"
+
+renderer:
+  rays:
+    maxBounces: 3
+    raysPerBounce: [ 16, 4 ] # (specular + diffuse)
+  denoiser:
+    radius: 8 # The radius, in pixels, of the square of pixels considered when denoising each pixel
+    maxDist: 0.3 # Maximum distance between the points two pixels represent for the pixels to affect each other when denoising
+    maxAngle: 0.1 # Maximum angle between the normals at the points two pixels represent for the pixels to affect each other when denoising
