@@ -4,6 +4,8 @@
 #include "Ray_math.hlsli" 
 #include "Ray_scene.hlsli"
 
+#define USE_MASK false
+
 struct Rect {
     float low[numDims];
     float high[numDims];
@@ -12,7 +14,19 @@ struct Rect {
 };
 StructuredBuffer<Rect> rects : register(t2);
 
+bool ContainsRect(uint ind, float p[numDims]){
+    const Rect rect = rects[ind];
+    InvRotate(p, rect.rotation);
+    [unroll(numDims)] for (uint i = 0; i < numDims; i++){
+        if (p[i] < rect.low[i] || p[i] > rect.high[i])
+            return false;
+    }
+    return true;
+}
+
 bool TraceRect(uint ind, float origin[numDims], float ray[numDims], in out float scale){
+    if (USE_MASK && ind == 0)
+        return false;
     const Rect rect = rects[ind];
     
     InvRotate(origin, rect.rotation);
@@ -31,10 +45,20 @@ bool TraceRect(uint ind, float origin[numDims], float ray[numDims], in out float
     }
     if (sMax <= limit || sMax < sMin || sMin >= scale)
         return false;
+    float newScale;
     if (sMin > limit)
-        scale = sMin;
+        newScale = sMin;
     else
-        scale = sMax;
+        newScale = sMax;
+    if (USE_MASK){
+        float p[numDims];
+        [unroll(numDims)] for (uint i = 0; i < numDims; i++)
+            p[i] = origin[i] + ray[i] * newScale;
+        Rotate(p, rect.rotation);
+        if (!ContainsRect(0, p))
+            return false;
+    }
+    scale = newScale;
     return true;
 }
 

@@ -15,8 +15,13 @@ namespace Windows {
 			Procedure<Win::RawMouseMoveEvent*> moveProc = [this](Win::RawMouseMoveEvent* e) {
 				if (!App::app.winGraphics.input.state.active)
 					return;
-				App::app.scene.camera.rotation[rotationDimension] -= (this->mouseSensitivity) * (float)e->movement[1];
-				App::app.scene.camera.rotation[rotationDimension + 1] += (this->mouseSensitivity) * (float)e->movement[0];
+				if (App::app.scene.numDims == 2) {
+					App::app.scene.camera.rotation[rotationDimension] += (this->mouseSensitivity) * (float)e->movement[0];
+				}
+				else {
+					App::app.scene.camera.rotation[rotationDimension] -= (this->mouseSensitivity) * (float)e->movement[1];
+					App::app.scene.camera.rotation[rotationDimension + 1] += (this->mouseSensitivity) * (float)e->movement[0];
+				}
 			};
 			Win::Input::listeners.Add(moveProc);
 
@@ -79,7 +84,7 @@ namespace Windows {
 	{
 		targetVelocity *= 0.0f;
 		if (App::app.winGraphics.input.state.active) {
-			for (size_t i = 0; i < movementKeys.size(); i++) {
+			for (size_t i = 0; i < std::min(movementKeys.size(), (size_t)App::app.scene.numDims); i++) {
 				if (GetKeyState(movementKeys[i].first) & 0x8000)
 					targetVelocity[moveDimension + i] += speed;
 				if (GetKeyState(movementKeys[i].second) & 0x8000)
