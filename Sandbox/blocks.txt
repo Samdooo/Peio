@@ -1,8 +1,0 @@
-5
-1
-1
-1 stone
-118 oak log
-207 oak leaves
-124 birch log
-263 birch leaves
