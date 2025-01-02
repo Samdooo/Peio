@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Peio Library Template", "Templates\Peio Library Template\Peio Library Template.vcxproj", "{9C19BE20-93F8-4D06-8D09-995B981059EB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Peio Project Template", "Templates\Peio Project Template\Peio Project Template.vcxproj", "{BD339316-6A97-44E2-8902-7B4518E1AE59}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{058AAA49-1C4B-4147-BCBB-F73A215337A7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projects", "Projects", "{78C1BEB1-33E1-4558-A8D3-C72900C4D3FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{FF6B34C2-E119-41BE-B1E6-9FE292FB93B7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sandbox", "Projects\Sandbox\Sandbox.vcxproj", "{6C56793A-64DE-4E2D-89FE-2D15F3F1BC5F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C19BE20-93F8-4D06-8D09-995B981059EB}.Debug|x64.ActiveCfg = Debug|x64
+		{9C19BE20-93F8-4D06-8D09-995B981059EB}.Debug|x64.Build.0 = Debug|x64
+		{9C19BE20-93F8-4D06-8D09-995B981059EB}.Release|x64.ActiveCfg = Debug|x64
+		{9C19BE20-93F8-4D06-8D09-995B981059EB}.Release|x64.Build.0 = Debug|x64
+		{BD339316-6A97-44E2-8902-7B4518E1AE59}.Debug|x64.ActiveCfg = Debug|x64
+		{BD339316-6A97-44E2-8902-7B4518E1AE59}.Debug|x64.Build.0 = Debug|x64
+		{BD339316-6A97-44E2-8902-7B4518E1AE59}.Release|x64.ActiveCfg = Release|x64
+		{BD339316-6A97-44E2-8902-7B4518E1AE59}.Release|x64.Build.0 = Release|x64
+		{6C56793A-64DE-4E2D-89FE-2D15F3F1BC5F}.Debug|x64.ActiveCfg = Debug|x64
+		{6C56793A-64DE-4E2D-89FE-2D15F3F1BC5F}.Debug|x64.Build.0 = Debug|x64
+		{6C56793A-64DE-4E2D-89FE-2D15F3F1BC5F}.Release|x64.ActiveCfg = Release|x64
+		{6C56793A-64DE-4E2D-89FE-2D15F3F1BC5F}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9C19BE20-93F8-4D06-8D09-995B981059EB} = {058AAA49-1C4B-4147-BCBB-F73A215337A7}
+		{BD339316-6A97-44E2-8902-7B4518E1AE59} = {058AAA49-1C4B-4147-BCBB-F73A215337A7}
+		{6C56793A-64DE-4E2D-89FE-2D15F3F1BC5F} = {78C1BEB1-33E1-4558-A8D3-C72900C4D3FB}
+	EndGlobalSection
+EndGlobal
