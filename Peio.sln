@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Peio Library Template", "Templates\Peio Library Template\Peio Library Template.vcxproj", "{9C19BE20-93F8-4D06-8D09-995B981059EB}"
 EndProject
@@ -14,6 +14,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{FF6B34C2-E119-41BE-B1E6-9FE292FB93B7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sandbox", "Projects\Sandbox\Sandbox.vcxproj", "{6C56793A-64DE-4E2D-89FE-2D15F3F1BC5F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Essentials", "Libraries\Essentials\Essentials.vcxproj", "{4C1663AA-2C0E-40F6-909E-5DD319980D17}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Windows", "Libraries\Windows\Windows.vcxproj", "{3AD42E67-ACFD-4B13-9FB9-AF1007EBA191}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{6C56793A-64DE-4E2D-89FE-2D15F3F1BC5F}.Debug|x64.Build.0 = Debug|x64
 		{6C56793A-64DE-4E2D-89FE-2D15F3F1BC5F}.Release|x64.ActiveCfg = Release|x64
 		{6C56793A-64DE-4E2D-89FE-2D15F3F1BC5F}.Release|x64.Build.0 = Release|x64
+		{4C1663AA-2C0E-40F6-909E-5DD319980D17}.Debug|x64.ActiveCfg = Debug|x64
+		{4C1663AA-2C0E-40F6-909E-5DD319980D17}.Debug|x64.Build.0 = Debug|x64
+		{4C1663AA-2C0E-40F6-909E-5DD319980D17}.Release|x64.ActiveCfg = Release|x64
+		{4C1663AA-2C0E-40F6-909E-5DD319980D17}.Release|x64.Build.0 = Release|x64
+		{3AD42E67-ACFD-4B13-9FB9-AF1007EBA191}.Debug|x64.ActiveCfg = Debug|x64
+		{3AD42E67-ACFD-4B13-9FB9-AF1007EBA191}.Debug|x64.Build.0 = Debug|x64
+		{3AD42E67-ACFD-4B13-9FB9-AF1007EBA191}.Release|x64.ActiveCfg = Release|x64
+		{3AD42E67-ACFD-4B13-9FB9-AF1007EBA191}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,5 +53,7 @@ Global
 		{9C19BE20-93F8-4D06-8D09-995B981059EB} = {058AAA49-1C4B-4147-BCBB-F73A215337A7}
 		{BD339316-6A97-44E2-8902-7B4518E1AE59} = {058AAA49-1C4B-4147-BCBB-F73A215337A7}
 		{6C56793A-64DE-4E2D-89FE-2D15F3F1BC5F} = {78C1BEB1-33E1-4558-A8D3-C72900C4D3FB}
+		{4C1663AA-2C0E-40F6-909E-5DD319980D17} = {FF6B34C2-E119-41BE-B1E6-9FE292FB93B7}
+		{3AD42E67-ACFD-4B13-9FB9-AF1007EBA191} = {FF6B34C2-E119-41BE-B1E6-9FE292FB93B7}
 	EndGlobalSection
 EndGlobal
