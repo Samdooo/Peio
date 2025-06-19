@@ -42,7 +42,7 @@ void Peio::Windows::Window::Create(std::string className, std::string title, Int
 	}
 }
 
-void Peio::Windows::Window::HandleMessages()
+void Peio::Windows::Window::HandleMessages() const
 {
 	MSG msg = {};
 	while (PeekMessage(&msg, hwnd, 0, 0, PM_REMOVE) > 0) {
@@ -51,24 +51,29 @@ void Peio::Windows::Window::HandleMessages()
 	}
 }
 
-void Peio::Windows::Window::Close()
+void Peio::Windows::Window::Close() const
 {
 	if (CloseWindow(hwnd) == 0) {
 		throw FailedWindowClosureException();
 	}
 }
 
-void Peio::Windows::Window::Show()
+void Peio::Windows::Window::Show() const
 {
 	ShowWindow(hwnd, SW_SHOW);
 }
 
-void Peio::Windows::Window::Hide()
+void Peio::Windows::Window::Hide() const
 {
 	ShowWindow(hwnd, SW_HIDE);
 }
 
-bool Peio::Windows::Window::IsOpen()
+bool Peio::Windows::Window::IsOpen() const
 {
 	return IsWindow(hwnd);
+}
+
+HWND Peio::Windows::Window::GetHWND() const
+{
+	return hwnd;
 }

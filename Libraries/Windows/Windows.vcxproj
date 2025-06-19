@@ -97,6 +97,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Input.cpp" />
+    <ClCompile Include="src\Input.ixx" />
+    <ClCompile Include="src\Keyboard.cpp" />
+    <ClCompile Include="src\Keyboard.ixx" />
+    <ClCompile Include="src\Mouse.cpp" />
+    <ClCompile Include="src\Mouse.ixx" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\Window.ixx" />
     <ClCompile Include="src\WindowsException.ixx" />

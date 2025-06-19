@@ -15,5 +15,6 @@ export namespace Peio {
 		};
 
 	}
+	using namespace Windows;
 
 }

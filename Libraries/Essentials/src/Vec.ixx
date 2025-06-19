@@ -141,6 +141,10 @@ export namespace Peio {
 		using Byte3 = Vec<byte, 3>;
 		using Byte4 = Vec<byte, 4>;
 
+		using Short2 = Vec<short, 2>;
+		using Short3 = Vec<short, 3>;
+		using Short4 = Vec<short, 4>;
+
 	}
 	using namespace Essentials;
 

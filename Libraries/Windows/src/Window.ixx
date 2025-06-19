@@ -5,6 +5,8 @@ export import <string>;
 export import Peio.Windows.WindowsException;
 export import Peio.Essentials.Vec;
 
+import Peio.Windows.Input;
+
 export namespace Peio {
 
 	namespace Windows {
@@ -19,19 +21,21 @@ export namespace Peio {
 			FailedWindowClosureException() : WindowsException("Failed to close window.") {}
 		};
 
-		void CreateClass(std::string className, UINT classStyles = 0, WNDPROC proc = DefWindowProc);
+		void CreateClass(std::string className, UINT classStyles = 0, WNDPROC proc = WndProc);
 
 		class Window {
 
 		public:
 
 			void Create(std::string className, std::string title, Int2 size, DWORD styles = WS_OVERLAPPEDWINDOW, Int2 position = { CW_USEDEFAULT, CW_USEDEFAULT }, DWORD exStyles = 0);
-			void HandleMessages();
-			void Close();
+			void HandleMessages() const;
+			void Close() const;
 
-			void Show();
-			void Hide();
-			bool IsOpen();
+			void Show() const;
+			void Hide() const;
+			bool IsOpen() const;
+
+			HWND GetHWND() const;
 
 		protected:
 
