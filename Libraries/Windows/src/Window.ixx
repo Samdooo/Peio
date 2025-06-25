@@ -25,6 +25,8 @@ export namespace Peio {
 
 		class Window {
 
+			HWND hwnd;
+
 		public:
 
 			void Create(std::string className, std::string title, Int2 size, DWORD styles = WS_OVERLAPPEDWINDOW, Int2 position = { CW_USEDEFAULT, CW_USEDEFAULT }, DWORD exStyles = 0);
@@ -36,10 +38,6 @@ export namespace Peio {
 			bool IsOpen() const;
 
 			HWND GetHWND() const;
-
-		protected:
-
-			HWND hwnd;
 
 		};
 

@@ -10,7 +10,7 @@ Peio::Windows::MessageHandler Peio::Windows::CreateMouseMoveHandler(Proc<MouseMo
 {
 	return [onMouseMove](MessageEvent& msgEvent) {
 		if (msgEvent.msg.message == WM_MOUSEMOVE) {
-			MouseMoveEvent event = {};
+			MouseMoveEvent event {};
 			event.msg = msgEvent.msg;
 			event.pos = { GET_X_LPARAM(msgEvent.msg.lParam), GET_Y_LPARAM(msgEvent.msg.lParam) };
 			event.additional = (MouseAdditional)msgEvent.msg.wParam;
@@ -22,7 +22,7 @@ Peio::Windows::MessageHandler Peio::Windows::CreateMouseMoveHandler(Proc<MouseMo
 Peio::Windows::MessageHandler Peio::Windows::CreateMouseDownHandler(Proc<MouseDownEvent&> onMouseDown)
 {
 	return [onMouseDown](MessageEvent& msgEvent) {
-		MouseDownEvent event = {};
+		MouseDownEvent event {};
 		switch (msgEvent.msg.message) {
 		case WM_LBUTTONDOWN:
 			event.button = MouseButton::Left;
@@ -49,7 +49,7 @@ Peio::Windows::MessageHandler Peio::Windows::CreateMouseDownHandler(Proc<MouseDo
 Peio::Windows::MessageHandler Peio::Windows::CreateMouseUpHandler(Proc<MouseUpEvent&> onMouseUp)
 {
 	return [onMouseUp](MessageEvent& msgEvent) {
-		MouseUpEvent event = {};
+		MouseUpEvent event {};
 		switch (msgEvent.msg.message) {
 		case WM_LBUTTONUP:
 			event.button = MouseButton::Left;
@@ -77,7 +77,7 @@ Peio::Windows::MessageHandler Peio::Windows::CreateMouseWheelHandler(Proc<MouseW
 {
 	return [onMouseWheel](MessageEvent& msgEvent) {
 		if (msgEvent.msg.message == WM_MOUSEWHEEL) {
-			MouseWheelEvent event = {};
+			MouseWheelEvent event {};
 			event.msg = msgEvent.msg;
 			event.pos = { GET_X_LPARAM(msgEvent.msg.lParam), GET_Y_LPARAM(msgEvent.msg.lParam) };
 			event.additional = (MouseAdditional)LOWORD(msgEvent.msg.wParam);
@@ -120,15 +120,15 @@ Peio::Windows::MessageHandler Peio::Windows::CreateRawMouseHandler(Proc<RawMouse
 			bool foreground = !msgEvent.msg.wParam;
 
 			if (input->data.mouse.usFlags == MOUSE_MOVE_RELATIVE && onRawMouseMove) {
-				RawMouseMoveEvent event = {};
+				RawMouseMoveEvent event {};
 				event.msg = msgEvent.msg;
 				event.foreground = foreground;
 				event.movement = { input->data.mouse.lLastX, input->data.mouse.lLastY };
 				onRawMouseMove(event);
 			}
 
-			RawMouseDownEvent downEvent = {};
-			RawMouseUpEvent upEvent = {};
+			RawMouseDownEvent downEvent {};
+			RawMouseUpEvent upEvent {};
 
 			downEvent.msg = msgEvent.msg;
 			downEvent.foreground = foreground;
@@ -163,7 +163,7 @@ Peio::Windows::MessageHandler Peio::Windows::CreateRawMouseHandler(Proc<RawMouse
 			}
 
 			if (input->data.mouse.usButtonFlags & RI_MOUSE_WHEEL && onRawMouseWheel) {
-				RawMouseWheelEvent event = {};
+				RawMouseWheelEvent event {};
 				event.msg = msgEvent.msg;
 				event.foreground = foreground;
 

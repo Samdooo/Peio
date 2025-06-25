@@ -11,7 +11,7 @@ export namespace Peio {
 		template <typename Type, size_t n, size_t m>
 		struct Mat {
 
-			Vec<Vec<Type, n>, m> cols = {};
+			Vec<Vec<Type, n>, m> cols{};
 
 			Mat() {}
 
@@ -73,7 +73,7 @@ export namespace Peio {
 
 		template <typename Type, size_t n, size_t m>
 		Vec<Type, n> operator*(Mat<Type, n, m> mat, Vec<Type, m> v) {
-			Vec<Type, n> result = {};
+			Vec<Type, n> result{};
 			for (size_t j = 0; j < m; j++)
 				result = result + (mat.cols[j] * v[j]);
 			return result;

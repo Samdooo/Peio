@@ -17,11 +17,11 @@ export namespace Peio {
 									 Middle = MK_MBUTTON, Shift = MK_SHIFT, X1 = MK_XBUTTON1, X2 = MK_XBUTTON2 };
 
 		struct MouseEvent : public WindowsEvent {
-			Short2 pos = {};
+			Short2 pos {};
 			MouseAdditional additional = MouseAdditional::None;
 		};
 		struct MouseButtonEvent : public MouseEvent {
-			MouseButton button = {};
+			MouseButton button {};
 		};
 
 		struct MouseMoveEvent : public MouseEvent {};
@@ -41,10 +41,10 @@ export namespace Peio {
 			bool foreground = false;
 		};
 		struct RawMouseMoveEvent : public RawMouseEvent {
-			Int2 movement = {};
+			Int2 movement {};
 		};
 		struct RawMouseButtonEvent : public RawMouseEvent {
-			MouseButton button = {};
+			MouseButton button {};
 		};
 		struct RawMouseDownEvent : public RawMouseButtonEvent {};
 		struct RawMouseUpEvent : public RawMouseButtonEvent {};

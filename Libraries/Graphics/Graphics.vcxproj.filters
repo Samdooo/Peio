@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Initialization">
+      <UniqueIdentifier>{b01c366d-c3e4-4eea-87c2-914f004d508f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\VulkanException.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Device.cpp">
+      <Filter>Source Files\Initialization</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Device.ixx">
+      <Filter>Source Files\Initialization</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PhysicalDevice.cpp">
+      <Filter>Source Files\Initialization</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Init.cpp">
+      <Filter>Source Files\Initialization</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Init.ixx">
+      <Filter>Source Files\Initialization</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PhysicalDevice.ixx">
+      <Filter>Source Files\Initialization</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Instance.cpp">
+      <Filter>Source Files\Initialization</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Instance.ixx">
+      <Filter>Source Files\Initialization</Filter>
+    </ClCompile>
+    <ClCompile Include="src\QueueFamilies.cpp">
+      <Filter>Source Files\Initialization</Filter>
+    </ClCompile>
+    <ClCompile Include="src\QueueFamilies.ixx">
+      <Filter>Source Files\Initialization</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Queue.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Queue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

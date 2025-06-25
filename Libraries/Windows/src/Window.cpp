@@ -10,7 +10,7 @@ void Peio::Windows::CreateClass(std::string className, UINT classStyles, WNDPROC
 {
 	std::wstring wClassName = std::wstring(CA2W(className.c_str()));
 
-	WNDCLASSEX wndClass = {};
+	WNDCLASSEX wndClass {};
 	wndClass.cbSize = sizeof(WNDCLASSEX);
 	wndClass.style = classStyles;
 	wndClass.lpfnWndProc = proc;
@@ -44,7 +44,7 @@ void Peio::Windows::Window::Create(std::string className, std::string title, Int
 
 void Peio::Windows::Window::HandleMessages() const
 {
-	MSG msg = {};
+	MSG msg {};
 	while (PeekMessage(&msg, hwnd, 0, 0, PM_REMOVE) > 0) {
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);

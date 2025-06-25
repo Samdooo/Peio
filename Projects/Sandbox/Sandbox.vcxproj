@@ -103,6 +103,9 @@
     <ProjectReference Include="..\..\Libraries\Essentials\Essentials.vcxproj">
       <Project>{4c1663aa-2c0e-40f6-909e-5dd319980d17}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Graphics\Graphics.vcxproj">
+      <Project>{1f0255f3-92d0-4ac3-acf0-5cfcace94bfd}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\Windows\Windows.vcxproj">
       <Project>{3ad42e67-acfd-4b13-9fb9-af1007eba191}</Project>
     </ProjectReference>

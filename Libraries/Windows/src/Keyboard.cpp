@@ -10,7 +10,7 @@ Peio::Windows::MessageHandler Peio::Windows::CreateKeyDownHandler(Proc<KeyDownEv
 {
 	return [onKeyDown](MessageEvent& msgEvent) {
 		if (msgEvent.msg.message == WM_KEYDOWN) {
-			KeyDownEvent event = {};
+			KeyDownEvent event{};
 			event.msg = msgEvent.msg;
 			event.key = (uchar)msgEvent.msg.wParam;
 			event.repeatCount = LOWORD(msgEvent.msg.lParam);
@@ -24,7 +24,7 @@ Peio::Windows::MessageHandler Peio::Windows::CreateKeyUpHandler(Proc<KeyUpEvent&
 {
 	return [onKeyUp](MessageEvent& msgEvent) {
 		if (msgEvent.msg.message == WM_KEYUP) {
-			KeyUpEvent event = {};
+			KeyUpEvent event{};
 			event.msg = msgEvent.msg;
 			event.key = (uchar)msgEvent.msg.wParam;
 			event.repeatCount = LOWORD(msgEvent.msg.lParam);
@@ -38,7 +38,7 @@ Peio::Windows::MessageHandler Peio::Windows::CreateCharHandler(Proc<CharEvent&> 
 {
 	return [onChar](MessageEvent& msgEvent) {
 		if (msgEvent.msg.message == WM_CHAR) {
-			CharEvent event = {};
+			CharEvent event{};
 			event.msg = msgEvent.msg;
 			event.key = (uchar)msgEvent.msg.wParam;
 			event.repeatCount = LOWORD(msgEvent.msg.lParam);
@@ -78,7 +78,7 @@ Peio::Windows::MessageHandler Peio::Windows::CreateRawKeyHandler(Proc<RawKeyDown
 			}
 			bool foreground = !msgEvent.msg.wParam;
 
-			RawKeyEvent event = {};
+			RawKeyEvent event{};
 			event.msg = msgEvent.msg;
 			event.foreground = foreground;
 			event.key = input->data.keyboard.VKey;

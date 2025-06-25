@@ -1,7 +1,5 @@
 module Peio.Windows.Input;
 
-std::unordered_set<Peio::Windows::MessageHandler*> Peio::Windows::msgHandlers = {};
-
 void Peio::Windows::AddMessageHandler(MessageHandler* msgHandler)
 {
 	msgHandlers.insert(msgHandler);
@@ -14,7 +12,7 @@ void Peio::Windows::RemoveMessageHandler(MessageHandler* msgHandler)
 
 LRESULT Peio::Windows::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	MessageEvent msgEvent = {};
+	MessageEvent msgEvent{};
 	msgEvent.msg = { hwnd, msg, wParam, lParam };
 	msgEvent.returnDefaultProc = true;
 	msgEvent.returnValue = 0;

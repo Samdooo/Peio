@@ -12,7 +12,7 @@ export namespace Peio {
 
 		protected:
 
-			Type elems[n] = {};
+			Type elems[n]{};
 
 		public:
 

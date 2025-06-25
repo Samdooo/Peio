@@ -13,7 +13,7 @@ export namespace Peio {
 		using Proc = std::function<void(Args...)>;
 
 		struct WindowsEvent {
-			MSG msg = {};
+			MSG msg{};
 		};
 
 		struct MessageEvent : public WindowsEvent {
@@ -35,6 +35,6 @@ export namespace Peio {
 
 namespace Peio::Windows {
 
-	extern std::unordered_set<MessageHandler*> msgHandlers;
+	std::unordered_set<MessageHandler*> msgHandlers{};
 
 }
