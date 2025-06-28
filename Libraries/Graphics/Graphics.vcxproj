@@ -109,17 +109,15 @@
   <ItemGroup>
     <ClCompile Include="src\Device.cpp" />
     <ClCompile Include="src\Device.ixx" />
-    <ClCompile Include="src\PhysicalDevice.cpp" />
-    <ClCompile Include="src\PhysicalDevice.ixx" />
-    <ClCompile Include="src\Init.cpp" />
-    <ClCompile Include="src\Init.ixx" />
     <ClCompile Include="src\Instance.cpp" />
     <ClCompile Include="src\Instance.ixx" />
-    <ClCompile Include="src\Queue.cpp" />
-    <ClCompile Include="src\Queue.ixx" />
-    <ClCompile Include="src\QueueFamilies.cpp" />
-    <ClCompile Include="src\QueueFamilies.ixx" />
+    <ClCompile Include="src\PhysicalDevice.cpp" />
+    <ClCompile Include="src\PhysicalDevice.ixx" />
     <ClCompile Include="src\VulkanException.ixx" />
+    <ClCompile Include="src\Windows\Instance.cpp" />
+    <ClCompile Include="src\Windows\Instance.ixx" />
+    <ClCompile Include="src\Windows\PhysicalDevice.cpp" />
+    <ClCompile Include="src\Windows\PhysicalDevice.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Essentials\Essentials.vcxproj">

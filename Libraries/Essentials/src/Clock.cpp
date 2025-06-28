@@ -1,10 +1,12 @@
 module Peio.Essentials.Clock;
 
+using namespace Peio;
+
 Peio::Essentials::Duration::Duration(clk::duration dur)
 	: dur(dur)
 {}
 
-Peio::Essentials::ll Peio::Essentials::Duration::GetCount()
+ll Peio::Essentials::Duration::GetCount()
 {
 	return dur.count();
 }

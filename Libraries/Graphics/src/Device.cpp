@@ -15,7 +15,7 @@ void Peio::Graphics::Device::Init()
 	createInfo.queueCreateInfoCount = 1;
 
 	createInfo.pEnabledFeatures = &deviceFeautures;
-	
+
 	createInfo.enabledExtensionCount = 0;
 
 	createInfo.enabledLayerCount = (uint)instance.GetValidationLayers().size();

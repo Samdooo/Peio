@@ -2,32 +2,28 @@ export module Peio.Graphics.Device;
 
 import <vulkan/vulkan.hpp>;
 export import Peio.Graphics.VulkanException;
-import Peio.Graphics.Instance;
-import Peio.Graphics.PhysicalDevice;
-import Peio.Graphics.QueueFamilies;
+export import Peio.Graphics.Instance;
+export import Peio.Graphics.PhysicalDevice;
 
 export namespace Peio {
 
 	namespace Graphics {
 
 		struct FailedDeviceCreationException : public VulkanException {
-			FailedDeviceCreationException(vk::Result result) : VulkanException("Failed to create logical device.", result) {}
+			FailedDeviceCreationException(vk::Result result) : VulkanException("Failed to create logical device", result) {}
 		};
 
 		class Device {
 
 			vk::Device device{};
-
+			
 		public:
 
 			Instance& instance;
 			PhysicalDevice& physicalDevice;
-			QueueFamilies& queueFamilies;
 
-			Device(QueueFamilies& queueFamilies)
-				: instance(queueFamilies.physicalDevice.instance)
-				, physicalDevice(queueFamilies.physicalDevice)
-				, queueFamilies(queueFamilies) {}
+			Device(Instance& instance, PhysicalDevice& physicalDevice)
+				: instance(instance), physicalDevice(physicalDevice) {}
 
 			void Init();
 			void Destroy();

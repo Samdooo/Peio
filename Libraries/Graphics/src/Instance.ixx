@@ -3,8 +3,8 @@ export module Peio.Graphics.Instance;
 import <vulkan/vulkan.hpp>;
 export import Peio.Graphics.VulkanException;
 
-import <vector>;
-import <string>;
+export import <vector>;
+export import <string>;
 
 export namespace Peio {
 
@@ -13,7 +13,9 @@ export namespace Peio {
 		struct FailedAvailableValidationLayerRetrievalException : public VulkanException {
 			FailedAvailableValidationLayerRetrievalException(vk::Result vkResult) : VulkanException("Failed to get available validation layers", vkResult) {}
 		};
-		std::vector<std::string> GetAvailableValidationLayers();
+		struct FailedAvailableInstanceExtensionRetrievalException : public VulkanException {
+			FailedAvailableInstanceExtensionRetrievalException(vk::Result vkResult) : VulkanException("Failed to get available instance extensions", vkResult) {}
+		};
 
 		struct FailedValidationEnablingException : public VulkanException {
 			FailedValidationEnablingException(vk::Result vkResult) : VulkanException("Failed to enable Vulkan validation layers", vkResult) {}
@@ -39,7 +41,10 @@ export namespace Peio {
 
 		public:
 
-			void Init(std::string appName);
+			std::vector<std::string> GetAvailableValidationLayers();
+			std::vector<std::string> GetAvailableExtensions();
+
+			void Init(const std::string& appName, const std::vector<const char*>& extensions);
 
 			vk::Instance& Get();
 			const std::vector<const char*>& GetValidationLayers() const;

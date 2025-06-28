@@ -11,7 +11,7 @@ import Peio.Windows.Input;
 import Peio.Windows.Keyboard;
 import Peio.Windows.Mouse;
 
-import Peio.Graphics.Init;
+import Peio.Graphics.Windows.Instance;
 
 using namespace Peio;
 
@@ -19,12 +19,13 @@ int main() {
 
 	try {
 
-		Graphics::Init();
-		Graphics::Cleanup();
+		Graphics::Windows::Instance instance{};
+		instance.Init("Peio Sandbox");
+		instance.Destroy();
 
 		return 0;
 
-		Windows::CreateClass("Peio Sandbox Class");
+		CreateClass("Peio Sandbox Class");
 
 		Window window{};
 		Int2 windowSize = { 1280, 720 };
