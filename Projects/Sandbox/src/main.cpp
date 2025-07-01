@@ -19,8 +19,9 @@ int main() {
 
 	try {
 
-		Graphics::Windows::Instance instance{};
+		WindowsInstance instance{};
 		instance.Init("Peio Sandbox");
+
 		instance.Destroy();
 
 		return 0;

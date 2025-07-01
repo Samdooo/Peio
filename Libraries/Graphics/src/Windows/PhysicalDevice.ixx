@@ -1,5 +1,6 @@
 export module Peio.Graphics.Windows.PhysicalDevice;
 
+import <vulkan/vulkan.hpp>;
 export import Peio.Graphics.PhysicalDevice;
 export import Peio.Essentials.Types;
 
@@ -7,9 +8,9 @@ export namespace Peio {
 
 	namespace Graphics {
 
-		namespace Windows {
+		namespace PhysicalDevices {
 
-			class PhysicalDevice : public Graphics::PhysicalDevice {
+			class Windows {
 
 				struct FamilyIndices {
 					uint graphics;
@@ -19,14 +20,26 @@ export namespace Peio {
 
 			public:
 
-				void Init();
+				PhysicalDevice& physicalDevice;
+				Windows(PhysicalDevice& physicalDevice) : physicalDevice(physicalDevice) {}
+
+				void Init(vk::PhysicalDevice physicalDevice);
 
 				bool IsSuitable() const;
 
 			};
 
 		}
-		using namespace Windows;
+
+		class WindowsPhysicalDevice : public PhysicalDevice, public PhysicalDevices::Windows {
+
+		public:
+
+			WindowsPhysicalDevice() : Windows((PhysicalDevice&)*this) {}
+
+			using Windows::Init;
+
+		};
 
 	}
 	using namespace Graphics;

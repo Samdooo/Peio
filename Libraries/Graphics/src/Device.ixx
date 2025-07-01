@@ -16,19 +16,10 @@ export namespace Peio {
 		class Device {
 
 			vk::Device device{};
-			
+
 		public:
 
-			Instance& instance;
-			PhysicalDevice& physicalDevice;
 
-			Device(Instance& instance, PhysicalDevice& physicalDevice)
-				: instance(instance), physicalDevice(physicalDevice) {}
-
-			void Init();
-			void Destroy();
-
-			vk::Device& Get();
 
 		};
 

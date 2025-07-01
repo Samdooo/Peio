@@ -8,33 +8,46 @@ export namespace Peio {
 
 	namespace Graphics {
 
-		namespace Windows {
+		namespace InstanceExtensions {
 
-			namespace InstanceExtensions {
-
-				const std::vector<const char*> windowsGraphics = {
-					vk::KHRSurfaceExtensionName,
-					vk::KHRWin32SurfaceExtensionName
-				};
-
-			}
-
-			struct NoSuitablePhysicalDeviceException : public Exception {
-				NoSuitablePhysicalDeviceException() : Exception("No suitable physical device for windows graphics was found.") {}
+			const std::vector<const char*> windowsGraphics = {
+				vk::KHRSurfaceExtensionName,
+				vk::KHRWin32SurfaceExtensionName
 			};
 
-			class Instance : public Graphics::Instance {
+		}
 
-				 Windows::PhysicalDevice physicalDevice;
+		struct NoSuitablePhysicalDeviceException : public Exception {
+			NoSuitablePhysicalDeviceException() : Exception("No suitable physical device for windows graphics was found.") {}
+		};
+
+		namespace Instances {
+
+			class Windows {
+
+				WindowsPhysicalDevice physicalDevice;
 
 			public:
+
+				Instance& instance;
+				Windows(Instance& instance) : instance(instance) {}
 
 				void Init(const std::string& appName);
 
 			};
 
 		}
-		using namespace Windows;
+
+		class WindowsInstance : public Instance, public Instances::Windows {
+
+		public:
+
+			WindowsInstance() : Windows((Instance&)*this) {}
+
+			using Windows::Init;
+
+		};
+
 
 	}
 	using namespace Graphics;

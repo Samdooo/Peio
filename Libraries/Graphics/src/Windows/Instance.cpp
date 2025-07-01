@@ -1,15 +1,14 @@
 module Peio.Graphics.Windows.Instance;
 
-void Peio::Graphics::Windows::Instance::Init(const std::string& appName)
+void Peio::Graphics::Instances::Windows::Init(const std::string& appName)
 {
-	this->Graphics::Instance::Init(appName, InstanceExtensions::windowsGraphics);
+	instance.Init(appName, InstanceExtensions::windowsGraphics);
 
-	std::vector<Graphics::PhysicalDevice> physicalDevices = Instances::PhysicalDeviceEnum(*this).GetPhysicalDevices();
+	std::vector<Graphics::PhysicalDevice> physicalDevices = Instances::PhysicalDeviceEnum(instance).GetPhysicalDevices();
 	
 	bool foundSuitable = false;
 	for (Graphics::PhysicalDevice& physicalDevice : physicalDevices) {
-		(Graphics::PhysicalDevice&)this->physicalDevice = physicalDevice;
-		this->physicalDevice.Init();
+		this->physicalDevice.Init(physicalDevice.Get());
 
 		if (this->physicalDevice.IsSuitable()) {
 			foundSuitable = true;
